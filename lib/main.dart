@@ -15,12 +15,10 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ApplicationServiceModel application = ref.watch(applicationService);
-    final GoRouter router = ref.read(routerService).router;
+    final GoRouter router = ref.watch(routerService).router;
 
     return MaterialApp.router(
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
+      routerConfig: router,
       title: 'LOTR',
       theme: application.themeData,
     );

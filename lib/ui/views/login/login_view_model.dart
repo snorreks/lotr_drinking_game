@@ -1,9 +1,13 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lotr_drinking_game/services/app/router_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../services/api/auth_service.dart';
+import '../../../utils/validators.dart';
 
 class LoginViewModel extends BaseViewModel {
   LoginViewModel(this._ref);
@@ -11,7 +15,23 @@ class LoginViewModel extends BaseViewModel {
 
   // Variables
   final BehaviorSubject<bool?> _loadingSubject = BehaviorSubject<bool?>();
-  final BehaviorSubject<String?> _errorSubject = BehaviorSubject<String?>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  final _emailSubject = BehaviorSubject<String>();
+  final _passwordSubject = BehaviorSubject<String>();
+
+  // Stream getters
+  Stream<String> get email => _emailSubject.stream.transform(validateEmail);
+  Stream<String> get password =>
+      _passwordSubject.stream.transform(validatePassword);
+
+  Stream<bool> get isValid =>
+      CombineLatestStream.combine2(email, password, (_, __) => true);
+
+  // Change data
+  Function(String) get changeEmail => _emailSubject.sink.add;
+  Function(String) get changePassword => _passwordSubject.sink.add;
 
   // Streams
   Stream<bool?> get loadingStream => _loadingSubject.stream;
@@ -20,7 +40,6 @@ class LoginViewModel extends BaseViewModel {
 
   // Functions
   Future<void> submit() async {
-    _errorSubject.add(null);
     if (_isLoading) {
       return;
     }
@@ -31,7 +50,7 @@ class LoginViewModel extends BaseViewModel {
 
       await _ref.read(authService).signIn(email: email, password: password);
 
-      await _ref.read(routerService).go('/');
+      await _ref.read(routerService).go(Location.home);
     } catch (e) {
       logError('submit', e);
     }
@@ -41,6 +60,8 @@ class LoginViewModel extends BaseViewModel {
   @override
   void dispose() {
     _loadingSubject.close();
+    _emailSubject.close();
+    _passwordSubject.close();
     super.dispose();
   }
 }

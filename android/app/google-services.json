@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "668643921360",
+    "project_id": "lotr-drinking-game",
+    "storage_bucket": "lotr-drinking-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668643921360:android:6780eda95b60741b8cfdd5",
+        "android_client_info": {
+          "package_name": "com.example.lotr_drinking_game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668643921360-5bo6lq1tbf22d97hmcthdsnqf7q42ngg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpWKq_K80N3EaE7PmzkGCGDPjEcUl1U2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668643921360-5bo6lq1tbf22d97hmcthdsnqf7q42ngg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "668643921360-fmh0j7st0jpb1mkeipeh726f1jrl7r4i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lotrDrinkingGame"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

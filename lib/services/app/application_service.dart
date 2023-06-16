@@ -33,8 +33,7 @@ class ApplicationService extends BaseService
   @override
   Future<void> initialize() async {
     _initialized = true;
-    notifyListeners();
-    return Future<void>.value();
+    // notifyListeners();
   }
 }
 

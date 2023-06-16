@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show GlobalKey, NavigatorState;
+import 'package:flutter/material.dart'
+    show BuildContext, GlobalKey, NavigatorState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,6 +8,12 @@ import '../../ui/views/home/home_view.dart';
 import '../../ui/views/login/login_view.dart';
 import '../../ui/views/startup/startup_view.dart';
 import '../api/auth_service.dart';
+import 'application_service.dart';
+
+enum Location {
+  login,
+  home,
+}
 
 enum NavItem {
   home,
@@ -30,7 +37,7 @@ abstract class RouterServiceModel {
   ///
   /// If navItem = null, it uses the appNavigatorKey.
   Future<void> go<T>(
-    String location, {
+    Location location, {
     NavItem? navItem,
   });
 
@@ -38,7 +45,7 @@ abstract class RouterServiceModel {
   ///
   /// If navItem = null, it uses the appNavigatorKey.
   Future<T?> replace<T>(
-    String location, {
+    Location location, {
     NavItem? navItem,
   });
 
@@ -56,7 +63,61 @@ abstract class RouterServiceModel {
 }
 
 class RouterService extends BaseService implements RouterServiceModel {
-  RouterService(this._ref);
+  factory RouterService(Ref ref) {
+    final GoRouter router = GoRouter(
+      navigatorKey: _appNavigatorKey,
+      debugLogDiagnostics: true,
+      initialLocation: StartupView.routeLocation,
+      routes: [
+        GoRoute(
+          path: StartupView.routeLocation,
+          name: StartupView.routeName,
+          builder: (context, state) {
+            return const StartupView();
+          },
+        ),
+        GoRoute(
+          path: HomeView.routeLocation,
+          name: HomeView.routeName,
+          builder: (context, state) {
+            return const HomeView();
+          },
+        ),
+        GoRoute(
+          path: LoginView.routeLocation,
+          name: LoginView.routeName,
+          builder: (context, state) {
+            return const LoginView();
+          },
+        ),
+      ],
+      redirect: (BuildContext context, GoRouterState state) {
+        final bool initialized = ref.read(applicationService).initialized;
+
+        if (!initialized) {
+          return StartupView.routeLocation;
+        }
+
+        if (state.location == StartupView.routeLocation) {
+          return null;
+        }
+
+        final bool isSignedIn = ref.read(authService).isSignedIn;
+
+        if (!isSignedIn) {
+          return LoginView.routeLocation;
+        }
+
+        if (state.location == LoginView.routeLocation) {
+          return HomeView.routeLocation;
+        }
+
+        return null;
+      },
+    );
+    return RouterService._(ref, router);
+  }
+  RouterService._(this._ref, this._router);
 
   static final GlobalKey<NavigatorState> _appNavigatorKey =
       GlobalKey<NavigatorState>();
@@ -64,6 +125,9 @@ class RouterService extends BaseService implements RouterServiceModel {
       GlobalKey<NavigatorState>();
 
   final Ref _ref;
+  final GoRouter _router;
+  @override
+  GoRouter get router => _router;
 
   @override
   bool disableNavigation = false;
@@ -85,7 +149,7 @@ class RouterService extends BaseService implements RouterServiceModel {
 
   @override
   Future<void> go<T>(
-    String location, {
+    Location location, {
     NavItem? navItem,
   }) async {
     if (disableNavigation) {
@@ -97,12 +161,12 @@ class RouterService extends BaseService implements RouterServiceModel {
       logWarning('navigateToPage: Navigator State is null');
       return;
     }
-    return router.go(location);
+    return router.go(_toLocationString(location));
   }
 
   @override
   Future<T?> replace<T>(
-    String location, {
+    Location location, {
     NavItem? navItem,
   }) async {
     if (disableNavigation) {
@@ -116,7 +180,7 @@ class RouterService extends BaseService implements RouterServiceModel {
       return null;
     }
 
-    return router.replace(location);
+    return router.replace(_toLocationString(location));
   }
 
   @override
@@ -133,53 +197,14 @@ class RouterService extends BaseService implements RouterServiceModel {
     router.pop();
   }
 
-  @override
-  GoRouter get router => GoRouter(
-        navigatorKey: _appNavigatorKey,
-        debugLogDiagnostics: true,
-        initialLocation: StartupView.routeLocation,
-        routes: [
-          GoRoute(
-            path: StartupView.routeLocation,
-            name: StartupView.routeName,
-            builder: (context, state) {
-              return const StartupView();
-            },
-          ),
-          GoRoute(
-            path: HomeView.routeLocation,
-            name: HomeView.routeName,
-            builder: (context, state) {
-              return const HomeView();
-            },
-          ),
-          GoRoute(
-            path: LoginView.routeLocation,
-            name: LoginView.routeName,
-            builder: (context, state) {
-              return const LoginView();
-            },
-          ),
-        ],
-        redirect: (context, state) {
-          // If our async state is loading, don't perform redirects, yet
-          if (state.location == StartupView.routeLocation) {
-            return null;
-          }
-
-          // Here we guarantee that hasData == true, i.e. we have a readable value
-
-          // This has to do with how the FirebaseAuth SDK handles the "log-in" state
-          // Returning `null` means "we are not authorized"
-          final isAuth = _ref.read(authService).user != null;
-
-          final isLoggingIn = state.location == LoginView.routeLocation;
-          if (isLoggingIn) {
-            return isAuth ? HomeView.routeLocation : null;
-          }
-          return isAuth ? null : StartupView.routeLocation;
-        },
-      );
+  String _toLocationString(Location location) {
+    switch (location) {
+      case Location.login:
+        return LoginView.routeLocation;
+      case Location.home:
+        return HomeView.routeLocation;
+    }
+  }
 }
 
 final Provider<RouterServiceModel> routerService =

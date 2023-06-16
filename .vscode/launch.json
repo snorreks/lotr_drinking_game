@@ -5,21 +5,55 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "lotr_drinking_game",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "lotr_drinking_game (profile mode)",
+            "name": "Chrome",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "chrome"
+              ]          
         },
         {
-            "name": "lotr_drinking_game (release mode)",
+            "name": "Android",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
-        }
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "android"
+              ]          
+        },
+        {
+            "name": "Ios",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "ios"
+              ]          
+        },
+        {
+            "name": "Firefox",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "firefox"
+              ]          
+        },
+        {
+            "name": "Edge",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "edge"
+              ]          
+        },
+     
     ]
 }
