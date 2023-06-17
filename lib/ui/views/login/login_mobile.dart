@@ -15,7 +15,7 @@ class _LoginMobile extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 32.0),
               const Text(
-                'My App Name',
+                'LOTR Drinking Game',
                 style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -27,6 +27,9 @@ class _LoginMobile extends StatelessWidget {
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
+              // add a divider here that says "or"
+              const Divider(),
+
               const SizedBox(height: 16.0),
               StreamBuilder<String>(
                 stream: viewModel.pinCode,
