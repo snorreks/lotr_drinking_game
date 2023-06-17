@@ -8,8 +8,9 @@ environment:
   sdk: ">=3.0.5 <4.0.0"
 
 dependencies:
+  json_annotation: ^4.8.1
+  json_serializable: ^6.7.0
   cloud_firestore: ^4.8.1
-  firebase_auth: ^4.6.3
   firebase_core: ^2.14.0
   flutter:
     sdk: flutter
@@ -17,15 +18,30 @@ dependencies:
   go_router: ^8.0.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+
   logger: ^1.4.0
   rxdart: ^0.27.7
 
 dev_dependencies:
+  build_runner: ^2.4.5
   flutter_lints: ^2.0.1
+  flutter_launcher_icons: "^0.13.1"
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  ios: true
+  android: true
+  web:
+    generate: true
+    image_path: "assets/images/logo/logo.png"
+    background_color: "#0175C2"
+    theme_color: "#0175C2"
+  image_path_android: "assets/images/logo/logo.png"
+  image_path_ios: "assets/images/logo/logo-launcher.png"
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/icons/logo/
+    - assets/images/logo/
+    - assets/images/characters/

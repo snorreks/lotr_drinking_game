@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../common/base_service.dart';
-import '../../constants/boxes.dart';
+import '../../constants/characters.dart';
 
 /// Reads and Writes the application preferences by using [Hive]
 ///
@@ -11,9 +11,17 @@ import '../../constants/boxes.dart';
 abstract class PreferencesServiceModel {
   bool get initialized;
 
-  bool get soundEnabled;
+  String? get fellowshipId;
+  set fellowshipId(String? value);
 
-  set soundEnabled(bool value);
+  /// If isDarkMode is true, the theme is dark
+  /// If isDarkMode is false, the theme is light
+  /// If isDarkMode is null, the theme is system
+  bool? get isDarkMode;
+  set isDarkMode(bool? value);
+
+  Character? get character;
+  set character(Character? value);
 
   Future<void> initialize();
 }
@@ -26,19 +34,37 @@ class PreferencesService extends BaseService
   @override
   bool get initialized => _initialized;
 
-  static const String _soundEnabledKey = 'sound_enabled';
-
-  // Getters
-  @override
-  bool get soundEnabled => _box?.get(_soundEnabledKey) as bool? ?? true;
+  static const String _fellowshipIdKey = 'fellowship_id';
+  static const String _isDarkModeKey = 'is_dark_mode';
+  static const String _characterKey = 'character';
 
   @override
-  set soundEnabled(bool? value) => _box?.put(_soundEnabledKey, value);
+  String? get fellowshipId => _box?.get(_fellowshipIdKey) as String?;
+
+  @override
+  set fellowshipId(String? value) => _box?.put(_fellowshipIdKey, value);
+
+  @override
+  bool? get isDarkMode => _box?.get(_isDarkModeKey) as bool?;
+
+  @override
+  set isDarkMode(bool? value) => _box?.put(_isDarkModeKey, value);
+
+  @override
+  Character? get character {
+    final String? stringValue = _box?.get(_characterKey) as String?;
+    return stringValue != null
+        ? CharacterExtension.fromValue(stringValue)
+        : null;
+  }
+
+  @override
+  set character(Character? value) => _box?.put(_characterKey, value?.value);
 
   @override
   Future<void> initialize() async {
     try {
-      _box = await Hive.openBox<dynamic>(PreferencesBox);
+      _box = await Hive.openBox<dynamic>('preferences');
       _initialized = true;
     } catch (e) {
       logError('initialize', e);

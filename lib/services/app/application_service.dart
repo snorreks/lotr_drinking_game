@@ -1,8 +1,14 @@
-import 'package:flutter/material.dart' show ChangeNotifier, ThemeData;
+import 'package:flutter/material.dart' show ChangeNotifier, ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/base_service.dart';
-import '../../ui/theme/light_theme.dart';
+import 'preferences_service.dart';
+
+enum Theme {
+  system,
+  light,
+  dark,
+}
 
 /// ApplicationService contains the state of the application.
 ///
@@ -10,17 +16,21 @@ import '../../ui/theme/light_theme.dart';
 abstract class ApplicationServiceModel implements ChangeNotifier {
   bool get initialized;
 
-  ThemeData get themeData;
+  ThemeMode get themeMode;
+
+  void changeTheme(ThemeMode themeMode);
 
   Future<void> initialize();
+
+  void refresh();
 }
 
 class ApplicationService extends BaseService
     with ChangeNotifier
     implements ApplicationServiceModel {
-  ApplicationService(this._read);
+  ApplicationService(this._ref);
 
-  final Ref _read;
+  final Ref _ref;
 
   @override
   bool get initialized => _initialized;
@@ -28,12 +38,42 @@ class ApplicationService extends BaseService
   bool _initialized = false;
 
   @override
-  ThemeData get themeData => lightTheme;
+  ThemeMode get themeMode {
+    switch (_ref.read(preferencesService).isDarkMode) {
+      case true:
+        return ThemeMode.dark;
+      case false:
+        return ThemeMode.light;
+      default:
+        return ThemeMode.system;
+    }
+  }
+
+  bool? _getIsDarkMode(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.dark:
+        return true;
+      case ThemeMode.light:
+        return false;
+      case ThemeMode.system:
+        return null;
+    }
+  }
+
+  @override
+  void changeTheme(ThemeMode themeMode) {
+    _ref.read(preferencesService).isDarkMode = _getIsDarkMode(themeMode);
+    notifyListeners();
+  }
+
+  @override
+  void refresh() {
+    notifyListeners();
+  }
 
   @override
   Future<void> initialize() async {
     _initialized = true;
-    // notifyListeners();
   }
 }
 

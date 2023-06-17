@@ -1,4 +1,4 @@
-part of login_view;
+part of './login_view.dart';
 
 class _LoginMobile extends StatelessWidget {
   const _LoginMobile(this.viewModel);
@@ -8,53 +8,77 @@ class _LoginMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            getLogo(),
-            StreamBuilder<String>(
-              stream: viewModel.email,
-              builder: (context, snapshot) {
-                return TextField(
-                  onChanged: viewModel.changeEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Enter email',
-                    errorText: snapshot.error as String?,
-                  ),
-                  controller: viewModel.emailController,
-                );
-              },
-            ),
-            StreamBuilder<String>(
-              stream: viewModel.password,
-              builder: (context, snapshot) {
-                return TextField(
-                  onChanged: viewModel.changePassword,
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Enter password',
-                    errorText: snapshot.error as String?,
-                  ),
-                  controller: viewModel.passwordController,
-                );
-              },
-            ),
-            StreamBuilder<bool>(
-              stream: viewModel.isValid,
-              builder: (context, snapshot) {
-                return Button(
-                  text: 'Login',
-                  onPressed: snapshot.hasError || !snapshot.hasData
-                      ? null
-                      : viewModel.submit,
-                  loadingStream: viewModel.loadingStream,
-                );
-              },
-            )
-          ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const SizedBox(height: 32.0),
+              const Text(
+                'My App Name',
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32.0),
+              getLogo(),
+              const SizedBox(height: 32.0),
+              const Text(
+                'Join Session',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16.0),
+              StreamBuilder<String>(
+                stream: viewModel.pinCode,
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  return TextField(
+                    onChanged: viewModel.changePinCode,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: 'Enter pin code',
+                      errorText: snapshot.error as String?,
+                    ),
+                    controller: viewModel.pinCodeController,
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+              Button(
+                text: 'Join',
+                onPressed: viewModel.submitJoin,
+                loadingStream: viewModel.loadingStream,
+              ),
+              const SizedBox(height: 32.0),
+              const Text(
+                'Create Session',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16.0),
+              StreamBuilder<String>(
+                stream: viewModel.sessionName,
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  return TextField(
+                    onChanged: viewModel.changeSessionName,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: 'Enter session name',
+                      errorText: snapshot.error as String?,
+                    ),
+                    controller: viewModel.sessionNameController,
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+              Button(
+                text: 'Create',
+                onPressed: viewModel.submitCreate,
+                loadingStream: viewModel.loadingStream,
+              ),
+            ],
+          ),
         ),
       ),
     );

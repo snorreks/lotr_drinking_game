@@ -2,7 +2,7 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_classes_with_only_static_members
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -67,7 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '668643921360',
     projectId: 'lotr-drinking-game',
     storageBucket: 'lotr-drinking-game.appspot.com',
-    iosClientId: '668643921360-fmh0j7st0jpb1mkeipeh726f1jrl7r4i.apps.googleusercontent.com',
+    iosClientId:
+        '668643921360-fmh0j7st0jpb1mkeipeh726f1jrl7r4i.apps.googleusercontent.com',
     iosBundleId: 'com.example.lotrDrinkingGame',
   );
 
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '668643921360',
     projectId: 'lotr-drinking-game',
     storageBucket: 'lotr-drinking-game.appspot.com',
-    iosClientId: '668643921360-jc2ishkl7i0h8u6gkshon4ft87nk0o5s.apps.googleusercontent.com',
+    iosClientId:
+        '668643921360-jc2ishkl7i0h8u6gkshon4ft87nk0o5s.apps.googleusercontent.com',
     iosBundleId: 'com.example.lotrDrinkingGame.RunnerTests',
   );
 }

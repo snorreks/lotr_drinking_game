@@ -7,7 +7,7 @@ import '../../common/base_service.dart';
 import '../../ui/views/home/home_view.dart';
 import '../../ui/views/login/login_view.dart';
 import '../../ui/views/startup/startup_view.dart';
-import '../api/auth_service.dart';
+import '../api/fellowship_service.dart';
 import 'application_service.dart';
 
 enum Location {
@@ -68,25 +68,26 @@ class RouterService extends BaseService implements RouterServiceModel {
       navigatorKey: _appNavigatorKey,
       debugLogDiagnostics: true,
       initialLocation: StartupView.routeLocation,
-      routes: [
+      routes: <GoRoute>[
         GoRoute(
           path: StartupView.routeLocation,
           name: StartupView.routeName,
-          builder: (context, state) {
+          builder: (BuildContext context, GoRouterState state) {
             return const StartupView();
           },
         ),
         GoRoute(
           path: HomeView.routeLocation,
           name: HomeView.routeName,
-          builder: (context, state) {
+          builder: (BuildContext context, GoRouterState state) {
             return const HomeView();
           },
+          // https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
         ),
         GoRoute(
           path: LoginView.routeLocation,
           name: LoginView.routeName,
-          builder: (context, state) {
+          builder: (BuildContext context, GoRouterState state) {
             return const LoginView();
           },
         ),
@@ -102,9 +103,10 @@ class RouterService extends BaseService implements RouterServiceModel {
           return null;
         }
 
-        final bool isSignedIn = ref.read(authService).isSignedIn;
+        final bool hasJoinedFellowship =
+            ref.read(fellowshipService).hasJoinedFellowship;
 
-        if (!isSignedIn) {
+        if (!hasJoinedFellowship) {
           return LoginView.routeLocation;
         }
 
@@ -115,17 +117,17 @@ class RouterService extends BaseService implements RouterServiceModel {
         return null;
       },
     );
-    return RouterService._(ref, router);
+    return RouterService._(router);
   }
-  RouterService._(this._ref, this._router);
+  RouterService._(this._router);
 
   static final GlobalKey<NavigatorState> _appNavigatorKey =
       GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> _homeNavigatorKey =
       GlobalKey<NavigatorState>();
 
-  final Ref _ref;
   final GoRouter _router;
+
   @override
   GoRouter get router => _router;
 
@@ -207,5 +209,6 @@ class RouterService extends BaseService implements RouterServiceModel {
   }
 }
 
-final Provider<RouterServiceModel> routerService =
-    Provider<RouterServiceModel>((ref) => RouterService(ref));
+final Provider<RouterServiceModel> routerService = Provider<RouterServiceModel>(
+  (ProviderRef<RouterServiceModel> ref) => RouterService(ref),
+);
