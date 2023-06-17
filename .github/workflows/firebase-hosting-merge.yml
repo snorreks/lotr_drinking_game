@@ -28,3 +28,5 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}"
           channelId: live
           projectId: lotr-drinking-game
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
