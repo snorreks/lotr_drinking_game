@@ -18,7 +18,7 @@ dependencies:
   go_router: ^8.0.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-
+  community_charts_flutter: ^1.0.1
   logger: ^1.4.0
   rxdart: ^0.27.7
 

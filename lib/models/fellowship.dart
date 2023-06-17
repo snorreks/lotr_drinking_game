@@ -11,7 +11,10 @@ Map<Character, FellowshipMember> membersFromJson(dynamic value) {
   for (final MapEntry<String, dynamic> entry
       in (value as Map<String, dynamic>).entries) {
     members[CharacterExtension.fromValue(entry.key)] =
-        FellowshipMember.fromJson(entry.value as Map<String, dynamic>);
+        FellowshipMember.fromJson({
+      ...entry.value as Map<String, dynamic>,
+      'character': entry.key,
+    });
   }
   return members;
 }
