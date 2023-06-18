@@ -13,7 +13,10 @@ class HomeViewModel extends BaseViewModel {
 
   Character? get character => _ref.read(preferencesService).character;
 
-  bool get showCharacterSelectView => character == null;
+  Stream<bool> get showCharacterSelectStream => _ref
+      .read(fellowshipService)
+      .characterStream
+      .map((Character? character) => character == null);
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;
@@ -21,6 +24,10 @@ class HomeViewModel extends BaseViewModel {
   Future<void> signOut() async {
     await _ref.read(fellowshipService).leaveFellowship();
     _ref.read(routerService).go(Location.login);
+  }
+
+  Future<void> incrementDrink() {
+    return _ref.read(fellowshipService).incrementDrink();
   }
 }
 

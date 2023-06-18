@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../common/base_service.dart';
 import '../../constants/characters.dart';
@@ -13,6 +14,8 @@ import '../repositories/fellowship_repository.dart';
 abstract class FellowshipServiceModel {
   bool get hasJoinedFellowship;
 
+  Stream<Character?> get characterStream;
+
   Stream<Fellowship?> get fellowshipStream;
 
   Future<bool> joinFellowship(String fellowshipId);
@@ -25,10 +28,15 @@ abstract class FellowshipServiceModel {
   Future<bool> createFellowship(String fellowshipId);
 
   Future<bool> leaveFellowship();
+
+  Future<bool> incrementDrink();
 }
 
 class FellowshipService extends BaseService implements FellowshipServiceModel {
-  FellowshipService(this._ref);
+  FellowshipService(this._ref)
+      : _characterSubject = BehaviorSubject<Character?>.seeded(
+            _ref.read(preferencesService).character);
+
   final Ref _ref;
 
   PreferencesServiceModel get _preferencesService =>
@@ -43,6 +51,11 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   bool get hasJoinedFellowship => _fellowshipId != null;
 
   Fellowship? _fellowship;
+
+  final BehaviorSubject<Character?> _characterSubject;
+
+  @override
+  Stream<Character?> get characterStream => _characterSubject.stream;
 
   @override
   Stream<Fellowship?> get fellowshipStream {
@@ -73,6 +86,40 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
+  Future<bool> incrementDrink() async {
+    try {
+      if (_fellowshipId == null) {
+        return false;
+      }
+
+      final Fellowship? fellowship = _fellowship ??
+          await _fellowshipRepository.get(
+            _fellowshipId!,
+          );
+
+      if (fellowship == null) {
+        return false;
+      }
+
+      final Character? character = _preferencesService.character;
+
+      if (character == null) {
+        return false;
+      }
+
+      await _fellowshipRepository.increment(
+        _fellowshipId!,
+        character,
+      );
+
+      return true;
+    } catch (e) {
+      logError('incrementDrink', e);
+      return false;
+    }
+  }
+
+  @override
   Future<bool> selectCharacter({
     required String username,
     required Character character,
@@ -96,6 +143,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         drinks: 0,
         saves: 0,
         given: 0,
+        character: Character.aragorn,
       );
 
       await _fellowshipRepository.update(
@@ -104,6 +152,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       );
 
       _preferencesService.character = character;
+      _characterSubject.add(character);
 
       return true;
     } catch (e) {
@@ -139,6 +188,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       }
       _fellowship = null;
       _preferencesService.fellowshipId = null;
+      _preferencesService.character = null;
+      _characterSubject.add(null);
+
       return true;
     } catch (e) {
       logError('leaveFellowship', e);

@@ -12,9 +12,6 @@ part 'login_mobile.dart';
 class LoginView extends ConsumerWidget {
   const LoginView({super.key});
 
-  static String get routeName => 'login';
-  static String get routeLocation => '/$routeName';
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final LoginViewModel viewModel = ref.watch(loginViewModel);

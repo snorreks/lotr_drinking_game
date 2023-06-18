@@ -13,17 +13,20 @@ part 'home_mobile.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
-  static String get routeName => 'home';
-  static String get routeLocation => '/';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final HomeViewModel viewModel = ref.watch(homeViewModel);
 
-    if (viewModel.showCharacterSelectView) {
-      return const CharacterView();
-    }
-
-    return _HomeMobile(viewModel);
+    return StreamBuilder<bool>(
+      stream: viewModel.showCharacterSelectStream,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data!) {
+          return const CharacterView();
+        } else {
+          return _HomeMobile(viewModel);
+        }
+      },
+    );
   }
 }
