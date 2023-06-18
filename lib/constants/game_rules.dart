@@ -1,7 +1,6 @@
 class GameRules {
   static final List<String> normalRules = [
     //singular drink rules
-
     'There is a close up of the Eye of Sauron.',
     'A main bad guy dies',
     'When victory is achieved in a battle, everyone raises a toast and takes a sip.',
@@ -18,7 +17,7 @@ class GameRules {
   static final List<RuleWithName> additionalRules = [
     //Rules like The Aid of Gondor and the Eye of Sauron
     RuleWithName('The Eye of Sauron', ''),
-    RuleWithName("Sam's Sacrifice", 'bruh'),
+    RuleWithName("Sam's Sacrifice", 'Bruhnis'),
     RuleWithName('s', 'bruh'),
     RuleWithName('s', 'ruleDescription'),
     RuleWithName('s', 'ruleDescription'),
@@ -29,8 +28,7 @@ class GameRules {
 }
 
 class RuleWithName {
+  RuleWithName(this.ruleName, this.ruleDescription);
   String ruleName;
   String ruleDescription;
-
-  RuleWithName(this.ruleName, this.ruleDescription);
 }

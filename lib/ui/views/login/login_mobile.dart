@@ -37,7 +37,6 @@ class _LoginMobile extends StatelessWidget {
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
                   return TextField(
                     onChanged: viewModel.changePinCode,
-                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: 'Enter pin code',
                       errorText: snapshot.error as String?,

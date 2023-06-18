@@ -6,14 +6,13 @@ class _CharacterMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your phenomenal app')),
       body: Column(
         children: <Widget>[
           Container(
             height: 200,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/logo.png'),
+                image: AssetImage('assets/images/logo/logo-title.png'),
                 fit: BoxFit.contain,
               ),
             ),
@@ -25,7 +24,6 @@ class _CharacterMobile extends StatelessWidget {
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 return TextField(
                   onChanged: viewModel.changeUsername,
-                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: 'Enter username',
                     errorText: snapshot.error as String?,
@@ -46,28 +44,51 @@ class _CharacterMobile extends StatelessWidget {
                 final Fellowship fellowship = snapshot.data!;
                 return GridView.count(
                   crossAxisCount: 2,
+                  crossAxisSpacing: 30,
+                  mainAxisSpacing: 30,
                   children: List<GestureDetector>.generate(
                       Character.values.length, (int index) {
                     final Character character = Character.values[index];
                     final bool isTaken =
                         viewModel.isTaken(fellowship, character);
+                    final String name = character.displayName;
                     return GestureDetector(
                       onTap: isTaken
                           ? null
                           : () => viewModel.selectCharacter(character),
-                      child: Card(
-                        child: Stack(
-                          children: <Widget>[
-                            Image.asset(
-                              'assets/images/characters/${character.value}.png',
-                              fit: BoxFit.cover,
-                            ),
-                            if (isTaken)
-                              ColoredBox(
-                                color: Colors.black.withOpacity(0.5),
-                                child: const Icon(Icons.lock),
+                      child: Container(
+                        height: 200,
+                        child: Card(
+                          child: Stack(
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/images/characters/${character.value}.png',
+                                fit: BoxFit.fitHeight,
                               ),
-                          ],
+                              if (isTaken)
+                                ColoredBox(
+                                  color: Colors.black.withOpacity(0.5),
+                                  child: const Icon(Icons.lock),
+                                ),
+                              Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    color: Colors.black54,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      name,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

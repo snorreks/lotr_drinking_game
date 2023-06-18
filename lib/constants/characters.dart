@@ -16,7 +16,7 @@ extension CharacterExtension on Character {
       case Character.sam:
         return 'sam';
       case Character.merryAndPippin:
-        return 'merry-pippin';
+        return 'merrynpippin';
       case Character.gandalf:
         return 'gandalf';
       case Character.aragorn:

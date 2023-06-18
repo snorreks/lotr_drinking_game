@@ -8,15 +8,12 @@ import '../../ui/views/home/home_view.dart';
 import '../../ui/views/leader_board/leader_board_view.dart';
 import '../../ui/views/login/login_view.dart';
 import '../../ui/views/root/root_view.dart';
+import '../../ui/views/rules/rules_view.dart';
 import '../../ui/views/startup/startup_view.dart';
 import '../api/fellowship_service.dart';
 import 'application_service.dart';
 
-enum Location {
-  login,
-  home,
-  leaderBoard,
-}
+enum Location { login, home, leaderBoard, rules }
 
 extension LocationExtension on Location {
   String get value {
@@ -27,6 +24,8 @@ extension LocationExtension on Location {
         return '/';
       case Location.leaderBoard:
         return '/leader-board';
+      case Location.rules:
+        return '/rules';
     }
   }
 
@@ -38,6 +37,8 @@ extension LocationExtension on Location {
         return 'home';
       case Location.leaderBoard:
         return 'leader-board';
+      case Location.rules:
+        return 'rules';
     }
   }
 }
@@ -109,6 +110,13 @@ class RouterService extends BaseService implements RouterServiceModel {
               name: Location.leaderBoard.name,
               builder: (BuildContext context, GoRouterState state) {
                 return const LeaderBoardView();
+              },
+            ),
+            GoRoute(
+              path: Location.rules.value,
+              name: Location.rules.name,
+              builder: (BuildContext context, GoRouterState state) {
+                return const RulesView();
               },
             ),
           ],
