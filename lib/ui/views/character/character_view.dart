@@ -2,7 +2,8 @@ library character_view;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../constants/characters.dart';
+import '../../../../../constants/characters.dart';
+import '../../../models/fellowship.dart';
 import 'character_view_model.dart';
 
 part 'character_mobile.dart';

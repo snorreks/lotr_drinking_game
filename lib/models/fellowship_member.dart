@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../constants/characters.dart';
+
 part 'fellowship_member.g.dart';
 
 @JsonSerializable()
@@ -9,6 +11,7 @@ class FellowshipMember {
     required this.drinks,
     required this.saves,
     required this.given,
+    required this.character,
   });
 
   factory FellowshipMember.fromJson(Map<String, dynamic> json) =>
@@ -22,6 +25,9 @@ class FellowshipMember {
   final int saves;
   @JsonKey()
   final int given;
+
+  @JsonKey(includeToJson: false)
+  final Character character;
 
   Map<String, dynamic> toJson() => _$FellowshipMemberToJson(this);
 }

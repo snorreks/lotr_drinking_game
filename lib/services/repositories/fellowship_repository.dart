@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/base_service.dart';
+import '../../constants/characters.dart';
 import '../../models/fellowship.dart';
 
 abstract class FellowshipRepositoryModel {
@@ -10,6 +11,7 @@ abstract class FellowshipRepositoryModel {
   Stream<Fellowship?> stream(String fellowshipId);
   Future<String> create(String fellowshipName);
   Future<void> update(String fellowshipId, Fellowship fellowship);
+  Future<void> increment(String fellowshipId, Character character);
 }
 
 class FellowshipRepository extends BaseService
@@ -85,6 +87,21 @@ class FellowshipRepository extends BaseService
       await docRef.update(fellowship.toJson());
     } catch (e) {
       logError('updateFellowship', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> increment(String fellowshipId, Character character) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      await docRef.update({
+        'members.${character.value}.drinks': FieldValue.increment(1),
+      });
+    } catch (e) {
+      logError('increment', e);
       rethrow;
     }
   }

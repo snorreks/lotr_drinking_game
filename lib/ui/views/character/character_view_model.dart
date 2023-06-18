@@ -1,30 +1,50 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rxdart/rxdart.dart';
 
-import '../../../common/base_view_model.dart';
-import '../../../constants/characters.dart';
-import '../../../services/api/fellowship_service.dart';
-import '../../../services/app/application_service.dart';
+import '../../../../../common/base_view_model.dart';
+import '../../../../../constants/characters.dart';
+import '../../../../../services/api/fellowship_service.dart';
+import '../../../models/fellowship.dart';
+import '../../../models/fellowship_member.dart';
 
 class CharacterViewModel extends BaseViewModel {
   CharacterViewModel(this._ref);
   final Ref _ref;
 
+  final BehaviorSubject<bool?> _loadingSubject = BehaviorSubject<bool?>();
+  final TextEditingController usernameController = TextEditingController();
+
+  final BehaviorSubject<String> _usernameSubject = BehaviorSubject<String>();
+  Stream<String> get username => _usernameSubject.stream;
+
+  void changeUsername(String value) => _usernameSubject.add(value);
+
   List<Character> get characters => Character.values;
 
-  Future<void> selectCharacter(Character character) async {
-    const String username = 'Test';
+  Stream<Fellowship?> get fellowshipStream =>
+      _ref.read(fellowshipService).fellowshipStream;
 
-    final bool responseOk = await _ref
+  Future<void> selectCharacter(Character character) async {
+    _loadingSubject.add(true);
+
+    final String username = usernameController.text.isEmpty
+        ? character.displayName
+        : usernameController.text;
+
+    await _ref
         .read(fellowshipService)
         .selectCharacter(username: username, character: character);
-
-    if (responseOk) {
-      _ref.read(applicationService).refresh();
-    }
+    _loadingSubject.add(false);
   }
 
-  bool isTaken(Character character) {
-    return false;
+  bool isTaken(Fellowship fellowship, Character character) {
+    if (character == Character.merryAndPippin) {
+      return false;
+    }
+
+    final FellowshipMember? member = fellowship.members[character];
+    return member != null;
   }
 }
 

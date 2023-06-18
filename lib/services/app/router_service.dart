@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart'
-    show BuildContext, GlobalKey, NavigatorState;
+    show BuildContext, GlobalKey, NavigatorState, Widget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/base_service.dart';
 import '../../ui/views/home/home_view.dart';
+import '../../ui/views/leader_board/leader_board_view.dart';
 import '../../ui/views/login/login_view.dart';
+import '../../ui/views/root/root_view.dart';
 import '../../ui/views/startup/startup_view.dart';
 import '../api/fellowship_service.dart';
 import 'application_service.dart';
@@ -13,10 +15,31 @@ import 'application_service.dart';
 enum Location {
   login,
   home,
+  leaderBoard,
 }
 
-enum NavItem {
-  home,
+extension LocationExtension on Location {
+  String get value {
+    switch (this) {
+      case Location.login:
+        return '/login';
+      case Location.home:
+        return '/';
+      case Location.leaderBoard:
+        return '/leader-board';
+    }
+  }
+
+  String get name {
+    switch (this) {
+      case Location.login:
+        return 'login';
+      case Location.home:
+        return 'home';
+      case Location.leaderBoard:
+        return 'leader-board';
+    }
+  }
 }
 
 /// This service handles the navigation within the app.
@@ -25,39 +48,20 @@ enum NavItem {
 /// If the [GlobalKey] is the appNavigatorKey the main MaterialApp handles the navigation.
 /// If the [GlobalKey] are collectionNavigatorKey, profileNavigatorKey and localNavigatorKey, the selected rootview handles the navigation.
 abstract class RouterServiceModel {
-  bool disableNavigation = false;
-
-  /// The navigation key of the main Material app
-  GlobalKey<NavigatorState> get appNavigatorKey;
-
-  /// The navigation key of the home view in the root view.
-  GlobalKey<NavigatorState> get homeNavigatorKey;
-
   /// The navigate to a new scene.
   ///
   /// If navItem = null, it uses the appNavigatorKey.
-  Future<void> go<T>(
-    Location location, {
-    NavItem? navItem,
-  });
+  Future<void> go<T>(Location location);
 
   /// The navigate to a new scene removes the old scene.
   ///
   /// If navItem = null, it uses the appNavigatorKey.
-  Future<T?> replace<T>(
-    Location location, {
-    NavItem? navItem,
-  });
+  Future<T?> replace<T>(Location location);
 
   /// Pop the top-most route off the selected navItem.
   ///
   /// If navItem = null, it uses the appNavigatorKey.
-  void pop<T>(T result, {NavItem? navItem});
-
-  /// Get the navigation key that matches the navItem.
-  ///
-  /// If navItem = null, it return the appNavigatorKey.
-  GlobalKey<NavigatorState> getKey(NavItem navItem);
+  void pop<T>(T result);
 
   GoRouter get router;
 }
@@ -68,7 +72,7 @@ class RouterService extends BaseService implements RouterServiceModel {
       navigatorKey: _appNavigatorKey,
       debugLogDiagnostics: true,
       initialLocation: StartupView.routeLocation,
-      routes: <GoRoute>[
+      routes: <RouteBase>[
         GoRoute(
           path: StartupView.routeLocation,
           name: StartupView.routeName,
@@ -77,19 +81,37 @@ class RouterService extends BaseService implements RouterServiceModel {
           },
         ),
         GoRoute(
-          path: HomeView.routeLocation,
-          name: HomeView.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return const HomeView();
-          },
-          // https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
-        ),
-        GoRoute(
-          path: LoginView.routeLocation,
-          name: LoginView.routeName,
+          path: Location.login.value,
+          name: Location.login.name,
           builder: (BuildContext context, GoRouterState state) {
             return const LoginView();
           },
+        ),
+
+        /// Application shell
+        ShellRoute(
+          navigatorKey: _rootNavigatorKey,
+          builder: (BuildContext context, GoRouterState state, Widget child) {
+            return RootView(child: child);
+          },
+          routes: <RouteBase>[
+            GoRoute(
+              path: Location.home.value,
+              name: Location.home.name,
+              builder: (BuildContext context, GoRouterState state) {
+                return const HomeView();
+              },
+            ),
+
+            /// The first screen to display in the bottom navigation bar.
+            GoRoute(
+              path: Location.leaderBoard.value,
+              name: Location.leaderBoard.name,
+              builder: (BuildContext context, GoRouterState state) {
+                return const LeaderBoardView();
+              },
+            ),
+          ],
         ),
       ],
       redirect: (BuildContext context, GoRouterState state) {
@@ -107,11 +129,11 @@ class RouterService extends BaseService implements RouterServiceModel {
             ref.read(fellowshipService).hasJoinedFellowship;
 
         if (!hasJoinedFellowship) {
-          return LoginView.routeLocation;
+          return Location.login.value;
         }
 
-        if (state.location == LoginView.routeLocation) {
-          return HomeView.routeLocation;
+        if (state.location == Location.login.value) {
+          return Location.home.value;
         }
 
         return null;
@@ -122,9 +144,9 @@ class RouterService extends BaseService implements RouterServiceModel {
   RouterService._(this._router);
 
   static final GlobalKey<NavigatorState> _appNavigatorKey =
-      GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> _homeNavigatorKey =
-      GlobalKey<NavigatorState>();
+      GlobalKey<NavigatorState>(debugLabel: 'app');
+  static final GlobalKey<NavigatorState> _rootNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'root');
 
   final GoRouter _router;
 
@@ -132,80 +154,18 @@ class RouterService extends BaseService implements RouterServiceModel {
   GoRouter get router => _router;
 
   @override
-  bool disableNavigation = false;
-  @override
-  GlobalKey<NavigatorState> get appNavigatorKey => _appNavigatorKey;
-
-  @override
-  GlobalKey<NavigatorState> get homeNavigatorKey => _homeNavigatorKey;
-
-  @override
-  GlobalKey<NavigatorState> getKey(NavItem? navItem) {
-    switch (navItem) {
-      case NavItem.home:
-        return homeNavigatorKey;
-      case null:
-        return appNavigatorKey;
-    }
+  Future<void> go<T>(Location location) async {
+    return router.go(location.value);
   }
 
   @override
-  Future<void> go<T>(
-    Location location, {
-    NavItem? navItem,
-  }) async {
-    if (disableNavigation) {
-      return Future<void>.delayed(const Duration(microseconds: 1));
-    }
-    final GlobalKey<NavigatorState> key = getKey(navItem);
-    logInfo('navigateToPage: pageRoute: $location, navItem: $navItem');
-    if (key.currentState == null) {
-      logWarning('navigateToPage: Navigator State is null');
-      return;
-    }
-    return router.go(_toLocationString(location));
+  Future<T?> replace<T>(Location location) async {
+    return router.replace(location.value);
   }
 
   @override
-  Future<T?> replace<T>(
-    Location location, {
-    NavItem? navItem,
-  }) async {
-    if (disableNavigation) {
-      return Future<T>.delayed(const Duration(microseconds: 1));
-    }
-    final GlobalKey<NavigatorState> key = getKey(navItem);
-    logInfo(
-        'navigateToPageWithReplacement: pageRoute: $location, navItem: $navItem');
-    if (key.currentState == null) {
-      logWarning('navigateToPageWithReplacement: Navigator State is null');
-      return null;
-    }
-
-    return router.replace(_toLocationString(location));
-  }
-
-  @override
-  void pop<T>(T result, {NavItem? navItem}) {
-    if (disableNavigation) {
-      return;
-    }
-    final GlobalKey<NavigatorState> key = getKey(navItem);
-    logInfo('goBack: result=$result, navItem: $navItem');
-    if (key.currentState == null) {
-      logWarning('goBack: Navigator State is null');
-      return;
-    }
-    router.pop();
-  }
-
-  String _toLocationString(Location location) {
-    switch (location) {
-      case Location.login:
-        return LoginView.routeLocation;
-      case Location.home:
-        return HomeView.routeLocation;
-    }
+  void pop<T>(T result) {
+    return router.pop();
   }
 }
 

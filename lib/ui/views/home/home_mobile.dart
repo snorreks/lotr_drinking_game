@@ -6,14 +6,17 @@ class _HomeMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your phenomenal app')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: viewModel.incrementDrink,
+        child: const Icon(Icons.add),
+      ),
       body: Column(
         children: <Widget>[
           Container(
             height: 200,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/logo.png'),
+                image: AssetImage('assets/images/logo/logo.png'),
                 fit: BoxFit.contain,
               ),
             ),
