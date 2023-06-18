@@ -113,7 +113,6 @@ extension CharacterExtension on Character {
           "He's used as a comic relief (Beware of the Director's Cut).",
           'He mentions the skill or strength of dwarves.'
         ];
-        ;
     }
   }
 }
