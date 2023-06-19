@@ -12,7 +12,9 @@ abstract class PreferencesServiceModel {
   bool get initialized;
 
   String? get fellowshipId;
+  String? get fellowshipPin;
   set fellowshipId(String? value);
+  set fellowshipPin(String? value);
 
   /// If isDarkMode is true, the theme is dark
   /// If isDarkMode is false, the theme is light
@@ -37,16 +39,20 @@ class PreferencesService extends BaseService
   static const String _fellowshipIdKey = 'fellowship_id';
   static const String _isDarkModeKey = 'is_dark_mode';
   static const String _characterKey = 'character';
+  static const String _fellowshipPin = 'fellowship_pin';
 
   @override
   String? get fellowshipId => _box?.get(_fellowshipIdKey) as String?;
-
   @override
   set fellowshipId(String? value) => _box?.put(_fellowshipIdKey, value);
 
   @override
-  bool? get isDarkMode => _box?.get(_isDarkModeKey) as bool?;
+  String? get fellowshipPin => _box?.get(_fellowshipPin) as String?;
+  @override
+  set fellowshipPin(String? value) => _box?.put(_fellowshipPin, value);
 
+  @override
+  bool? get isDarkMode => _box?.get(_isDarkModeKey) as bool?;
   @override
   set isDarkMode(bool? value) => _box?.put(_isDarkModeKey, value);
 

@@ -1,4 +1,6 @@
 class GameRules {
+  static const String basicRules =
+      'This drinking game works by there being collective rules, meaning rules effecting everyone and character-based rules, effecting only the specific character a player has chosen. When a "Take a drink" or a character-based rule occurs, take only a singular drink out of your drink and press the plus button. If a "Down the Hatch" rule occurs, you must finish whatever contents there are left in the vessel you pour your drink in. There are also additional rules, which are optional rules which the creator of the room selected. These can have varying effects, like having to take extra drinks, taking fewer drinks or being punished for breaking rules.';
   static final List<String> normalRules = [
     //singular drink rules
     'There is a close up of the Eye of Sauron.',
@@ -24,11 +26,13 @@ class GameRules {
         'If a Saviour has granted their aid to someone more than three times, they may invoke the Aid of Gondor. The Aid of Gondor is a non-conditional save, granted due to the particular heroics performed by this Saviour. The Saviour may conditionally ask the specific Milkdrinker that has called upon their aid before to save maximally half the amount of drinks they have taken for the Milkdrinker. '),
     RuleWithName("Boromir's Betrayal",
         "If a player fails to uphold their duties in the game, breaks a rule, or simply cannot keep up with the drinking pace, they have committed a 'Boromir's Betrayal'. This rule serves to encourage good-natured competition and camaraderie, much like the Fellowship itself."),
-    RuleWithName('Rescue Dice', 'ruleDescription'),
-    RuleWithName('Rescue Dice poker', 'ruleDescription'),
-  ];
-  static final List<RuleWithName> optionalRules = [
-    RuleWithName('', 'ruleDescription'),
+    RuleWithName(
+      'Rescue Dice',
+      "Rescue dice are for when you are close to your limit. Each movie, you are granted two or three (depending on movie length) six-sided die (hitherto referred to as a 'd6'). These d6's can be rolled upon desire to skip the following amount of drinks that the dice show.\nThe dice also have the 'rollover' property, meaning that any dice which were unused during a movie, may be brought over to the next.",
+    ),
+
+    RuleWithName('Rescue Dice poker',
+        'Upon the start of each movie, a viewer may call for a round of merry Rescue Dice Poker (RDP). RDP works as five card draw poker does, except what you may bet is the rescue die which will be used for the following film. This includes rollover dice. \nBefore the start of the movie, you count up your total of rescue dice. This value will be converted into a set of poker chips, where each rescue dice is a red chip. These may be broken down into blue, green and white chips. A regular game of poker will commence. The game has to last a minimum of two rounds around the table before pulling out, unless someone has lost all their rescue dice.\nParticipation is voluntary.'),
   ];
 }
 
@@ -36,5 +40,5 @@ class RuleWithName {
   RuleWithName(this.ruleName, this.ruleDescription);
   String ruleName;
   String ruleDescription;
-  String? ruleExamples;
+  List<String>? ruleExamples; //for later usage an formatting
 }

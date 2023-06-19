@@ -18,7 +18,7 @@ abstract class FellowshipServiceModel {
 
   Stream<Fellowship?> get fellowshipStream;
 
-  Future<bool> joinFellowship(String fellowshipId);
+  Future<bool> joinFellowship(String fellowshipPIN);
 
   Future<bool> selectCharacter({
     required String username,
@@ -46,6 +46,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       _ref.read(fellowshipRepository);
 
   String? get _fellowshipId => _preferencesService.fellowshipId;
+  //String? get _fellowshipPin => _preferencesService.fellowshipPin;
 
   @override
   bool get hasJoinedFellowship => _fellowshipId != null;
@@ -162,17 +163,19 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  Future<bool> joinFellowship(String fellowshipId) async {
+  Future<bool> joinFellowship(String fellowshipPIN) async {
     try {
-      final Fellowship? fellowship = await _fellowshipRepository.get(
-        fellowshipId,
+      final Fellowship? fellowship = await _fellowshipRepository.getByPin(
+        fellowshipPIN,
       );
 
       if (fellowship == null) {
+        print('fuck');
         return false;
       }
 
-      _preferencesService.fellowshipId = fellowshipId;
+      _preferencesService.fellowshipId = fellowship.id;
+
       return true;
     } catch (e) {
       logError('joinFellowship', e);
@@ -189,6 +192,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       _fellowship = null;
       _preferencesService.fellowshipId = null;
       _preferencesService.character = null;
+      _preferencesService.fellowshipPin = null;
       _characterSubject.add(null);
 
       return true;

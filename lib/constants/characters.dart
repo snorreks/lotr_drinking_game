@@ -34,7 +34,7 @@ extension CharacterExtension on Character {
         return Character.frodo;
       case 'sam':
         return Character.sam;
-      case 'merry-pippin':
+      case 'merrynpippin':
         return Character.merryAndPippin;
       case 'gandalf':
         return Character.gandalf;

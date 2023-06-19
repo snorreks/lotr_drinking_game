@@ -13,7 +13,7 @@ class _HomeMobile extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Container(
-            height: 200,
+            height: 100,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/logo/logo.png'),
@@ -34,28 +34,36 @@ class _HomeMobile extends StatelessWidget {
                 final Character character = viewModel.character!;
 
                 final FellowshipMember? member = fellowship.members[character];
+
+                final String fellowshipName = fellowship.name;
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      'Fellowship Name: ${fellowship.name}',
-                      style: const TextStyle(fontSize: 24),
-                    ),
+                    RichText(
+                        text: TextSpan(
+                            text: 'Fellowship of the ',
+                            style: const TextStyle(fontSize: 24),
+                            children: <TextSpan>[
+                          TextSpan(
+                              text: fellowshipName,
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold))
+                        ])),
                     const SizedBox(height: 16),
                     Text(
-                      'Fellowship ID: ${fellowship.id}',
+                      'Fellowship PIN: ${fellowship.pin}',
                       style: const TextStyle(fontSize: 24),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(text: fellowship.id));
+                        Clipboard.setData(ClipboardData(text: fellowship.pin));
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content:
-                                  Text('Fellowship ID copied to clipboard')),
+                                  Text('Fellowship PIN copied to clipboard')),
                         );
                       },
-                      child: const Text('Copy Fellowship ID'),
+                      child: const Text('Copy Fellowship PIN'),
                     ),
                     Card(
                       child: Column(

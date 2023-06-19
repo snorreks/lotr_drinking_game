@@ -1,90 +1,66 @@
 part of 'rules_view.dart';
 
-class _RulesMobile extends StatelessWidget {
+class _RulesMobile extends StatefulWidget {
   const _RulesMobile(this.viewModel);
   final RulesViewModel viewModel;
+
+  @override
+  _RulesMobileState createState() => _RulesMobileState();
+}
+
+class _RulesMobileState extends State<_RulesMobile> {
+  // Initialize all panels as closed.
+  // This assumes the total number of panels to be 4 (for basics, take a drink when, down the hatch, additional rules)
+  // + the number of Character.values
+  List<bool> _panelOpen = List<bool>.filled(4 + Character.values.length, false);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.incrementDrink,
-        child: const Icon(Icons.add),
+      appBar: AppBar(
+        title: const Text('Game Rules'),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: 200,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/logo/logo.png'),
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          Expanded(
-            child: StreamBuilder<Fellowship?>(
-              stream: viewModel.fellowshipStream,
-              builder:
-                  (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
-                if (!snapshot.hasData || snapshot.data == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final Fellowship fellowship = snapshot.data!;
-
-                final Character character = viewModel.character!;
-
-                final FellowshipMember? member = fellowship.members[character];
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Fellowship Name: ${fellowship.name}',
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Fellowship ID: ${fellowship.id}',
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: fellowship.id));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content:
-                                  Text('Fellowship ID copied to clipboard')),
-                        );
-                      },
-                      child: const Text('Copy Fellowship ID'),
-                    ),
-                    Card(
-                      child: Column(
-                        children: <Widget>[
-                          Image.asset(
-                            'assets/images/characters/${viewModel.character!.value}.png',
-                            fit: BoxFit.contain,
-                            height: 200,
-                          ),
-                          ListTile(
-                            title: Text(viewModel.character!.displayName),
-                            subtitle: Text('Level ${member?.drinks}'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await viewModel.signOut();
+      body: ListView(
+        children: [
+          ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              setState(() {
+                _panelOpen[index] = !isExpanded;
+              });
             },
-            child: const Text('Logout'),
+            children: [
+              _buildPanel('Basics', [GameRules.basicRules], 0),
+              _buildPanel('Take a drink when', GameRules.normalRules, 1),
+              _buildPanel('Down the Hatch', GameRules.dthRules, 2),
+              _buildPanel(
+                  'Additional Rules',
+                  GameRules.additionalRules
+                      .map((ruleWithName) =>
+                          '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
+                      .toList(),
+                  3),
+              ...Character.values.asMap().entries.map((entry) {
+                int index = 4 + entry.key;
+                Character character = entry.value;
+                return _buildPanel('Character Rules - ${character.displayName}',
+                    character.rules, index);
+              }).toList(),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  ExpansionPanel _buildPanel(String header, List<String> body, int index) {
+    return ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return ListTile(title: Text(header));
+      },
+      body: Column(
+        children: body.map((item) => ListTile(title: Text(item))).toList(),
+      ),
+      isExpanded: _panelOpen[index],
     );
   }
 }

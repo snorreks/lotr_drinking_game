@@ -30,11 +30,14 @@ class _LeaderBoardMobile extends StatelessWidget {
             return Column(
               children: [
                 // Displaying Bar Chart
-                SizedBox(
-                  height: 200,
-                  child: charts.BarChart(
-                    series,
-                    animate: true,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    height: 200,
+                    child: charts.BarChart(
+                      series,
+                      animate: true,
+                    ),
                   ),
                 ),
                 Expanded(

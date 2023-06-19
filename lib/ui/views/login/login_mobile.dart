@@ -38,7 +38,7 @@ class _LoginMobile extends StatelessWidget {
                   return TextField(
                     onChanged: viewModel.changePinCode,
                     decoration: InputDecoration(
-                      hintText: 'Enter pin code',
+                      hintText: 'Enter PIN code',
                       errorText: snapshot.error as String?,
                     ),
                     controller: viewModel.pinCodeController,
