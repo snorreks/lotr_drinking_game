@@ -12,7 +12,8 @@ class _RulesMobileState extends State<_RulesMobile> {
   // Initialize all panels as closed.
   // This assumes the total number of panels to be 4 (for basics, take a drink when, down the hatch, additional rules)
   // + the number of Character.values
-  List<bool> _panelOpen = List<bool>.filled(4 + Character.values.length, false);
+  final List<bool> _panelOpen =
+      List<bool>.filled(4 + Character.values.length, false);
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +36,16 @@ class _RulesMobileState extends State<_RulesMobile> {
               _buildPanel(
                   'Additional Rules',
                   GameRules.additionalRules
-                      .map((ruleWithName) =>
+                      .map((RuleWithName ruleWithName) =>
                           '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
                       .toList(),
                   3),
-              ...Character.values.asMap().entries.map((entry) {
-                int index = 4 + entry.key;
-                Character character = entry.value;
+              ...Character.values
+                  .asMap()
+                  .entries
+                  .map((MapEntry<int, Character> entry) {
+                final int index = 4 + entry.key;
+                final Character character = entry.value;
                 return _buildPanel('Character Rules - ${character.displayName}',
                     character.rules, index);
               }).toList(),
@@ -58,7 +62,8 @@ class _RulesMobileState extends State<_RulesMobile> {
         return ListTile(title: Text(header));
       },
       body: Column(
-        children: body.map((item) => ListTile(title: Text(item))).toList(),
+        children:
+            body.map((String item) => ListTile(title: Text(item))).toList(),
       ),
       isExpanded: _panelOpen[index],
     );
