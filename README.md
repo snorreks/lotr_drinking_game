@@ -1,16 +1,7 @@
-# lotr_drinking_game
+# Drinking Game designed around LotR
+Based upon [this article](https://psycatgames.com/magazine/party-games/the-lord-of-the-rings/) by [PsyCat Games](https://psycatgames.com/), the team created the idea of having an application which would allow every player to pick a character, and manage their rules along with the rules available for everyone. Developed in Flutter so it can be available for everyone ;) 
 
-A new Flutter project.
+##Use it now!
+You can already access the application [here](https://lotr-drinking-game.web.app/). Create a session and invite your friends to join.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
