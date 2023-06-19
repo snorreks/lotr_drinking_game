@@ -15,6 +15,9 @@ You can already access the application. Create a session and invite your friends
 * Blood-alcohol percentage calculator (based on standard ABV of 4.7%)
 * Rules modifications
 * Admin rights
+* Regular "status" check-ups & other Safety features
+* Create your own drinking game!
+* Call-out players for ignoring rules!
 
 ## Build and host it yourself (?)
 Fork this and make it work homie, we used firebase and it sure as hell is working well.
