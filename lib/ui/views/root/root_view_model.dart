@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/base_view_model.dart';
+import '../../../constants/characters.dart';
+import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/router_service.dart';
 
 class RootViewModel extends BaseViewModel {
@@ -12,6 +14,9 @@ class RootViewModel extends BaseViewModel {
     if (location.startsWith(Location.leaderBoard.value)) {
       return 1;
     }
+    if (location.startsWith(Location.rules.value)) {
+      return 2;
+    }
     return 0;
   }
 
@@ -21,10 +26,20 @@ class RootViewModel extends BaseViewModel {
         return _ref.read(routerService).go(Location.home);
       case 1:
         return _ref.read(routerService).go(Location.leaderBoard);
+      case 2:
+        return _ref.read(routerService).go(Location.rules);
       default:
         throw Exception('onItemTapped: unknown index $index');
     }
   }
+
+  Future<void> signOut() async {
+    await _ref.read(fellowshipService).leaveFellowship();
+    _ref.read(routerService).go(Location.login);
+  }
+
+  Stream<Character?> get characterStream =>
+      _ref.read(fellowshipService).characterStream;
 }
 
 final AutoDisposeProvider<RootViewModel> rootViewModel =

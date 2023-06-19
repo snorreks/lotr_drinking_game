@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../constants/characters.dart';
 import 'root_view_model.dart';
 
 class RootView extends ConsumerWidget {
@@ -26,15 +27,58 @@ class RootView extends ConsumerWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'A Screen',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'B Screen',
+            icon: Icon(Icons.format_list_numbered),
+            label: 'Leader board',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
         ],
         currentIndex: viewModel.currentIndex,
         onTap: (int index) => viewModel.onItemTapped(index),
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            StreamBuilder<Character?>(
+              stream: viewModel.characterStream,
+              builder:
+                  (BuildContext context, AsyncSnapshot<Character?> snapshot) {
+                if (snapshot.hasData && snapshot.data != null) {
+                  final Character character = snapshot.data!;
+                  return UserAccountsDrawerHeader(
+                    accountName: const Text('LOTR Drinking Game'),
+                    accountEmail: Text(character.displayName),
+                    currentAccountPicture: const CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Text(
+                        'LG',
+                        style: TextStyle(fontSize: 40.0),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.light_mode),
+              title: const Text('Change Theme'),
+              onTap: () {
+                // Add your change theme function here
+              },
+            ),
+            const Spacer(), // Pushes the logout button to the bottom
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Logout'),
+              onTap: viewModel.signOut,
+            ),
+          ],
+        ),
       ),
     );
   }

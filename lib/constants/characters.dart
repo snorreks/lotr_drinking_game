@@ -16,7 +16,7 @@ extension CharacterExtension on Character {
       case Character.sam:
         return 'sam';
       case Character.merryAndPippin:
-        return 'merry-pippin';
+        return 'merrynpippin';
       case Character.gandalf:
         return 'gandalf';
       case Character.aragorn:
@@ -34,7 +34,7 @@ extension CharacterExtension on Character {
         return Character.frodo;
       case 'sam':
         return Character.sam;
-      case 'merry-pippin':
+      case 'merrynpippin':
         return Character.merryAndPippin;
       case 'gandalf':
         return Character.gandalf;
@@ -113,7 +113,6 @@ extension CharacterExtension on Character {
           "He's used as a comic relief (Beware of the Director's Cut).",
           'He mentions the skill or strength of dwarves.'
         ];
-        ;
     }
   }
 }
