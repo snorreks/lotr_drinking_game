@@ -21,7 +21,14 @@ class RootView extends ConsumerWidget {
     final RootViewModel viewModel = ref.watch(rootViewModel);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('LOTR Drinking Game')),
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/images/logo/logo-title.png',
+          fit: BoxFit.contain,
+          height: 60,
+        ),
+        centerTitle: true,
+      ),
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
