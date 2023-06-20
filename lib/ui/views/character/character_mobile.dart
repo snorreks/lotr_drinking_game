@@ -46,6 +46,7 @@ class _CharacterMobile extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: 30,
                   mainAxisSpacing: 30,
+                  physics: const ScrollPhysics(),
                   children: List<GestureDetector>.generate(
                       Character.values.length, (int index) {
                     final Character character = Character.values[index];
@@ -53,6 +54,7 @@ class _CharacterMobile extends StatelessWidget {
                         viewModel.isTaken(fellowship, character);
                     final String name = character.displayName;
                     return GestureDetector(
+                      key: ValueKey(character), // add a unique key
                       onTap: isTaken
                           ? null
                           : () => viewModel.selectCharacter(character),
@@ -61,14 +63,41 @@ class _CharacterMobile extends StatelessWidget {
                         child: Card(
                           child: Stack(
                             children: <Widget>[
-                              Image.asset(
-                                'assets/images/characters/${character.value}.png',
-                                fit: BoxFit.fitHeight,
+                              ShaderMask(
+                                shaderCallback: (Rect bounds) {
+                                  return isTaken
+                                      ? const LinearGradient(
+                                          colors: <Color>[
+                                            Colors.black,
+                                            Colors.white
+                                          ],
+                                          stops: [0.0, 1.0],
+                                        ).createShader(bounds)
+                                      : const LinearGradient(
+                                          colors: <Color>[
+                                            Colors.transparent,
+                                            Colors.transparent
+                                          ],
+                                          stops: [0.0, 1.0],
+                                        ).createShader(bounds);
+                                },
+                                blendMode: isTaken
+                                    ? BlendMode.saturation
+                                    : BlendMode
+                                        .saturation, // this is what applies the grayscale effect
+                                child: Image.asset(
+                                  'assets/images/characters/${character.value}.png',
+                                  fit: BoxFit.fitHeight,
+                                ),
                               ),
                               if (isTaken)
-                                ColoredBox(
-                                  color: Colors.black.withOpacity(0.5),
-                                  child: const Icon(Icons.lock),
+                                Positioned.fill(
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white.withOpacity(0.9),
+                                    size:
+                                        115.0, // adjust size of the lock icon here
+                                  ),
                                 ),
                               Positioned.fill(
                                 child: Align(
@@ -78,7 +107,7 @@ class _CharacterMobile extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       name,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
                                       ),
