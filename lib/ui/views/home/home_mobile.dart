@@ -36,8 +36,13 @@ class _HomeMobile extends StatelessWidget {
                           children: <TextSpan>[
                             TextSpan(
                                 text: fellowshipName,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .color)),
                           ]),
                     ),
                     const SizedBox(height: 5),
@@ -135,14 +140,23 @@ class _HomeMobile extends StatelessWidget {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                           text: 'Down the hatch when:\n',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .color),
                           children: GameRules.dthRules
                               .map((String rule) => TextSpan(
                                     text: '$rule\n',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 12,
-                                        fontWeight: FontWeight.normal),
+                                        fontWeight: FontWeight.normal,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .color),
                                   ))
                               .toList()),
                     )
