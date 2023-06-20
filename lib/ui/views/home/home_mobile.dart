@@ -11,10 +11,10 @@ class _HomeMobile extends StatelessWidget {
         onPressed: viewModel.incrementDrink,
         child: const Icon(Icons.add),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: StreamBuilder<Fellowship?>(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            StreamBuilder<Fellowship?>(
               stream: viewModel.fellowshipStream,
               builder:
                   (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
@@ -27,7 +27,6 @@ class _HomeMobile extends StatelessWidget {
                 final String fellowshipName = fellowship.name;
 
                 return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     const SizedBox(height: 5),
                     RichText(
@@ -45,6 +44,7 @@ class _HomeMobile extends StatelessWidget {
                     Card(
                       child: Column(
                         children: <Widget>[
+                          const SizedBox(height: 5),
                           Image.asset(
                             'assets/images/characters/${viewModel.character!.value}.png',
                             fit: BoxFit.contain,
@@ -85,30 +85,62 @@ class _HomeMobile extends StatelessWidget {
                       ),
                     ),
                     RichText(
+                      textAlign: TextAlign.center,
                       text: TextSpan(
                           text: 'Your rules:\n',
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
-                          children: [
-                            TextSpan(
-                                text: character.rules[0],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal)),
-                          ]),
+                          children: character.rules
+                              .map((String rule) => TextSpan(
+                                    text: '$rule\n',
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal),
+                                  ))
+                              .toList()),
                     ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          text: 'Everyone takes a drink when:\n',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                          children: GameRules.normalRules
+                              .map((String rule) => TextSpan(
+                                    text: '$rule\n',
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal),
+                                  ))
+                              .toList()),
+                    ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          text: 'Down the hatch when:\n',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                          children: GameRules.dthRules
+                              .map((String rule) => TextSpan(
+                                    text: '$rule\n',
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal),
+                                  ))
+                              .toList()),
+                    )
                   ],
                 );
               },
             ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await viewModel.signOut();
-            },
-            child: const Text('Logout'),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: () async {
+                await viewModel.signOut();
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
       ),
     );
   }
