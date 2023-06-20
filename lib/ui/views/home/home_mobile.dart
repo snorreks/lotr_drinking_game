@@ -133,12 +133,6 @@ class _HomeMobile extends StatelessWidget {
                 );
               },
             ),
-            ElevatedButton(
-              onPressed: () async {
-                await viewModel.signOut();
-              },
-              child: const Text('Logout'),
-            ),
           ],
         ),
       ),
