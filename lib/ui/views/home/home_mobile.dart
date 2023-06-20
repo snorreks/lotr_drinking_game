@@ -88,14 +88,23 @@ class _HomeMobile extends StatelessWidget {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                           text: 'Your rules:\n',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
                           children: character.rules
                               .map((String rule) => TextSpan(
                                     text: '$rule\n',
-                                    style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.normal),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .color,
+                                    ),
                                   ))
                               .toList()),
                     ),
@@ -103,13 +112,21 @@ class _HomeMobile extends StatelessWidget {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                           text: 'Everyone takes a drink when:\n',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
                           children: GameRules.normalRules
                               .map((String rule) => TextSpan(
                                     text: '$rule\n',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 12,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .color,
                                         fontWeight: FontWeight.normal),
                                   ))
                               .toList()),
