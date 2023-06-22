@@ -70,7 +70,8 @@ class _LeaderBoardMobile extends StatelessWidget {
                               'assets/images/characters/${member.character.value}.png'),
                           title: Text(member.name),
                           subtitle: Text(member.character.displayName),
-                          trailing: Text('Drinks: ${member.drinks}'),
+                          trailing: Text(
+                              'Drinks: ${member.drinks}\nUnits: ${showUnits(member.drinks)}'),
                         ),
                       );
                     },
@@ -100,7 +101,7 @@ class _LeaderBoardMobile extends StatelessWidget {
     const double oneUnitVolume = 12 / 0.789;
 
     // Calculate the alcohol volume in the drink
-    final double alcoholVolumeInCl = ((currentSips * 2.5) * 4.7) / 100;
+    final double alcoholVolumeInCl = ((currentSips * 25) * 4.7) / 100;
 
     // Return the number of units
     return alcoholVolumeInCl ~/ oneUnitVolume;
