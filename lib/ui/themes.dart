@@ -35,3 +35,12 @@ final ThemeData darkTheme = ThemeData(
         TextStyle(fontSize: 14, fontFamily: 'Hind', color: Colors.white),
   ),
 );
+
+class ThemeProvider extends ChangeNotifier {
+  ThemeMode themeMode = ThemeMode.system;
+
+  void toggleTheme() {
+    themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    notifyListeners();
+  }
+}

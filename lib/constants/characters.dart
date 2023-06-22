@@ -1,7 +1,7 @@
 enum Character {
   frodo,
   sam,
-  merryAndPippin,
+  merrypippin,
   gandalf,
   aragorn,
   legolas,
@@ -15,8 +15,8 @@ extension CharacterExtension on Character {
         return 'frodo';
       case Character.sam:
         return 'sam';
-      case Character.merryAndPippin:
-        return 'merrynpippin';
+      case Character.merrypippin:
+        return 'merrypippin';
       case Character.gandalf:
         return 'gandalf';
       case Character.aragorn:
@@ -34,8 +34,8 @@ extension CharacterExtension on Character {
         return Character.frodo;
       case 'sam':
         return Character.sam;
-      case 'merrynpippin':
-        return Character.merryAndPippin;
+      case 'merrypippin':
+        return Character.merrypippin;
       case 'gandalf':
         return Character.gandalf;
       case 'aragorn':
@@ -55,7 +55,7 @@ extension CharacterExtension on Character {
         return 'Frodo';
       case Character.sam:
         return 'Sam';
-      case Character.merryAndPippin:
+      case Character.merrypippin:
         return 'Merry & Pippin';
       case Character.gandalf:
         return 'Gandalf';
@@ -82,7 +82,7 @@ extension CharacterExtension on Character {
           "He's mean to Gollum.",
           'He supports a Frodo who has once again fucked up or is having a Heroic BSoD'
         ];
-      case Character.merryAndPippin:
+      case Character.merrypippin:
         return [
           'They cause trouble or create mischief.',
           'They talk about food.',

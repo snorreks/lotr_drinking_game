@@ -9,7 +9,7 @@ class _HomeMobile extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: viewModel.incrementDrink,
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.sports_bar),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -28,27 +28,34 @@ class _HomeMobile extends StatelessWidget {
 
                 return Column(
                   children: <Widget>[
-                    const SizedBox(height: 5),
-                    RichText(
-                      text: TextSpan(
-                          text: 'Fellowship of ',
-                          style: const TextStyle(fontSize: 20),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: fellowshipName,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .color)),
-                          ]),
-                    ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 15),
                     Card(
                       child: Column(
                         children: <Widget>[
+                          const SizedBox(height: 10),
+                          RichText(
+                            text: TextSpan(
+                                text: 'Fellowship of ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .color),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: fellowshipName,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .color)),
+                                ]),
+                          ),
+                          const SizedBox(height: 5),
+                          //TEXT REGARDING UNITS GOES HERE
                           const SizedBox(height: 5),
                           Image.asset(
                             'assets/images/characters/${viewModel.character!.value}.png',
