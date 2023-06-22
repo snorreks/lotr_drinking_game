@@ -7,10 +7,6 @@ class _DrinkingSettingsMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.incrementDrink,
-        child: const Icon(Icons.sports_bar),
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -29,71 +25,6 @@ class _DrinkingSettingsMobile extends StatelessWidget {
                 return Column(
                   children: <Widget>[
                     const SizedBox(height: 15),
-                    Card(
-                      child: Column(
-                        children: <Widget>[
-                          const SizedBox(height: 10),
-                          RichText(
-                            text: TextSpan(
-                                text: 'Fellowship of ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .color),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: fellowshipName,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .color)),
-                                ]),
-                          ),
-                          const SizedBox(height: 5),
-                          Image.asset(
-                            'assets/images/characters/${viewModel.character!.value}.png',
-                            fit: BoxFit.contain,
-                            height: 200,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ListTile(
-                                  title: Text(viewModel.character!.displayName),
-                                  subtitle: Text('${member?.drinks} drinks'),
-                                ),
-                              ),
-                              Expanded(
-                                child: ListTile(
-                                  title: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text('PIN: ${fellowship.pin}'),
-                                  ),
-                                  subtitle: ElevatedButton(
-                                    onPressed: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: fellowship.pin));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'PIN copied to clipboard')),
-                                      );
-                                    },
-                                    child: const Text('Copy PIN'),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
