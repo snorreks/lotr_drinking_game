@@ -72,6 +72,7 @@ class _LeaderBoardMobile extends StatelessWidget {
                           subtitle: Text(member.character.displayName),
                           trailing: Text(
                               'Drinks: ${member.drinks}\nUnits: ${showUnits(member.drinks)}'),
+                          onTap: () => _handlePlayerTap(context, member),
                         ),
                       );
                     },
@@ -105,5 +106,66 @@ class _LeaderBoardMobile extends StatelessWidget {
 
     // Return the number of units
     return alcoholVolumeInCl ~/ oneUnitVolume;
+  }
+
+  void _handlePlayerTap(BuildContext context, FellowshipMember member) {
+    String<List>? selectedRules;
+    String? dropdownValue;
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              child: Column(
+                children: <Widget>[
+                  RadioListTile<String>(
+                    title: const Text('Normal'),
+                    value: 'Normal',
+                    groupValue: selectedRules,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedRules = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Down the Hatch'),
+                    value: 'Down the Hatch',
+                    groupValue: selectedRules,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedRules = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Character Rule'),
+                    value: 'Character Rule',
+                    groupValue: selectedRules,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedRules = value;
+                      });
+                    },
+                  ),
+                  // Add more radio buttons as necessary
+                  // Then add a button to confirm the selection
+                  DropdownButton<String>(
+                      items: [],
+                      onChanged: (String? value) {
+                        setState(() {
+                          dropdownValue = value;
+                        });
+                        // Handle the rule selection
+                        // Call the server to notify the other player, etc.
+                      }),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
