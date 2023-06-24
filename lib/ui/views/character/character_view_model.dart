@@ -39,7 +39,7 @@ class CharacterViewModel extends BaseViewModel {
   }
 
   bool isTaken(Fellowship fellowship, Character character) {
-    if (character == Character.merryAndPippin) {
+    if (character == Character.merrypippin) {
       return false;
     }
 

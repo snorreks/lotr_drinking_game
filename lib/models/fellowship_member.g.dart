@@ -26,7 +26,7 @@ Map<String, dynamic> _$FellowshipMemberToJson(FellowshipMember instance) =>
 const _$CharacterEnumMap = {
   Character.frodo: 'frodo',
   Character.sam: 'sam',
-  Character.merryAndPippin: 'merryAndPippin',
+  Character.merrypippin: 'merrypippin',
   Character.gandalf: 'gandalf',
   Character.aragorn: 'aragorn',
   Character.legolas: 'legolas',

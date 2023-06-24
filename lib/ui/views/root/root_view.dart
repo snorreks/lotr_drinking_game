@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../constants/characters.dart';
+import '../../../services/app/application_service.dart';
 import 'root_view_model.dart';
 
 class RootView extends ConsumerWidget {
@@ -75,9 +76,17 @@ class RootView extends ConsumerWidget {
               leading: const Icon(Icons.light_mode),
               title: const Text('Change Theme'),
               onTap: () {
-                // Add your change theme function here
+                if (ref.read(applicationService).themeMode == ThemeMode.dark) {
+                  ref.read(applicationService).changeTheme(ThemeMode.light);
+                } else {
+                  ref.read(applicationService).changeTheme(ThemeMode.dark);
+                }
               },
             ),
+            ListTile(
+                leading: const Icon(Icons.local_bar),
+                title: const Text('Drinking settings'),
+                onTap: () {}),
             const Spacer(), // Pushes the logout button to the bottom
             ListTile(
               leading: const Icon(Icons.exit_to_app),

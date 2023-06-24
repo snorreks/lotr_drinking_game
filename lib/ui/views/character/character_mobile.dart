@@ -54,7 +54,7 @@ class _CharacterMobile extends StatelessWidget {
                         viewModel.isTaken(fellowship, character);
                     final String name = character.displayName;
                     return GestureDetector(
-                      key: ValueKey(character), // add a unique key
+                      key: ValueKey(character),
                       onTap: isTaken
                           ? null
                           : () => viewModel.selectCharacter(character),

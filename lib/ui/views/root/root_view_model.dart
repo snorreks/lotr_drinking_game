@@ -4,10 +4,13 @@ import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/router_service.dart';
+import '../../themes.dart';
 
 class RootViewModel extends BaseViewModel {
   RootViewModel(this._ref);
   final Ref _ref;
+  final ChangeNotifierProvider<ThemeProvider> themeProvider =
+      ChangeNotifierProvider((_) => ThemeProvider());
 
   int get currentIndex {
     final String location = _ref.read(routerService).router.location;
@@ -36,6 +39,10 @@ class RootViewModel extends BaseViewModel {
   Future<void> signOut() async {
     await _ref.read(fellowshipService).leaveFellowship();
     _ref.read(routerService).go(Location.login);
+  }
+
+  void changeTheme() {
+    _ref.read(themeProvider).toggleTheme();
   }
 
   Stream<Character?> get characterStream =>
