@@ -109,7 +109,8 @@ class _LeaderBoardMobile extends StatelessWidget {
   }
 
   void _handlePlayerTap(BuildContext context, FellowshipMember member) {
-    String<List>? selectedRules;
+    List<String>? selectedRules;
+    String? selectedGroup;
     String? dropdownValue;
     showModalBottomSheet<void>(
       context: context,
@@ -122,30 +123,33 @@ class _LeaderBoardMobile extends StatelessWidget {
                   RadioListTile<String>(
                     title: const Text('Normal'),
                     value: 'Normal',
-                    groupValue: selectedRules,
+                    groupValue: selectedGroup,
                     onChanged: (String? value) {
                       setState(() {
-                        selectedRules = value;
+                        selectedGroup = value;
+                        selectedRules = ['helol'];
                       });
                     },
                   ),
                   RadioListTile<String>(
                     title: const Text('Down the Hatch'),
                     value: 'Down the Hatch',
-                    groupValue: selectedRules,
+                    groupValue: selectedGroup,
                     onChanged: (String? value) {
                       setState(() {
-                        selectedRules = value;
+                        selectedGroup = value;
+                        selectedRules = ['helol'];
                       });
                     },
                   ),
                   RadioListTile<String>(
                     title: const Text('Character Rule'),
                     value: 'Character Rule',
-                    groupValue: selectedRules,
+                    groupValue: selectedGroup,
                     onChanged: (String? value) {
                       setState(() {
-                        selectedRules = value;
+                        selectedGroup = value;
+                        selectedRules = ['helol'];
                       });
                     },
                   ),
