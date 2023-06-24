@@ -78,18 +78,65 @@ class _RulesMobileState extends State<_RulesMobile> {
     );
   }
 
-  ExpansionPanel _buildPanel(String header, List<String> body, int index,
+  ExpansionPanel _buildPanel(String header, List<dynamic> body, int index,
       {bool isCharacterPanel = false}) {
     return ExpansionPanel(
-        headerBuilder: (BuildContext context, bool isExpanded) {
-          return ListTile(title: Text(header));
-        },
-        body: Column(
-          children:
-              body.map((String item) => ListTile(title: Text(item))).toList(),
-        ),
-        isExpanded:
-            isCharacterPanel ? _characterPanelOpen[index] : _panelOpen[index],
-        canTapOnHeader: true);
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return ListTile(title: Text(header));
+      },
+      body: Column(
+        children: body.map((dynamic item) {
+          if (item is RuleWithName) {
+            final List<String>? examples = item.ruleExamples;
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.ruleName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    item.ruleDescription,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 14,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
+                    ),
+                  ),
+                  if (examples != null)
+                    ...examples.map(
+                      (example) => Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          example,
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 14,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
+                        ),
+                      ),
+                    )
+                ],
+              ),
+            );
+          } else if (item is String) {
+            return ListTile(title: Text(item));
+          } else {
+            throw FormatException('Unsupported body item type');
+          }
+        }).toList(),
+      ),
+      isExpanded:
+          isCharacterPanel ? _characterPanelOpen[index] : _panelOpen[index],
+    );
   }
 }
