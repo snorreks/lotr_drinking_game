@@ -63,9 +63,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                       },
                       children: [
                         _buildPanel(
-                            'Character Rules - ${character.displayName}',
-                            character.rules,
-                            index,
+                            character.displayName, character.rules, index,
                             isCharacterPanel: true)
                       ],
                     );
