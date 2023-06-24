@@ -17,10 +17,10 @@ class _DrinkingSettingsMobile extends StatelessWidget {
                 if (!snapshot.hasData || snapshot.data == null) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final Fellowship fellowship = snapshot.data!;
+                //final Fellowship fellowship = snapshot.data!;
                 final Character character = viewModel.character!;
-                final FellowshipMember? member = fellowship.members[character];
-                final String fellowshipName = fellowship.name;
+                //final FellowshipMember? member = fellowship.members[character];
+                //final String fellowshipName = fellowship.name;
 
                 return Column(
                   children: <Widget>[
