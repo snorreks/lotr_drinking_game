@@ -4,13 +4,67 @@ class _HomeMobile extends StatelessWidget {
   const _HomeMobile(this.viewModel);
   final HomeViewModel viewModel;
 
+  void _showMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<String>(
+        context: context,
+        position: position, // You might want to adjust the positioning
+        items: [
+          const PopupMenuItem<String>(
+            value: 'save1',
+            child: Text('Skipped a sip'),
+          ),
+          const PopupMenuItem<String>(
+            value: 'dth2',
+            child: Text('Down the hatch!'),
+          ),
+          const PopupMenuItem<String>(
+            value: 'callout',
+            child: Text('Call out a player'),
+          ),
+        ],
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        )).then((String? value) {
+      if (value != null) {
+        // Handle the selected option here
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.incrementDrink,
-        child: const Icon(Icons.sports_bar),
-      ),
+      floatingActionButton: InkWell(
+          splashColor: Colors.blue,
+          onLongPress: () {
+            _showMenu(context);
+          },
+          child: FloatingActionButton(
+            onPressed: () {
+              viewModel.incrementDrink();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("+1 drink!"),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            child: const Icon(Icons.sports_bar),
+          )),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
