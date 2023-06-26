@@ -3,6 +3,7 @@ library leader_board;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../constants/characters.dart';
+import '../../../constants/conversions.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../character/character_view.dart';

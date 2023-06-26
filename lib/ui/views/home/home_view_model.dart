@@ -25,6 +25,16 @@ class HomeViewModel extends ChangeNotifier implements BaseViewModel {
     await _ref.read(fellowshipService).incrementDrink();
   }
 
+  Future<void> downTheHatchIncrement(int downTheHatchSips) async {
+    for (int i = 0; i < downTheHatchSips; i++) {
+      await _ref.read(fellowshipService).incrementDrink();
+    }
+  }
+
+  Future<void> incrementSaves() async {
+    await _ref.read(fellowshipService).incrementSaves();
+  }
+
   @override
   void dispose() {
     // implement your dispose logic here

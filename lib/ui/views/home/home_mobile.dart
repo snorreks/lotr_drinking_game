@@ -1,13 +1,16 @@
 part of './home_view.dart';
 
 class _HomeMobile extends StatelessWidget {
-  const _HomeMobile(this.viewModel);
+  _HomeMobile(this.viewModel);
   final HomeViewModel viewModel;
 
-  void _showMenu(BuildContext context) {
+  //Stores member,which I can access amount of drinks from.
+  final ValueNotifier<FellowshipMember?> memberNotifier = ValueNotifier(null);
+
+  void _showMenu(BuildContext context, FellowshipMember member) {
     final RenderBox button = context.findRenderObject() as RenderBox;
     final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+        Overlay.of(context).context.findRenderObject() as RenderBox;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(button.size.bottomRight(Offset.zero),
@@ -40,7 +43,33 @@ class _HomeMobile extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         )).then((String? value) {
       if (value != null) {
-        // Handle the selected option here
+        switch (value) {
+          case 'save1':
+            {
+              viewModel.incrementSaves();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Skipped 1 sip!'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            }
+          case 'dth2':
+            {
+              //Calculate how many "sips" go down the hatch, then run with it.
+              int amountOfDrinks = 0;
+              amountOfDrinks = member.drinks;
+              final int downTheHatchSips =
+                  amountOfSipsUntilNextUnit(amountOfDrinks);
+              viewModel.downTheHatchIncrement(downTheHatchSips);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Drank $downTheHatchSips !'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            }
+        }
       }
     });
   }
@@ -51,14 +80,17 @@ class _HomeMobile extends StatelessWidget {
       floatingActionButton: InkWell(
           splashColor: Colors.blue,
           onLongPress: () {
-            _showMenu(context);
+            final FellowshipMember? member = memberNotifier.value;
+            if (member != null) {
+              _showMenu(context, member);
+            }
           },
           child: FloatingActionButton(
             onPressed: () {
               viewModel.incrementDrink();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text("+1 drink!"),
+                  content: Text('+1 drink!'),
                   duration: Duration(seconds: 1),
                 ),
               );
@@ -80,6 +112,8 @@ class _HomeMobile extends StatelessWidget {
                 final FellowshipMember? member = fellowship.members[character];
                 final String fellowshipName = fellowship.name;
 
+                //this is a really poor solution but I am out of ideas, this is used for downthehatch function in menu.
+                memberNotifier.value = member;
                 return Column(
                   children: <Widget>[
                     const SizedBox(height: 15),

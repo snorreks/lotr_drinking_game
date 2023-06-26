@@ -30,6 +30,8 @@ abstract class FellowshipServiceModel {
   Future<bool> leaveFellowship();
 
   Future<bool> incrementDrink();
+
+  Future<bool> incrementSaves();
 }
 
 class FellowshipService extends BaseService implements FellowshipServiceModel {
@@ -108,10 +110,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return false;
       }
 
-      await _fellowshipRepository.increment(
-        _fellowshipId!,
-        character,
-      );
+      await _fellowshipRepository.increment(_fellowshipId!, character, true);
 
       return true;
     } catch (e) {
@@ -168,9 +167,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       final Fellowship? fellowship = await _fellowshipRepository.getByPin(
         fellowshipPIN,
       );
-
       if (fellowship == null) {
-        print('fuck');
         return false;
       }
 
@@ -198,6 +195,37 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       return true;
     } catch (e) {
       logError('leaveFellowship', e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> incrementSaves() async {
+    try {
+      if (_fellowshipId == null) {
+        return false;
+      }
+
+      final Fellowship? fellowship = _fellowship ??
+          await _fellowshipRepository.get(
+            _fellowshipId!,
+          );
+
+      if (fellowship == null) {
+        return false;
+      }
+
+      final Character? character = _preferencesService.character;
+
+      if (character == null) {
+        return false;
+      }
+
+      await _fellowshipRepository.increment(_fellowshipId!, character, false);
+
+      return true;
+    } catch (e) {
+      logError('incrementSaves', e);
       return false;
     }
   }
