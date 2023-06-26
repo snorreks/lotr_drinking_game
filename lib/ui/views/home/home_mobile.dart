@@ -8,9 +8,11 @@ class _HomeMobile extends StatelessWidget {
   final ValueNotifier<FellowshipMember?> memberNotifier = ValueNotifier(null);
 
   void _showMenu(BuildContext context, FellowshipMember member) {
-    final RenderBox button = context.findRenderObject() as RenderBox;
+    ///Renders a menu with functionality.
+    //Gets dynamically the position from the floatingactionbutton!
+    final RenderBox button = context.findRenderObject()! as RenderBox;
     final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+        Overlay.of(context).context.findRenderObject()! as RenderBox;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(button.size.bottomRight(Offset.zero),
@@ -23,7 +25,7 @@ class _HomeMobile extends StatelessWidget {
 
     showMenu<String>(
         context: context,
-        position: position, // You might want to adjust the positioning
+        position: position,
         items: [
           const PopupMenuItem<String>(
             value: 'save1',
