@@ -32,6 +32,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                 _panelOpen[index] = !isExpanded;
               });
             },
+            expandedHeaderPadding: EdgeInsets.all(8),
             children: [
               _buildPanel('Basics', [GameRules.basicRules], 0),
               _buildPanel('Take a drink when', GameRules.normalRules, 1),
@@ -47,6 +48,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return ListTile(title: Text('Characters Rules'));
                 },
+                canTapOnHeader: true,
                 body: Column(
                   children: Character.values
                       .asMap()
@@ -84,6 +86,7 @@ class _RulesMobileState extends State<_RulesMobile> {
       headerBuilder: (BuildContext context, bool isExpanded) {
         return ListTile(title: Text(header));
       },
+      canTapOnHeader: true,
       body: Column(
         children: body.map((dynamic item) {
           if (item is RuleWithName) {

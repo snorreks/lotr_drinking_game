@@ -30,6 +30,12 @@ abstract class FellowshipServiceModel {
   Future<bool> leaveFellowship();
 
   Future<bool> incrementDrink();
+
+  Future<bool> incrementSaves();
+
+  Future<bool> sendCallout(FellowshipMember player, String rule);
+
+  Future<bool> resolveCallout(bool hasAccepted);
 }
 
 class FellowshipService extends BaseService implements FellowshipServiceModel {
@@ -108,10 +114,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return false;
       }
 
-      await _fellowshipRepository.increment(
-        _fellowshipId!,
-        character,
-      );
+      await _fellowshipRepository.increment(_fellowshipId!, character, true);
 
       return true;
     } catch (e) {
@@ -143,7 +146,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         name: username,
         drinks: 0,
         saves: 0,
-        given: 0,
+        callout: '',
         character: Character.aragorn,
       );
 
@@ -168,9 +171,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       final Fellowship? fellowship = await _fellowshipRepository.getByPin(
         fellowshipPIN,
       );
-
       if (fellowship == null) {
-        print('fuck');
         return false;
       }
 
@@ -198,6 +199,85 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       return true;
     } catch (e) {
       logError('leaveFellowship', e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> incrementSaves() async {
+    try {
+      if (_fellowshipId == null) {
+        return false;
+      }
+
+      final Fellowship? fellowship = _fellowship ??
+          await _fellowshipRepository.get(
+            _fellowshipId!,
+          );
+
+      if (fellowship == null) {
+        return false;
+      }
+
+      final Character? character = _preferencesService.character;
+
+      if (character == null) {
+        return false;
+      }
+
+      await _fellowshipRepository.increment(_fellowshipId!, character, false);
+
+      return true;
+    } catch (e) {
+      logError('incrementSaves', e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> sendCallout(FellowshipMember player, String rule) async {
+    try {
+      if (_fellowshipId == null) {
+        return false;
+      }
+
+      if (rule == '') {
+        return false;
+      }
+
+      await _fellowshipRepository.createCallout(_fellowshipId!, player, rule);
+      return true;
+    } catch (e) {
+      logError('sendCallout', e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> resolveCallout(bool hasAccepted) async {
+    try {
+      if (_fellowshipId == null) {
+        return false;
+      }
+      final Character? character = _preferencesService.character;
+
+      if (character == null) {
+        return false;
+      }
+
+      if (hasAccepted) {
+        await _fellowshipRepository.increment(_fellowshipId!, character, true);
+        await _fellowshipRepository.increment(_fellowshipId!, character, true);
+
+        await _fellowshipRepository.resolveCallout(_fellowshipId!, character);
+        return true;
+      } else {
+        //They reject the request
+        await _fellowshipRepository.resolveCallout(_fellowshipId!, character);
+        return true;
+      }
+    } catch (e) {
+      logError('sendCallout', e);
       return false;
     }
   }

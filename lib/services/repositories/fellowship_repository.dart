@@ -6,19 +6,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/base_service.dart';
 import '../../constants/characters.dart';
 import '../../models/fellowship.dart';
+import '../../models/fellowship_member.dart';
 
 abstract class FellowshipRepositoryModel {
-  Future<Fellowship?> get(String fellowshipId); //Semi-deprecated!!
+  ///PIN and ID based get, streams and such. This way we can operate of PINs, making life easier for users.
+  ///
+  Future<Fellowship?> get(String fellowshipId);
   Future<Fellowship?> getByPin(String fellowshipPin);
 
   Stream<Fellowship?> streamByPin(String fellowshipPin);
-  Stream<Fellowship?> stream(String fellowshipId); //FULLY DEPRECATED
+  Stream<Fellowship?> stream(String fellowshipId);
 
   Future<String> create(String fellowshipName);
   Future<void> update(String fellowshipId, Fellowship fellowship);
 
-  Future<void> increment(String fellowshipId, Character character);
-  Future<void> incrementByPin(String fellowshipPin, Character character);
+  Future<void> increment(
+      String fellowshipId, Character character, bool isDrink);
+  Future<void> incrementByPin(
+      String fellowshipPin, Character character, bool isDrink);
+
+  Future<void> createCallout(
+      String fellowshipId, FellowshipMember character, String rule);
+  Future<void> resolveCallout(String fellowshipId, Character character);
 }
 
 class FellowshipRepository extends BaseService
@@ -107,22 +116,58 @@ class FellowshipRepository extends BaseService
     }
   }
 
-  //DEPRECATED!!
   @override
-  Future<void> increment(String fellowshipId, Character character) async {
+  Future<void> increment(
+      String fellowshipId, Character character, bool isDrink) async {
     try {
       final DocumentReference<Map<String, dynamic>> docRef =
           _getFellowshipDocumentReference(fellowshipId);
-
-      await docRef.update({
-        'members.${character.value}.drinks': FieldValue.increment(1),
-      });
+      if (isDrink) {
+        await docRef.update({
+          'members.${character.value}.drinks': FieldValue.increment(1),
+        });
+      } else {
+        await docRef.update(
+            {'members.${character.value}.saves': FieldValue.increment(1)});
+      }
     } catch (e) {
       logError('increment', e);
       rethrow;
     }
   }
 
+  @override
+  Future<void> createCallout(
+      String fellowshipId, FellowshipMember character, String rule) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      await docRef.update({
+        'members.${character.character.value}.callout': rule,
+      });
+    } catch (e) {
+      logError('createCallout', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> resolveCallout(String fellowshipId, Character character) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      await docRef.update({
+        'members.${character.value}.callout': '',
+      });
+    } catch (e) {
+      logError('resolveCallout', e);
+      rethrow;
+    }
+  }
+
+  //SET OF PIN-BASED GETTERS AND SUCH. So you can join games and work off solely a pin-based system.
   @override
   Future<Fellowship?> getByPin(String pin) async {
     try {
@@ -174,7 +219,8 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> incrementByPin(String pin, Character character) async {
+  Future<void> incrementByPin(
+      String pin, Character character, bool isDrink) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> query =
           await _fellowshipCollectionReference

@@ -34,6 +34,11 @@ class GameRules {
     RuleWithName('Rescue Dice poker',
         'Upon the start of each movie, a viewer may call for a round of merry Rescue Dice Poker (RDP). RDP works as five card draw poker does, except what you may bet is the rescue die which will be used for the following film. This includes rollover dice. \nBefore the start of the movie, you count up your total of rescue dice. This value will be converted into a set of poker chips, where each rescue dice is a red chip. These may be broken down into blue, green and white chips. A regular game of poker will commence. The game has to last a minimum of two rounds around the table before pulling out, unless someone has lost all their rescue dice.\nParticipation is voluntary.'),
   ];
+
+  static final Map<String, List<String>> rules = {
+    'Take a drink': normalRules,
+    'Down the Hatch': dthRules,
+  };
 }
 
 class RuleWithName {
