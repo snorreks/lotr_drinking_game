@@ -27,7 +27,8 @@ abstract class FellowshipRepositoryModel {
 
   Future<void> createCallout(
       String fellowshipId, FellowshipMember character, String rule);
-  Future<void> resolveCallout(String fellowshipId, Character character);
+  Future<void> resolveCallout(
+      String fellowshipId, Character character, int drinks);
 }
 
 class FellowshipRepository extends BaseService
@@ -153,14 +154,21 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> resolveCallout(String fellowshipId, Character character) async {
+  Future<void> resolveCallout(
+      String fellowshipId, Character character, int drinks) async {
     try {
       final DocumentReference<Map<String, dynamic>> docRef =
           _getFellowshipDocumentReference(fellowshipId);
-
-      await docRef.update({
-        'members.${character.value}.callout': '',
-      });
+      if (drinks > 0) {
+        await docRef.update({
+          'members.${character.value}.callout': '',
+          'members.${character.value}.drinks': FieldValue.increment(drinks),
+        });
+      } else {
+        await docRef.update({
+          'members.${character.value}.callout': '',
+        });
+      }
     } catch (e) {
       logError('resolveCallout', e);
       rethrow;

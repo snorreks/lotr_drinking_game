@@ -266,14 +266,13 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       }
 
       if (hasAccepted) {
-        await _fellowshipRepository.increment(_fellowshipId!, character, true);
-        await _fellowshipRepository.increment(_fellowshipId!, character, true);
-
-        await _fellowshipRepository.resolveCallout(_fellowshipId!, character);
+        await _fellowshipRepository.resolveCallout(
+            _fellowshipId!, character, 2);
         return true;
       } else {
         //They reject the request
-        await _fellowshipRepository.resolveCallout(_fellowshipId!, character);
+        await _fellowshipRepository.resolveCallout(
+            _fellowshipId!, character, 0);
         return true;
       }
     } catch (e) {
