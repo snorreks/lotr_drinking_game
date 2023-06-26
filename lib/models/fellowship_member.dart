@@ -10,7 +10,7 @@ class FellowshipMember {
     required this.name,
     required this.drinks,
     required this.saves,
-    required this.given,
+    required this.callout,
     required this.character,
   });
 
@@ -24,7 +24,7 @@ class FellowshipMember {
   @JsonKey()
   final int saves;
   @JsonKey()
-  final int given;
+  final String callout;
 
   @JsonKey(includeToJson: false)
   final Character character;

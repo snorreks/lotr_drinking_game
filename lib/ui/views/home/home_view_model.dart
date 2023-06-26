@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
+import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/preferences_service.dart';
 
@@ -33,6 +34,14 @@ class HomeViewModel extends ChangeNotifier implements BaseViewModel {
 
   Future<void> incrementSaves() async {
     await _ref.read(fellowshipService).incrementSaves();
+  }
+
+  Future<void> sendCallout(FellowshipMember player, String rule) async {
+    await _ref.read(fellowshipService).sendCallout(player, rule);
+  }
+
+  Future<void> resolveCallout(bool hasAccepted) async {
+    await _ref.read(fellowshipService).resolveCallout(hasAccepted);
   }
 
   @override

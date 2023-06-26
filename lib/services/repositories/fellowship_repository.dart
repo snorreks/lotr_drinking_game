@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/base_service.dart';
 import '../../constants/characters.dart';
 import '../../models/fellowship.dart';
+import '../../models/fellowship_member.dart';
 
 abstract class FellowshipRepositoryModel {
   ///PIN and ID based get, streams and such. This way we can operate of PINs, making life easier for users.
@@ -23,6 +24,10 @@ abstract class FellowshipRepositoryModel {
       String fellowshipId, Character character, bool isDrink);
   Future<void> incrementByPin(
       String fellowshipPin, Character character, bool isDrink);
+
+  Future<void> createCallout(
+      String fellowshipId, FellowshipMember character, String rule);
+  Future<void> resolveCallout(String fellowshipId, Character character);
 }
 
 class FellowshipRepository extends BaseService
@@ -132,16 +137,32 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> incrementSaves(String fellowshipId, Character character) async {
+  Future<void> createCallout(
+      String fellowshipId, FellowshipMember character, String rule) async {
     try {
       final DocumentReference<Map<String, dynamic>> docRef =
           _getFellowshipDocumentReference(fellowshipId);
 
       await docRef.update({
-        'members.${character.value}.saves': FieldValue.increment(1),
+        'members.${character.character.value}.callout': rule,
       });
     } catch (e) {
-      logError('incrementSaves', e);
+      logError('createCallout', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> resolveCallout(String fellowshipId, Character character) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      await docRef.update({
+        'members.${character.value}.callout': '',
+      });
+    } catch (e) {
+      logError('resolveCallout', e);
       rethrow;
     }
   }
