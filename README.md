@@ -9,6 +9,7 @@ You can already access the application. Create a session and invite your friends
   * Unique character for each player
   * Navigation of rules
   * Compare how much you have had to drink with the rest of the group
+  * Call-out players for ignoring rules!
   * idk more soon
 
 ### Coming features
@@ -17,7 +18,7 @@ You can already access the application. Create a session and invite your friends
 * Admin rights
 * Regular "status" check-ups & other Safety features
 * Create your own drinking game!
-* Call-out players for ignoring rules!
+
 
 ## Build and host it yourself (?)
 Fork this and make it work homie, we used firebase and it sure as hell is working well.
