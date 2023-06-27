@@ -72,7 +72,7 @@ class _LeaderBoardMobile extends StatelessWidget {
                           subtitle: Text(member.character.displayName),
                           trailing: Text(
                               'Drinks: ${member.drinks}\nUnits: ${showUnits(member.drinks)}'),
-                          onTap: () => _handlePlayerTap(context, member),
+                          onTap: () => _handlePlayerTap(context, members),
                         ),
                       );
                     },
@@ -90,67 +90,14 @@ class _LeaderBoardMobile extends StatelessWidget {
     );
   }
 
-  void _handlePlayerTap(BuildContext context, FellowshipMember member) {
-    List<String>? selectedRules;
-    String? selectedGroup;
-    String? dropdownValue;
-    showModalBottomSheet<void>(
+  void _handlePlayerTap(BuildContext context, List<FellowshipMember> members) {
+    showCalloutModal(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              child: Column(
-                children: <Widget>[
-                  RadioListTile<String>(
-                    title: const Text('Normal'),
-                    value: 'Normal',
-                    groupValue: selectedGroup,
-                    onChanged: (String? value) {
-                      setState(() {
-                        selectedGroup = value;
-                        selectedRules = ['helol'];
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Down the Hatch'),
-                    value: 'Down the Hatch',
-                    groupValue: selectedGroup,
-                    onChanged: (String? value) {
-                      setState(() {
-                        selectedGroup = value;
-                        selectedRules = ['helol'];
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Character Rule'),
-                    value: 'Character Rule',
-                    groupValue: selectedGroup,
-                    onChanged: (String? value) {
-                      setState(() {
-                        selectedGroup = value;
-                        selectedRules = ['helol'];
-                      });
-                    },
-                  ),
-                  // Add more radio buttons as necessary
-                  // Then add a button to confirm the selection
-                  DropdownButton<String>(
-                      items: const [],
-                      onChanged: (String? value) {
-                        setState(() {
-                          dropdownValue = value;
-                        });
-                        // Handle the rule selection
-                        // Call the server to notify the other player, etc.
-                      }),
-                ],
-              ),
-            );
-          },
-        );
+      players: members, //HERE I WANT FELLOWSHIPMEMBERS!! IT WORKED NVM<3
+      rules: GameRules
+          .rules, //TODO: MAKE SURE CHARACTER RULES ARE INCLUDED AS WELL
+      onSend: (FellowshipMember player, String category, String rule) {
+        viewModel.sendCallout(player, rule);
       },
     );
   }
