@@ -36,4 +36,6 @@ We do not condone the use of ælkis, this is just made for fun. Stay aware of ho
 
 *   To update logo, run `flutter pub run flutter_launcher_icons` in the root directory of the project.
 
-*   To deploy new version to firebase app distribution for android run `flutter build appbundle` and then `firebase appdistribution:distribute ./build/app/outputs/bundle/release/app-release.aab --app 1:1048576:android:0a0b6b0b0a0b0a0b0a0b0b --release-notes "New version" --groups "internal-testers"` in the root directory of the project.
+*   To deploy new version to firebase app distribution for android run
+
+  ```flutter build apk && firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"```
