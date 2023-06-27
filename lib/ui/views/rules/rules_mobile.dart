@@ -25,16 +25,16 @@ class _RulesMobileState extends State<_RulesMobile> {
         title: const Text('Game Rules'),
       ),
       body: ListView(
-        children: [
+        children: <Widget>[
           ExpansionPanelList(
             expansionCallback: (int index, bool isExpanded) {
               setState(() {
                 _panelOpen[index] = !isExpanded;
               });
             },
-            expandedHeaderPadding: EdgeInsets.all(8),
-            children: [
-              _buildPanel('Basics', [GameRules.basicRules], 0),
+            expandedHeaderPadding: const EdgeInsets.all(8),
+            children: <ExpansionPanel>[
+              _buildPanel('Basics', <String>[GameRules.basicRules], 0),
               _buildPanel('Take a drink when', GameRules.normalRules, 1),
               _buildPanel('Down the Hatch', GameRules.dthRules, 2),
               _buildPanel(
@@ -46,7 +46,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                   3),
               ExpansionPanel(
                 headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(title: Text('Characters Rules'));
+                  return const ListTile(title: Text('Characters Rules'));
                 },
                 canTapOnHeader: true,
                 body: Column(
@@ -63,7 +63,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                           _characterPanelOpen[index] = !innerIsExpanded;
                         });
                       },
-                      children: [
+                      children: <ExpansionPanel>[
                         _buildPanel(
                             character.displayName, character.rules, index,
                             isCharacterPanel: true)
@@ -95,7 +95,7 @@ class _RulesMobileState extends State<_RulesMobile> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(
                     item.ruleName,
                     style: TextStyle(
@@ -104,7 +104,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                       color: Theme.of(context).textTheme.bodyMedium!.color,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     item.ruleDescription,
                     style: TextStyle(
@@ -115,7 +115,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                   ),
                   if (examples != null)
                     ...examples.map(
-                      (example) => Padding(
+                      (String example) => Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                           example,
@@ -134,7 +134,7 @@ class _RulesMobileState extends State<_RulesMobile> {
           } else if (item is String) {
             return ListTile(title: Text(item));
           } else {
-            throw FormatException('Unsupported body item type');
+            throw const FormatException('Unsupported body item type');
           }
         }).toList(),
       ),

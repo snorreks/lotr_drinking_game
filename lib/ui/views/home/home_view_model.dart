@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/base_view_model.dart';
@@ -8,7 +7,7 @@ import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/preferences_service.dart';
 
-class HomeViewModel extends ChangeNotifier implements BaseViewModel {
+class HomeViewModel extends BaseNotifierViewModel {
   HomeViewModel(this._ref);
 
   final Ref _ref;
@@ -26,7 +25,7 @@ class HomeViewModel extends ChangeNotifier implements BaseViewModel {
     await _ref.read(fellowshipService).incrementDrink();
   }
 
-  Future<void> downTheHatchIncrement(int downTheHatchSips) async {
+  Future<void> incrementDownTheHatch(int downTheHatchSips) async {
     for (int i = 0; i < downTheHatchSips; i++) {
       await _ref.read(fellowshipService).incrementDrink();
     }
@@ -43,36 +42,6 @@ class HomeViewModel extends ChangeNotifier implements BaseViewModel {
   Future<void> resolveCallout(bool hasAccepted) async {
     await _ref.read(fellowshipService).resolveCallout(hasAccepted);
   }
-
-  @override
-  void dispose() {
-    // implement your dispose logic here
-    super.dispose();
-  }
-
-  @override
-  void logError(String message, error, [StackTrace? stackTrace]) {
-    //TODO: implement logError
-  }
-
-  @override
-  void logInfo(String message) {
-    // TODO: implement logInfo
-  }
-
-  @override
-  void logWTF(String message, [error, StackTrace? stackTrace]) {
-    // TODO: implement logWTF
-  }
-
-  @override
-  void logWarning(String message, [error, StackTrace? stackTrace]) {
-    // TODO: implement logWarning
-  }
-
-  @override
-  // TODO: implement modelTitle
-  String get modelTitle => throw UnimplementedError();
 }
 
 final AutoDisposeProvider<HomeViewModel> homeViewModel =

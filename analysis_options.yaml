@@ -11,7 +11,9 @@ analyzer:
   exclude:
     - "bin/cache/**"
     - "lib/models/**.g.dart"
+    - "lib/firebase_options.dart"
     - "dev/conductor/lib/proto/*"
+    - "analysis_options.yaml"
 
 linter:
   rules:

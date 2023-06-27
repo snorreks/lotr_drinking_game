@@ -54,11 +54,11 @@ class _CharacterMobile extends StatelessWidget {
                         viewModel.isTaken(fellowship, character);
                     final String name = character.displayName;
                     return GestureDetector(
-                      key: ValueKey(character),
+                      key: ValueKey<Character>(character),
                       onTap: isTaken
                           ? null
                           : () => viewModel.selectCharacter(character),
-                      child: Container(
+                      child: SizedBox(
                         height: 200,
                         child: Card(
                           child: Stack(
@@ -85,10 +85,7 @@ class _CharacterMobile extends StatelessWidget {
                                     ? BlendMode.saturation
                                     : BlendMode
                                         .saturation, // this is what applies the grayscale effect
-                                child: Image.asset(
-                                  'assets/images/characters/${character.value}.png',
-                                  fit: BoxFit.fitHeight,
-                                ),
+                                child: Avatar(character, fit: BoxFit.fitHeight),
                               ),
                               if (isTaken)
                                 Positioned.fill(
