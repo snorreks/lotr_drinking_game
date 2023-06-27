@@ -71,20 +71,20 @@ class _CharacterMobile extends StatelessWidget {
                                             Colors.black,
                                             Colors.white
                                           ],
-                                          stops: [0.0, 1.0],
+                                          stops: <double>[0.0, 1.0],
                                         ).createShader(bounds)
                                       : const LinearGradient(
                                           colors: <Color>[
                                             Colors.transparent,
                                             Colors.transparent
                                           ],
-                                          stops: [0.0, 1.0],
+                                          stops: <double>[0.0, 1.0],
                                         ).createShader(bounds);
                                 },
                                 blendMode: isTaken
                                     ? BlendMode.saturation
                                     : BlendMode
-                                        .saturation, // this is what applies the grayscale effect
+                                        .saturation, // this is what applies the gray scale effect
                                 child: Avatar(character, fit: BoxFit.fitHeight),
                               ),
                               if (isTaken)

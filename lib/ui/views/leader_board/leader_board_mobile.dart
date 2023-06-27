@@ -18,9 +18,9 @@ class _LeaderBoardMobile extends StatelessWidget {
           length: 3,
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Leaderboard'),
+              title: const Text('Leader board'),
               bottom: const TabBar(
-                tabs: [
+                tabs: <Tab>[
                   Tab(text: 'Members'),
                   Tab(text: 'Bar Chart'),
                   Tab(text: 'Line Chart'),
@@ -28,7 +28,7 @@ class _LeaderBoardMobile extends StatelessWidget {
               ),
             ),
             body: TabBarView(
-              children: [
+              children: <Widget>[
                 _buildMembersTab(fellowship),
                 _buildBarChartTab(fellowship),
                 _buildLineChartTab(fellowship),
@@ -77,7 +77,7 @@ class _LeaderBoardMobile extends StatelessWidget {
         alignment: BarChartAlignment.spaceBetween,
         borderData: FlBorderData(
           show: true,
-          border: Border.symmetric(
+          border: const Border.symmetric(
             horizontal: BorderSide(),
           ),
         ),
@@ -110,7 +110,7 @@ class _LeaderBoardMobile extends StatelessWidget {
         ),
         gridData: FlGridData(
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (double value) => FlLine(
+          getDrawingHorizontalLine: (double value) => const FlLine(
             strokeWidth: 1,
           ),
         ),
@@ -164,7 +164,7 @@ class _LeaderBoardMobile extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: rod.color,
                   fontSize: 18,
-                  shadows: const [
+                  shadows: const <Shadow>[
                     Shadow(
                       color: Colors.black26,
                       blurRadius: 12,
