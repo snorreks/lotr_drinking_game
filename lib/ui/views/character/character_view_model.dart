@@ -25,17 +25,24 @@ class CharacterViewModel extends BaseViewModel {
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;
 
-  Future<void> selectCharacter(Character character) async {
+  Future<void> selectCharacter(Character character, bool isFirst) async {
     _loadingSubject.add(true);
 
     final String username = usernameController.text.isEmpty
         ? character.displayName
         : usernameController.text;
 
-    await _ref
-        .read(fellowshipService)
-        .selectCharacter(username: username, character: character);
+    await _ref.read(fellowshipService).selectCharacter(
+        username: username, character: character, isFirst: isFirst);
     _loadingSubject.add(false);
+  }
+
+  bool isFirst(Fellowship fellowship) {
+    if (fellowship.members.isEmpty) {
+      return true;
+    }
+
+    return false;
   }
 
   bool isTaken(Fellowship fellowship, Character character) {

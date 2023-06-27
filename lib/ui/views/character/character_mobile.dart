@@ -42,6 +42,7 @@ class _CharacterMobile extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final Fellowship fellowship = snapshot.data!;
+                final bool isFirst = viewModel.isFirst(fellowship);
                 return GridView.count(
                   crossAxisCount: 2,
                   crossAxisSpacing: 30,
@@ -54,10 +55,10 @@ class _CharacterMobile extends StatelessWidget {
                         viewModel.isTaken(fellowship, character);
                     final String name = character.displayName;
                     return GestureDetector(
-                      key: ValueKey(character),
+                      key: ValueKey<Character>(character),
                       onTap: isTaken
                           ? null
-                          : () => viewModel.selectCharacter(character),
+                          : () => viewModel.selectCharacter(character, isFirst),
                       child: Container(
                         height: 200,
                         child: Card(

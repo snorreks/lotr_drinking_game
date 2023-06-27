@@ -12,6 +12,7 @@ FellowshipMember _$FellowshipMemberFromJson(Map<String, dynamic> json) =>
       drinks: json['drinks'] as int,
       saves: json['saves'] as int,
       callout: json['callout'] as String,
+      isAdmin: json['isAdmin'] as bool,
       character: $enumDecode(_$CharacterEnumMap, json['character']),
     );
 
@@ -21,6 +22,7 @@ Map<String, dynamic> _$FellowshipMemberToJson(FellowshipMember instance) =>
       'drinks': instance.drinks,
       'saves': instance.saves,
       'callout': instance.callout,
+      'isAdmin': instance.isAdmin,
     };
 
 const _$CharacterEnumMap = {
