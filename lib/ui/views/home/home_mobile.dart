@@ -223,6 +223,12 @@ class _HomeMobile extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 viewModel.resolveCallout(true);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('You have accepted the callout. +2 drinks'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
             TextButton(
@@ -230,6 +236,12 @@ class _HomeMobile extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 viewModel.resolveCallout(false);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('You have rejected the call out...'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
           ],
@@ -304,18 +316,21 @@ class _HomeMobile extends StatelessWidget {
               );
             }
           case 'callout':
-            List<FellowshipMember>? members =
-                fellowship.members.values.toList();
-            showCalloutModal(
-              context: context,
-              players:
-                  members, //HERE I WANT FELLOWSHIPMEMBERS!! IT WORKED NVM<3
-              rules: GameRules
-                  .rules, //TODO: MAKE SURE CHARACTER RULES ARE INCLUDED AS WELL
-              onSend: (FellowshipMember player, String category, String rule) {
-                viewModel.sendCallout(player, rule);
-              },
-            );
+            {
+              List<FellowshipMember>? members =
+                  fellowship.members.values.toList();
+              showCalloutModal(
+                context: context,
+                players:
+                    members, //HERE I WANT FELLOWSHIPMEMBERS!! IT WORKED NVM<3
+                rules: GameRules
+                    .rules, //TODO: MAKE SURE CHARACTER RULES ARE INCLUDED AS WELL
+                onSend:
+                    (FellowshipMember player, String category, String rule) {
+                  viewModel.sendCallout(player, rule);
+                },
+              );
+            }
         }
       }
     });
