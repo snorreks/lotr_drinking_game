@@ -5,8 +5,10 @@ class _HomeMobile extends StatelessWidget {
   final HomeViewModel viewModel;
 
   //Stores member,which I can access amount of drinks from.
-  final ValueNotifier<FellowshipMember?> memberNotifier = ValueNotifier(null);
-  final ValueNotifier<Fellowship?> fellowshipNotifier = ValueNotifier(null);
+  final ValueNotifier<FellowshipMember?> memberNotifier =
+      ValueNotifier<FellowshipMember?>(null);
+  final ValueNotifier<Fellowship?> fellowshipNotifier =
+      ValueNotifier<Fellowship?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class _HomeMobile extends StatelessWidget {
 
                 //Callout check, if callout exists, a dialog spawns!
                 if (member != null && member.callout.isNotEmpty) {
-                  WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
                     _showCalloutDialog(context, member.callout);
                   });
                 }
@@ -216,7 +218,7 @@ class _HomeMobile extends StatelessWidget {
         return AlertDialog(
           title: const Text('Called out'),
           content: Text(
-              'A player has seen that you have skipped a sip.\nThey claim you forgot to drink when:\n${callout}'),
+              'A player has seen that you have skipped a sip.\nThey claim you forgot to drink when:\n$callout'),
           actions: <Widget>[
             TextButton(
               child: const Text('Approve'),
