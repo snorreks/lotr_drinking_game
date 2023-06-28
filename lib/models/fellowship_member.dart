@@ -22,6 +22,7 @@ class FellowshipMember {
     this.drinks = const <DateTime>[],
     this.saves = const <DateTime>[],
     this.callout,
+    required this.isAdmin,
   });
 
   factory FellowshipMember.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +36,8 @@ class FellowshipMember {
   final List<DateTime> saves;
   @JsonKey(includeToJson: false)
   final String? callout;
+  @JsonKey()
+  final bool isAdmin;
 
   @JsonKey(includeToJson: false)
   final Character character;

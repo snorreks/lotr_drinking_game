@@ -25,10 +25,10 @@ abstract class FellowshipServiceModel {
 
   Future<bool> joinFellowship(String fellowshipPIN);
 
-  Future<bool> selectCharacter({
-    required String username,
-    required Character character,
-  });
+  Future<bool> selectCharacter(
+      {required String username,
+      required Character character,
+      required bool isFirst});
 
   Future<bool> createFellowship(String fellowshipId);
 
@@ -175,6 +175,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   Future<bool> selectCharacter({
     required String username,
     required Character character,
+    required bool isFirst,
   }) async {
     try {
       if (_fellowshipId == null) {
@@ -183,7 +184,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
 
       await _fellowshipRepository.addMember(
         _fellowshipId!,
-        FellowshipMember(name: username, character: character),
+        FellowshipMember(name: username, character: character, isAdmin: isFirst),
       );
 
       _preferencesService.character = character;
@@ -287,7 +288,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return true;
       }
     } catch (e) {
-      logError('sendCallout', e);
+      logError('resolveCallout', e);
       return false;
     }
   }

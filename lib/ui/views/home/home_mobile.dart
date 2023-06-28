@@ -24,6 +24,7 @@ class _HomeMobile extends StatelessWidget {
           });
         }
 
+
         return Scaffold(
             floatingActionButton: InkWell(
                 splashColor: Colors.blue,
@@ -89,6 +90,7 @@ class _HomeMobile extends StatelessWidget {
           content: Text(
             'A player has seen that you have skipped a sip.\nThey claim you forgot to drink when:\n$callout',
           ),
+
           actions: <Widget>[
             TextButton(
               child: const Text('Approve'),
