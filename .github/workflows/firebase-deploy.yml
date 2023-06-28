@@ -38,6 +38,6 @@ jobs:
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: 1:668643921360:android:6780eda95b60741b8cfdd5
-          serviceCredentialsFileContent: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}"
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
           groups: android
           file: build/app/outputs/flutter-apk/app-release.apk
