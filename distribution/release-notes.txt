@@ -1,5 +1,3 @@
-# Version 0.0.1
+# Version 1.0.1
 
-*   Unique character for each player
-*   Navigation of rules
-*   Compare how much you have had to drink with the rest of the group
+*   Graphs

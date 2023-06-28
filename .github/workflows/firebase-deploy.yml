@@ -1,51 +1,75 @@
 name: Deploy to Firebase Hosting and Firebase App Distribution
+
 on:
   push:
     branches:
       - master
 
 jobs:
-  build_and_deploy_web:
+  build_web:
+    name: Build Flutter (Web)
     runs-on: ubuntu-latest
-
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+          channel: 'stable'
+    - run: flutter pub get
+    - run: flutter build web
+    - name: Archive Production Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: web-build
+        path: build/web
+  build_apk:
+    name: Build Flutter (Android)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+          channel: 'stable'
+    - run: flutter pub get
+    - run: flutter build apk
+    - name: Upload APK
+      uses: actions/upload-artifact@master
+      with:
+        name: apk-build
+        path: build/app/outputs/flutter-apk
+  deploy_web:
+    name: Deploy Web to Firebase Hosting
+    needs: build_web
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - name: Download Artifact
+        uses: actions/download-artifact@master
         with:
-          channel: "stable"
-      - run: flutter pub get
-
-      - name: Build web
-        run: flutter build web
-
-      - name: Deploy to Firebase Hosting
+          name: web-build
+          path: web-build
+      - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting
+          args: deploy --only hosting --public web-build
         env:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}
           FIREBASE_CLI_EXPERIMENTS: webframeworks
-
-  build_and_deploy_android:
+          PROJECT_ID: lotr-drinking-game
+  deploy_android:
+    name: Upload Android Beta to Firebase App Distribution
+    needs: [build_apk]
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-      - run: flutter pub get
-
-      - name: Build apk
-        run: flutter build apk
-
-      - name: Deploy to Firebase App Distribution
-        uses: w9jds/firebase-action@master
-        with:
-          args: appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"
-        env:
-          GCP_SA_KEY: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
+    - uses: actions/checkout@v3
+    - name: Download Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: apk-build
+    - name: Upload APK
+      uses: wzieba/Firebase-Distribution-Github-Action@v1
+      with:
+        appId: 1:668643921360:android:6780eda95b60741b8cfdd5
+        serviceCredentialsFileContent: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
+        groups: android
+        file: app-release.apk
