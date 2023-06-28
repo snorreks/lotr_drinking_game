@@ -23,7 +23,7 @@ jobs:
       - name: Deploy to Firebase Hosting
         uses: w9jds/firebase-action@master
         with:
-          args: experiments:enable deploy --only hosting
+          args: experiments:enable deploy
         env:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}
 
