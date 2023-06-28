@@ -46,16 +46,26 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: web-build
-          path: web-build
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+          path: build/web
+      # Deploy to Firebase
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          args: deploy --only hosting --public web-build
-        env:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}"
+          channelId: live
+          projectId: lotr-drinking-game
+        env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
-          PROJECT_ID: lotr-drinking-game
+      # - name: Deploy to Firebase
+      #   uses: w9jds/firebase-action@master
+      #   with:
+      #     args: deploy --only hosting --public web-build
+      #   env:
+      #     repoToken: "${{ secrets.GITHUB_TOKEN }}"
+      #     GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}
+      #     FIREBASE_CLI_EXPERIMENTS: webframeworks
+      #     PROJECT_ID: lotr-drinking-game
   deploy_android:
     name: Upload Android Beta to Firebase App Distribution
     needs: [build_apk]
