@@ -25,42 +25,43 @@ class _HomeMobile extends StatelessWidget {
         }
 
         return Scaffold(
-          floatingActionButton: InkWell(
-              splashColor: Colors.blue,
-              onLongPress: () {
-                _showMenu(context, member, fellowship);
-              },
-              child: FloatingActionButton(
-                onPressed: () {
-                  viewModel.incrementDrink();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('+1 drink!'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
+            floatingActionButton: InkWell(
+                splashColor: Colors.blue,
+                onLongPress: () {
+                  _showMenu(context, member, fellowship);
                 },
-                child: const Icon(Icons.sports_bar),
-              )),
-          body: Column(
-            children: <Widget>[
-              const SizedBox(height: 15),
-              FellowshipCard(
-                fellowshipName: fellowshipName,
-                member: member,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    viewModel.incrementDrink();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('+1 drink!'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.sports_bar),
+                )),
+            body: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(height: 15),
+                  FellowshipCard(
+                    fellowshipName: fellowshipName,
+                    member: member,
+                  ),
+                  const SizedBox(height: 15),
+                  _rules(character),
+                ],
               ),
-              const SizedBox(height: 15),
-              _rules(character),
-            ],
-          ),
-        );
+            ));
       },
     );
   }
 
   Widget _rules(Character character) {
     return Card(
-      child: Center(
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             const SizedBox(height: 15),
@@ -289,15 +290,15 @@ class RulesList extends StatelessWidget {
           ),
         ),
         const SizedBox(
-            height: 10), // Adjust the spacing between the title and rules
-
-        // Use ListView.builder instead of RichText to display the bullet points
+          height: 10,
+        ),
         ListView(
           shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
           children: <Padding>[
             for (String rule in rules)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
