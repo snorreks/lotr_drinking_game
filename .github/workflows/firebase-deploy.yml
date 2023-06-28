@@ -21,12 +21,11 @@ jobs:
         run: flutter build web
 
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: w9jds/firebase-action@master
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}"
-          channelId: live
-          projectId: lotr-drinking-game
+          args: deploy --only hosting
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}
 
   build_and_deploy_android:
     runs-on: ubuntu-latest
@@ -44,9 +43,8 @@ jobs:
         run: flutter build apk
 
       - name: Deploy to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        uses: w9jds/firebase-action@master
         with:
-          appId: 1:668643921360:android:6780eda95b60741b8cfdd5
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
-          groups: android
-          file: build/app/outputs/flutter-apk/app-release.apk
+          args: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}

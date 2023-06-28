@@ -14,7 +14,10 @@ class _HomeMobile extends StatelessWidget {
         }
         final Fellowship fellowship = snapshot.data!;
         final Character character = viewModel.character!;
-        final FellowshipMember member = fellowship.members[character]!;
+        final FellowshipMember? member = fellowship.members[character];
+        if (member == null) {
+          return const Center(child: Loading());
+        }
         final String fellowshipName = fellowship.name;
 
         // Callout check, if callout exists, a dialog spawns!
@@ -254,8 +257,14 @@ class FellowshipCard extends StatelessWidget {
             children: <Expanded>[
               Expanded(
                 child: ListTile(
-                  title: Text(character.displayName),
+                  title: Text(member.name),
                   subtitle: Text('${member.drinksAmount} drinks'),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text(character.displayName),
+                  subtitle: Text('${member.savesAmount} saves'),
                 ),
               ),
             ],
@@ -300,7 +309,7 @@ class RulesList extends StatelessWidget {
                     Text(
                       '• ',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                         fontWeight: FontWeight.bold,
                       ),
@@ -309,7 +318,7 @@ class RulesList extends StatelessWidget {
                       child: Text(
                         rule,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 14,
                           color: Theme.of(context).textTheme.bodyMedium!.color,
                         ),
                       ),

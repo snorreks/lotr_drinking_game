@@ -17,23 +17,27 @@ class _LeaderBoardMobile extends StatelessWidget {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            appBar: AppBar(
-              bottom: const TabBar(
-                tabs: <Tab>[
-                  Tab(text: 'Members'),
-                  Tab(text: 'Bar Chart'),
-                  Tab(text: 'Line Chart'),
-                ],
+              appBar: AppBar(
+                title: const TabBar(
+                  tabs: <Tab>[
+                    Tab(text: 'Members'),
+                    Tab(text: 'Bar Chart'),
+                    Tab(text: 'Line Chart'),
+                  ],
+                ),
               ),
-            ),
-            body: TabBarView(
-              children: <Widget>[
-                _buildMembersTab(fellowship),
-                _buildBarChartTab(fellowship),
-                _buildLineChartTab(fellowship),
-              ],
-            ),
-          ),
+              body: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: <Widget>[
+                    // BarChartSample7(),
+                    _buildMembersTab(fellowship),
+                    FellowshipBarChart(fellowship: fellowship),
+                    FellowshipLineChart(fellowship: fellowship),
+                  ],
+                ),
+              )),
         );
       },
     );
@@ -85,23 +89,12 @@ class _LeaderBoardMobile extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 30,
-              // getTitles: (value) => value.toInt().toString(),
             ),
           ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 36,
-              // getTitles: (value) {
-              //   final index = value.toInt();
-              //   return SideTitleWidget(
-              //     axisSide: AxisSide.bottom,
-              //     child: _IconWidget(
-              //       color: colors[index],
-              //       isSelected: false, // Change to true if needed
-              //     ),
-              //   );
-              // },
             ),
           ),
           rightTitles: AxisTitles(),

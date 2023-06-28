@@ -19,6 +19,8 @@ import '../character/character_view.dart';
 import 'leader_board_view_model.dart';
 
 part 'leader_board_mobile.dart';
+part 'widgets/bar_chart.dart';
+part 'widgets/line_chart.dart';
 
 class LeaderBoardView extends ConsumerWidget {
   const LeaderBoardView({super.key});
