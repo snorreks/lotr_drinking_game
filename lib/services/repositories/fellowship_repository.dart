@@ -189,12 +189,12 @@ class FellowshipRepository extends BaseService
       if (drinks > 0) {
         await _updateDocument(fellowshipId, <String, dynamic>{
           'members.${character.value}.callout': FieldValue.delete(),
-          'members.${character.value}.drinks': FieldValue.arrayUnion(
-            List<Timestamp>.generate(
-              drinks,
-              (int index) => Timestamp.now(),
-            ),
-          )
+          'members.${character.value}.drinks':
+              FieldValue.arrayUnion(<Timestamp>[Timestamp.now()]),
+        });
+        await _updateDocument(fellowshipId, <String, dynamic>{
+          'members.${character.value}.drinks':
+              FieldValue.arrayUnion(<Timestamp>[Timestamp.now()]),
         });
       } else {
         await _updateDocument(fellowshipId, <String, dynamic>{

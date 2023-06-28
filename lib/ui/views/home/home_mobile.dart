@@ -60,7 +60,7 @@ class _HomeMobile extends StatelessWidget {
 
   Widget _rules(Character character) {
     return Card(
-      child: Center(
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             const SizedBox(height: 15),
@@ -293,7 +293,7 @@ class RulesList extends StatelessWidget {
           children: <Padding>[
             for (String rule in rules)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
