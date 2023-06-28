@@ -4,11 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/base_service.dart';
 import 'preferences_service.dart';
 
-enum Theme {
-  system,
-  light,
-  dark,
-}
+export 'package:flutter/material.dart' show ThemeMode;
 
 /// ApplicationService contains the state of the application.
 ///
@@ -74,6 +70,9 @@ class ApplicationService extends BaseService
   @override
   Future<void> initialize() async {
     _initialized = true;
+    if (themeMode != ThemeMode.system) {
+      notifyListeners();
+    }
   }
 }
 

@@ -20,63 +20,56 @@ class _RulesMobileState extends State<_RulesMobile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Game Rules'),
-      ),
-      body: ListView(
-        children: [
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              setState(() {
-                _panelOpen[index] = !isExpanded;
-              });
-            },
-            expandedHeaderPadding: EdgeInsets.all(8),
-            children: [
-              _buildPanel('Basics', [GameRules.basicRules], 0),
-              _buildPanel('Take a drink when', GameRules.normalRules, 1),
-              _buildPanel('Down the Hatch', GameRules.dthRules, 2),
-              _buildPanel(
-                  'Additional Rules',
-                  GameRules.additionalRules
-                      .map((RuleWithName ruleWithName) =>
-                          '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
-                      .toList(),
-                  3),
-              ExpansionPanel(
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(title: Text('Characters Rules'));
-                },
-                canTapOnHeader: true,
-                body: Column(
-                  children: Character.values
-                      .asMap()
-                      .entries
-                      .map((MapEntry<int, Character> entry) {
-                    final int index = entry.key;
-                    final Character character = entry.value;
-                    return ExpansionPanelList(
-                      expansionCallback:
-                          (int innerIndex, bool innerIsExpanded) {
-                        setState(() {
-                          _characterPanelOpen[index] = !innerIsExpanded;
-                        });
-                      },
-                      children: [
-                        _buildPanel(
-                            character.displayName, character.rules, index,
-                            isCharacterPanel: true)
-                      ],
-                    );
-                  }).toList(),
-                ),
-                isExpanded: _panelOpen[4],
+    return ListView(
+      children: <Widget>[
+        ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() {
+              _panelOpen[index] = !isExpanded;
+            });
+          },
+          expandedHeaderPadding: const EdgeInsets.all(8),
+          children: <ExpansionPanel>[
+            _buildPanel('Basics', <String>[GameRules.basicRules], 0),
+            _buildPanel('Take a drink when', GameRules.normalRules, 1),
+            _buildPanel('Down the Hatch', GameRules.dthRules, 2),
+            _buildPanel(
+                'Additional Rules',
+                GameRules.additionalRules
+                    .map((RuleWithName ruleWithName) =>
+                        '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
+                    .toList(),
+                3),
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return const ListTile(title: Text('Characters Rules'));
+              },
+              canTapOnHeader: true,
+              body: Column(
+                children: Character.values
+                    .asMap()
+                    .entries
+                    .map((MapEntry<int, Character> entry) {
+                  final int index = entry.key;
+                  final Character character = entry.value;
+                  return ExpansionPanelList(
+                    expansionCallback: (int innerIndex, bool innerIsExpanded) {
+                      setState(() {
+                        _characterPanelOpen[index] = !innerIsExpanded;
+                      });
+                    },
+                    children: <ExpansionPanel>[
+                      _buildPanel(character.displayName, character.rules, index,
+                          isCharacterPanel: true)
+                    ],
+                  );
+                }).toList(),
               ),
-            ],
-          ),
-        ],
-      ),
+              isExpanded: _panelOpen[4],
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -95,7 +88,7 @@ class _RulesMobileState extends State<_RulesMobile> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(
                     item.ruleName,
                     style: TextStyle(
@@ -104,7 +97,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                       color: Theme.of(context).textTheme.bodyMedium!.color,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     item.ruleDescription,
                     style: TextStyle(
@@ -115,7 +108,7 @@ class _RulesMobileState extends State<_RulesMobile> {
                   ),
                   if (examples != null)
                     ...examples.map(
-                      (example) => Padding(
+                      (String example) => Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                           example,
@@ -134,7 +127,7 @@ class _RulesMobileState extends State<_RulesMobile> {
           } else if (item is String) {
             return ListTile(title: Text(item));
           } else {
-            throw FormatException('Unsupported body item type');
+            throw const FormatException('Unsupported body item type');
           }
         }).toList(),
       ),

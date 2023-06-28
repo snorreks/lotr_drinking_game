@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../constants/characters.dart';
-import '../../../services/app/application_service.dart';
+import '../../../models/fellowship.dart';
+import '../../../models/fellowship_member.dart';
+import '../../widgets/avatar.dart';
 import 'root_view_model.dart';
 
 class RootView extends ConsumerWidget {
@@ -49,45 +52,37 @@ class RootView extends ConsumerWidget {
       drawer: Drawer(
         child: Column(
           children: <Widget>[
-            StreamBuilder<Character?>(
-              stream: viewModel.characterStream,
-              builder:
-                  (BuildContext context, AsyncSnapshot<Character?> snapshot) {
-                if (snapshot.hasData && snapshot.data != null) {
-                  final Character character = snapshot.data!;
-                  return UserAccountsDrawerHeader(
-                    accountName: const Text('LOTR Drinking Game'),
-                    accountEmail: Text(character.displayName),
-                    currentAccountPicture: const CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        'LG',
-                        style: TextStyle(fontSize: 40.0),
-                      ),
-                    ),
-                  );
-                } else {
+            StreamBuilder<FellowshipMember?>(
+              stream: viewModel.memberStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<FellowshipMember?> snapshot) {
+                if (!snapshot.hasData && snapshot.data == null) {
                   return Container();
                 }
+                final FellowshipMember member = snapshot.data!;
+                final Character character = member.character;
+                return UserAccountsDrawerHeader(
+                  accountName: Text(member.name),
+                  accountEmail: Text(character.displayName),
+                  currentAccountPicture: Avatar(
+                    character,
+                    circle: true,
+                  ),
+                );
               },
             ),
 
-            ListTile(
-              leading: const Icon(Icons.light_mode),
-              title: const Text('Change Theme'),
-              onTap: () {
-                if (ref.read(applicationService).themeMode == ThemeMode.dark) {
-                  ref.read(applicationService).changeTheme(ThemeMode.light);
-                } else {
-                  ref.read(applicationService).changeTheme(ThemeMode.dark);
-                }
-              },
-            ),
-            ListTile(
-                leading: const Icon(Icons.local_bar),
-                title: const Text('Drinking settings'),
-                onTap: () {}),
+            _themeSwitcher(viewModel),
+
+            // ListTile(
+            //     leading: const Icon(Icons.local_bar),
+            //     title: const Text('Drinking settings'),
+            //     onTap: () {}),
             const Spacer(), // Pushes the logout button to the bottom
+            _pinCode(viewModel),
+            const SizedBox(height: 20),
+            const Divider(),
+
             ListTile(
               leading: const Icon(Icons.exit_to_app),
               title: const Text('Logout'),
@@ -96,6 +91,88 @@ class RootView extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _themeSwitcher(RootViewModel viewModel) {
+    return StreamBuilder<ThemeMode>(
+      stream: viewModel.themeStream,
+      builder: (BuildContext context, AsyncSnapshot<ThemeMode> snapshot) {
+        final ThemeMode selectedThemeMode = snapshot.data ?? ThemeMode.system;
+
+        return ListTile(
+          leading: const Text('Theme'),
+          title: DropdownButton<ThemeMode>(
+            value: selectedThemeMode,
+            onChanged: (ThemeMode? newValue) {
+              viewModel.changeTheme(newValue ?? ThemeMode.system);
+            },
+            items: const <DropdownMenuItem<ThemeMode>>[
+              DropdownMenuItem<ThemeMode>(
+                value: ThemeMode.system,
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.auto_awesome),
+                    SizedBox(width: 10),
+                    Text('System'),
+                  ],
+                ),
+              ),
+              DropdownMenuItem<ThemeMode>(
+                value: ThemeMode.dark,
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.dark_mode),
+                    SizedBox(width: 10),
+                    Text('Dark Mode'),
+                  ],
+                ),
+              ),
+              DropdownMenuItem<ThemeMode>(
+                value: ThemeMode.light,
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.light_mode),
+                    SizedBox(width: 10),
+                    Text('Light Mode'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _pinCode(RootViewModel viewModel) {
+    return StreamBuilder<Fellowship?>(
+      stream: viewModel.fellowshipStream,
+      builder: (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
+        if (!snapshot.hasData && snapshot.data == null) {
+          return Container();
+        }
+        final Fellowship selectedThemeMode = snapshot.data!;
+        final String pinCode = selectedThemeMode.pin;
+
+        return ListTile(
+          title: Align(
+            alignment: Alignment.centerRight,
+            child: Text('PIN: $pinCode'),
+          ),
+          subtitle: ElevatedButton(
+            onPressed: () {
+              Clipboard.setData(
+                ClipboardData(text: pinCode),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('PIN copied to clipboard')),
+              );
+            },
+            child: const Text('Copy PIN'),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum Character {
   frodo,
   sam,
@@ -71,48 +73,67 @@ extension CharacterExtension on Character {
   List<String> get rules {
     switch (this) {
       case Character.frodo:
-        return [
+        return <String>[
           'The ring affects his behavior.',
           'He says, “Oh Sam”.',
           'He trips over his own feet.'
         ];
       case Character.sam:
-        return [
+        return <String>[
           'He says, “Mr Frodo”.',
           "He's mean to Gollum.",
           'He supports a Frodo who has once again fucked up or is having a Heroic BSoD'
         ];
       case Character.merrypippin:
-        return [
+        return <String>[
           'They cause trouble or create mischief.',
           'They talk about food.',
           'They show bravery despite their fear.',
           'They manage to make a seemingly hopeless situation light-hearted.'
         ];
       case Character.gandalf:
-        return [
+        return <String>[
           'He gives sage advice or shares a piece of ancient wisdom.',
           'Drink whenever he mysteriously disappears or appears without clear explanation',
-          'Drink whenever he calls on the name of a higher power like “Elberet, “Mithrandir”, or “Udun”'
+          'Drink whenever he calls on the name of a higher power like "Elbereth", "Mithrandir", or "Udun"'
         ];
       case Character.aragorn:
-        return [
+        return <String>[
           'He kills something.',
           "He's doubtful of his ability to be the rightful king of Gondor.",
           'He smiles like an idiot'
         ];
       case Character.legolas:
-        return [
+        return <String>[
           "He uses his bow (extra sip if it's a major action scene).",
           'He gives a silent, knowing look.',
           'He interacts with Gimli, displaying their unique friendship.'
         ];
       case Character.gimli:
-        return [
+        return <String>[
           'He says “dwarf” or “elf”.',
           "He's used as a comic relief (Beware of the Director's Cut).",
           'He mentions the skill or strength of dwarves.'
         ];
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case Character.frodo:
+        return Colors.black;
+      case Character.sam:
+        return Colors.yellow;
+      case Character.merrypippin:
+        return Colors.red;
+      case Character.gandalf:
+        return Colors.green;
+      case Character.aragorn:
+        return Colors.blue;
+      case Character.legolas:
+        return Colors.white;
+      case Character.gimli:
+        return Colors.pink;
     }
   }
 }

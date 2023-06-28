@@ -1,7 +1,7 @@
 class GameRules {
   static const String basicRules =
       'This drinking game works by there being collective rules, meaning rules effecting everyone and character-based rules, effecting only the specific character a player has chosen. When a "Take a drink" or a character-based rule occurs, take only a singular drink out of your drink and press the plus button. If a "Down the Hatch" rule occurs, you must finish whatever contents there are left in the vessel you pour your drink in. There are also additional rules, which are optional rules which the creator of the room selected. These can have varying effects, like having to take extra drinks, taking fewer drinks or being punished for breaking rules.';
-  static final List<String> normalRules = [
+  static final List<String> normalRules = <String>[
     //singular drink rules
     'There is a close up of the Eye of Sauron.',
     'A main bad guy dies',
@@ -9,14 +9,14 @@ class GameRules {
     'A character gives an epic speech or monologue.',
     'Memes like "One does not simply walk into Mordor", "You Shall Not Pass" or "...and my axe!"',
   ];
-  static final List<String> dthRules = [
+  static final List<String> dthRules = <String>[
     //down the hatch rules
     'The fellowship is founded.',
     'Gandalf the White debuts.',
     'The wall falls.',
     'The ring is destroyed (for those who are still alive)',
   ];
-  static final List<RuleWithName> additionalRules = [
+  static final List<RuleWithName> additionalRules = <RuleWithName>[
     //Rules like The Aid of Gondor and the Eye of Sauron
     RuleWithName('The Eye of Sauron',
         "If a viewer (known as the sneaky hobbit) does not drink when clearly prompted to by the rules, another viewer (Sauron) may call the sneaky hobbit out. If the other viewers agree with Sauron's call-out, the sneaky hobbit has to drink two."),
@@ -35,7 +35,7 @@ class GameRules {
         'Upon the start of each movie, a viewer may call for a round of merry Rescue Dice Poker (RDP). RDP works as five card draw poker does, except what you may bet is the rescue die which will be used for the following film. This includes rollover dice. \nBefore the start of the movie, you count up your total of rescue dice. This value will be converted into a set of poker chips, where each rescue dice is a red chip. These may be broken down into blue, green and white chips. A regular game of poker will commence. The game has to last a minimum of two rounds around the table before pulling out, unless someone has lost all their rescue dice.\nParticipation is voluntary.'),
   ];
 
-  static final Map<String, List<String>> rules = {
+  static final Map<String, List<String>> rules = <String, List<String>>{
     'Take a drink': normalRules,
     'Down the Hatch': dthRules,
   };

@@ -13,8 +13,8 @@ Fellowship _$FellowshipFromJson(Map<String, dynamic> json) {
   );
   return Fellowship(
     id: json['id'] as String,
-    name: json['name'] as String,
     pin: json['pin'] as String,
+    name: json['name'] as String,
     members: membersFromJson(json['members']),
   );
 }

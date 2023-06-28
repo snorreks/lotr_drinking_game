@@ -8,27 +8,49 @@ import '../../constants/characters.dart';
 import '../../models/fellowship.dart';
 import '../../models/fellowship_member.dart';
 
+enum IncrementType {
+  drinks,
+  saves,
+}
+
+extension IncrementTypeExtension on IncrementType {
+  String get value {
+    switch (this) {
+      case IncrementType.drinks:
+        return 'drinks';
+      case IncrementType.saves:
+        return 'saves';
+    }
+  }
+}
+
 abstract class FellowshipRepositoryModel {
   ///PIN and ID based get, streams and such. This way we can operate of PINs, making life easier for users.
   ///
   Future<Fellowship?> get(String fellowshipId);
   Future<Fellowship?> getByPin(String fellowshipPin);
 
-  Stream<Fellowship?> streamByPin(String fellowshipPin);
   Stream<Fellowship?> stream(String fellowshipId);
 
   Future<String> create(String fellowshipName);
-  Future<void> update(String fellowshipId, Fellowship fellowship);
+  Future<void> addMember(String fellowshipId, FellowshipMember member);
 
-  Future<void> increment(
-      String fellowshipId, Character character, bool isDrink);
-  Future<void> incrementByPin(
-      String fellowshipPin, Character character, bool isDrink);
+  Future<void> increment({
+    required String fellowshipId,
+    required Character character,
+    required IncrementType type,
+  });
 
-  Future<void> createCallout(
-      String fellowshipId, FellowshipMember character, String rule);
-  Future<void> resolveCallout(
-      String fellowshipId, Character character, int drinks);
+  Future<void> createCallout({
+    required String fellowshipId,
+    required Character character,
+    required String rule,
+  });
+  Future<void> resolveCallout({
+    required String fellowshipId,
+    required Character character,
+    required int drinks,
+  });
 }
 
 class FellowshipRepository extends BaseService
@@ -105,12 +127,16 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> update(String fellowshipId, Fellowship fellowship) async {
+  Future<void> addMember(String fellowshipId, FellowshipMember member) async {
     try {
       final DocumentReference<Map<String, dynamic>> docRef =
           _getFellowshipDocumentReference(fellowshipId);
 
-      await docRef.update(fellowship.toJson());
+      await docRef.update(<String, dynamic>{
+        'members.${member.character.value}': <String, dynamic>{
+          'name': member.name,
+        }
+      });
     } catch (e) {
       logError('updateFellowship', e);
       rethrow;
@@ -118,19 +144,19 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> increment(
-      String fellowshipId, Character character, bool isDrink) async {
+  Future<void> increment({
+    required String fellowshipId,
+    required Character character,
+    required IncrementType type,
+  }) async {
     try {
-      final DocumentReference<Map<String, dynamic>> docRef =
-          _getFellowshipDocumentReference(fellowshipId);
-      if (isDrink) {
-        await docRef.update({
-          'members.${character.value}.drinks': FieldValue.increment(1),
-        });
-      } else {
-        await docRef.update(
-            {'members.${character.value}.saves': FieldValue.increment(1)});
-      }
+      await _updateDocument(fellowshipId, <String, dynamic>{
+        'members.${character.value}.${type.value}': FieldValue.arrayUnion(
+          <Timestamp>[
+            Timestamp.now(),
+          ],
+        ),
+      });
     } catch (e) {
       logError('increment', e);
       rethrow;
@@ -138,14 +164,14 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> createCallout(
-      String fellowshipId, FellowshipMember character, String rule) async {
+  Future<void> createCallout({
+    required String fellowshipId,
+    required Character character,
+    required String rule,
+  }) async {
     try {
-      final DocumentReference<Map<String, dynamic>> docRef =
-          _getFellowshipDocumentReference(fellowshipId);
-
-      await docRef.update({
-        'members.${character.character.value}.callout': rule,
+      await _updateDocument(fellowshipId, <String, dynamic>{
+        'members.${character.value}.callout': rule,
       });
     } catch (e) {
       logError('createCallout', e);
@@ -154,19 +180,25 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> resolveCallout(
-      String fellowshipId, Character character, int drinks) async {
+  Future<void> resolveCallout({
+    required String fellowshipId,
+    required Character character,
+    required int drinks,
+  }) async {
     try {
-      final DocumentReference<Map<String, dynamic>> docRef =
-          _getFellowshipDocumentReference(fellowshipId);
       if (drinks > 0) {
-        await docRef.update({
-          'members.${character.value}.callout': '',
-          'members.${character.value}.drinks': FieldValue.increment(drinks),
+        await _updateDocument(fellowshipId, <String, dynamic>{
+          'members.${character.value}.callout': FieldValue.delete(),
+          'members.${character.value}.drinks':
+              FieldValue.arrayUnion(<Timestamp>[Timestamp.now()]),
+        });
+        await _updateDocument(fellowshipId, <String, dynamic>{
+          'members.${character.value}.drinks':
+              FieldValue.arrayUnion(<Timestamp>[Timestamp.now()]),
         });
       } else {
-        await docRef.update({
-          'members.${character.value}.callout': '',
+        await _updateDocument(fellowshipId, <String, dynamic>{
+          'members.${character.value}.callout': FieldValue.delete(),
         });
       }
     } catch (e) {
@@ -177,11 +209,11 @@ class FellowshipRepository extends BaseService
 
   //SET OF PIN-BASED GETTERS AND SUCH. So you can join games and work off solely a pin-based system.
   @override
-  Future<Fellowship?> getByPin(String pin) async {
+  Future<Fellowship?> getByPin(String fellowshipPin) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> query =
           await _fellowshipCollectionReference
-              .where('pin', isEqualTo: pin)
+              .where('pin', isEqualTo: fellowshipPin)
               .orderBy('createdAt', descending: true)
               .get();
 
@@ -202,52 +234,19 @@ class FellowshipRepository extends BaseService
     }
   }
 
-  @override
-  Stream<Fellowship?> streamByPin(String pin) {
+  Future<void> _updateDocument(
+    String fellowshipId,
+    Map<String, dynamic> data,
+  ) async {
     try {
-      return _fellowshipCollectionReference
-          .where('pin', isEqualTo: pin)
-          .orderBy('createdAt', descending: true)
-          .snapshots()
-          .where((QuerySnapshot<Map<String, dynamic>> query) =>
-              query.docs.isNotEmpty)
-          .map(
-        (QuerySnapshot<Map<String, dynamic>> query) {
-          final DocumentSnapshot<Map<String, dynamic>> doc = query.docs.first;
-          return Fellowship.fromJson(<String, dynamic>{
-            ...doc.data()!,
-            'id': doc.id,
-          });
-        },
-      );
-    } catch (e) {
-      logError('streamByPin', e);
-      return const Stream<Fellowship?>.empty();
-    }
-  }
-
-  @override
-  Future<void> incrementByPin(
-      String pin, Character character, bool isDrink) async {
-    try {
-      final QuerySnapshot<Map<String, dynamic>> query =
-          await _fellowshipCollectionReference
-              .where('pin', isEqualTo: pin)
-              .orderBy('createdAt', descending: true)
-              .get();
-
-      if (query.docs.isEmpty) {
-        throw Exception('No fellowship with the provided PIN');
-      }
-
       final DocumentReference<Map<String, dynamic>> docRef =
-          query.docs.first.reference;
+          _getFellowshipDocumentReference(fellowshipId);
 
-      await docRef.update({
-        'members.${character.value}.drinks': FieldValue.increment(1),
-      });
-    } catch (e) {
-      logError('incrementByPin', e);
+      await docRef.update(data);
+
+      // await docRef.set(data, SetOptions(merge: true));
+    } catch (error) {
+      logError('_updateDocument', error);
       rethrow;
     }
   }

@@ -12,7 +12,7 @@ class GameRulesText {
     ),
   );
 
-  static final List<RichText> normalRules = [
+  static final List<RichText> normalRules = <RichText>[
     RichText(
       text: const TextSpan(
         text: 'There is a close up of the Eye of Sauron.',
@@ -48,7 +48,7 @@ class GameRulesText {
     // Add all your normal rules here
   ];
 
-  static final List<RichText> dthRules = [
+  static final List<RichText> dthRules = <RichText>[
     RichText(
       text: const TextSpan(
         text: 'The fellowship is founded.',
@@ -75,10 +75,10 @@ class GameRulesText {
     )
   ];
 
-  static final List<RichText> additionalRules = [
+  static final List<RichText> additionalRules = <RichText>[
     RichText(
       text: const TextSpan(
-        children: [
+        children: <TextSpan>[
           TextSpan(
             text: 'The Eye of Sauron',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),

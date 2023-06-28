@@ -65,6 +65,8 @@ abstract class RouterServiceModel {
   void pop<T>(T result);
 
   GoRouter get router;
+
+  Location get location;
 }
 
 class RouterService extends BaseService implements RouterServiceModel {
@@ -150,6 +152,16 @@ class RouterService extends BaseService implements RouterServiceModel {
     return RouterService._(router);
   }
   RouterService._(this._router);
+
+  @override
+  Location get location {
+    final String location =
+        _router.routerDelegate.currentConfiguration.uri.toString();
+    return Location.values.firstWhere(
+      (Location l) => l.value == location,
+      orElse: () => Location.home,
+    );
+  }
 
   static final GlobalKey<NavigatorState> _appNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'app');

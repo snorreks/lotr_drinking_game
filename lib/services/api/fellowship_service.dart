@@ -14,8 +14,13 @@ import '../repositories/fellowship_repository.dart';
 abstract class FellowshipServiceModel {
   bool get hasJoinedFellowship;
 
+  /// The current fellowship character
   Stream<Character?> get characterStream;
 
+  /// The current fellowship member
+  Stream<FellowshipMember?> get memberStream;
+
+  /// The current fellowship
   Stream<Fellowship?> get fellowshipStream;
 
   Future<bool> joinFellowship(String fellowshipPIN);
@@ -41,7 +46,16 @@ abstract class FellowshipServiceModel {
 class FellowshipService extends BaseService implements FellowshipServiceModel {
   FellowshipService(this._ref)
       : _characterSubject = BehaviorSubject<Character?>.seeded(
-            _ref.read(preferencesService).character);
+            _ref.read(preferencesService).character) {
+    Rx.combineLatest2<Fellowship?, Character?, FellowshipMember?>(
+      fellowshipStream,
+      characterStream,
+      (Fellowship? fellowship, Character? character) {
+        _updateMemberStream(fellowship, character);
+        return null;
+      },
+    ).listen((_) {});
+  }
 
   final Ref _ref;
 
@@ -64,18 +78,44 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   @override
   Stream<Character?> get characterStream => _characterSubject.stream;
 
+  final BehaviorSubject<Fellowship?> _fellowshipSubject =
+      BehaviorSubject<Fellowship?>();
+
+  Stream<Fellowship?>? _fellowshipStream;
+  final BehaviorSubject<FellowshipMember?> _memberSubject =
+      BehaviorSubject<FellowshipMember?>();
+
   @override
   Stream<Fellowship?> get fellowshipStream {
+    if (_fellowshipStream != null) {
+      return _fellowshipSubject.stream;
+    }
+
     if (_fellowshipId == null) {
       return const Stream<Fellowship?>.empty();
     }
 
-    return _fellowshipRepository.stream(_fellowshipId!).map(
-      (Fellowship? fellowship) {
-        _fellowship = fellowship;
-        return fellowship;
-      },
-    );
+    _fellowshipStream = _fellowshipRepository.stream(_fellowshipId!);
+    _fellowshipStream!.listen((Fellowship? fellowship) {
+      _fellowshipSubject.add(fellowship);
+    }).onDone(() {
+      _fellowshipStream = null; // Reset the stream reference when it's done
+    });
+
+    return _fellowshipSubject.stream;
+  }
+
+  @override
+  Stream<FellowshipMember?> get memberStream => _memberSubject.stream;
+
+  void _updateMemberStream(Fellowship? fellowship, Character? character) {
+    if (fellowship == null || character == null) {
+      _memberSubject.add(null);
+      return;
+    }
+
+    final FellowshipMember? member = fellowship.members[character];
+    _memberSubject.add(member);
   }
 
   @override
@@ -93,10 +133,14 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  Future<bool> incrementDrink() async {
+  Future<bool> incrementDrink() => _increment(IncrementType.drinks);
+
+  @override
+  Future<bool> incrementSaves() => _increment(IncrementType.saves);
+  Future<bool> _increment(IncrementType type) async {
     try {
       if (_fellowshipId == null) {
-        return false;
+        throw Exception('FellowshipId is null');
       }
 
       final Fellowship? fellowship = _fellowship ??
@@ -105,20 +149,24 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
           );
 
       if (fellowship == null) {
-        return false;
+        throw Exception('Fellowship is null');
       }
 
       final Character? character = _preferencesService.character;
 
       if (character == null) {
-        return false;
+        throw Exception('Character is null');
       }
 
-      await _fellowshipRepository.increment(_fellowshipId!, character, true);
+      await _fellowshipRepository.increment(
+        fellowshipId: _fellowshipId!,
+        character: character,
+        type: type,
+      );
 
       return true;
     } catch (e) {
-      logError('incrementDrink', e);
+      logError('_increment $type:', e);
       return false;
     }
   }
@@ -134,27 +182,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return false;
       }
 
-      final Fellowship? fellowship = _fellowship ??
-          await _fellowshipRepository.get(
-            _fellowshipId!,
-          );
-
-      if (fellowship == null) {
-        return false;
-      }
-
-      fellowship.members[character] = FellowshipMember(
-        name: username,
-        drinks: 0,
-        saves: 0,
-        callout: '',
-        isAdmin: isFirst,
-        character: Character.aragorn,
-      );
-
-      await _fellowshipRepository.update(
+      await _fellowshipRepository.addMember(
         _fellowshipId!,
-        fellowship,
+        FellowshipMember(name: username, character: character, isAdmin: isFirst),
       );
 
       _preferencesService.character = character;
@@ -206,38 +236,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  Future<bool> incrementSaves() async {
-    try {
-      if (_fellowshipId == null) {
-        return false;
-      }
-
-      final Fellowship? fellowship = _fellowship ??
-          await _fellowshipRepository.get(
-            _fellowshipId!,
-          );
-
-      if (fellowship == null) {
-        return false;
-      }
-
-      final Character? character = _preferencesService.character;
-
-      if (character == null) {
-        return false;
-      }
-
-      await _fellowshipRepository.increment(_fellowshipId!, character, false);
-
-      return true;
-    } catch (e) {
-      logError('incrementSaves', e);
-      return false;
-    }
-  }
-
-  @override
-  Future<bool> sendCallout(FellowshipMember player, String rule) async {
+  Future<bool> sendCallout(FellowshipMember member, String rule) async {
     try {
       if (_fellowshipId == null) {
         return false;
@@ -247,7 +246,11 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return false;
       }
 
-      await _fellowshipRepository.createCallout(_fellowshipId!, player, rule);
+      await _fellowshipRepository.createCallout(
+        fellowshipId: _fellowshipId!,
+        character: member.character,
+        rule: rule,
+      );
       return true;
     } catch (e) {
       logError('sendCallout', e);
@@ -269,12 +272,19 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
 
       if (hasAccepted) {
         await _fellowshipRepository.resolveCallout(
-            _fellowshipId!, character, 2);
+          fellowshipId: _fellowshipId!,
+          character: character,
+          drinks: 2,
+        );
+
         return true;
       } else {
         //They reject the request
         await _fellowshipRepository.resolveCallout(
-            _fellowshipId!, character, 0);
+          fellowshipId: _fellowshipId!,
+          character: character,
+          drinks: 0,
+        );
         return true;
       }
     } catch (e) {

@@ -1,23 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../common/base_view_model.dart';
-import '../../../constants/characters.dart';
+import '../../../models/fellowship.dart';
+import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
+import '../../../services/app/application_service.dart';
 import '../../../services/app/router_service.dart';
-import '../../themes.dart';
 
 class RootViewModel extends BaseViewModel {
-  RootViewModel(this._ref);
+  RootViewModel(this._ref)
+      : _themeSubject = BehaviorSubject<ThemeMode>.seeded(
+          _ref.read(applicationService).themeMode,
+        );
   final Ref _ref;
-  final ChangeNotifierProvider<ThemeProvider> themeProvider =
-      ChangeNotifierProvider((_) => ThemeProvider());
+
+  final BehaviorSubject<ThemeMode> _themeSubject;
+
+  Stream<ThemeMode> get themeStream => _themeSubject.stream;
 
   int get currentIndex {
-    final String location = _ref.read(routerService).router.location;
-    if (location.startsWith(Location.leaderBoard.value)) {
+    final Location location = _ref.read(routerService).location;
+    if (location == Location.leaderBoard) {
       return 1;
     }
-    if (location.startsWith(Location.rules.value)) {
+    if (location == Location.rules) {
       return 2;
     }
     return 0;
@@ -41,12 +48,16 @@ class RootViewModel extends BaseViewModel {
     _ref.read(routerService).go(Location.login);
   }
 
-  void changeTheme() {
-    _ref.read(themeProvider).toggleTheme();
+  void changeTheme(ThemeMode themeMode) {
+    _themeSubject.add(themeMode);
+    _ref.read(applicationService).changeTheme(themeMode);
   }
 
-  Stream<Character?> get characterStream =>
-      _ref.read(fellowshipService).characterStream;
+  Stream<FellowshipMember?> get memberStream =>
+      _ref.read(fellowshipService).memberStream;
+
+  Stream<Fellowship?> get fellowshipStream =>
+      _ref.read(fellowshipService).fellowshipStream;
 }
 
 final AutoDisposeProvider<RootViewModel> rootViewModel =
