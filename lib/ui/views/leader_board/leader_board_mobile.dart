@@ -180,7 +180,7 @@ class _LeaderBoardMobile extends StatelessWidget {
   }
 
   /// @see
-  /// https://github.com/imaNNeo/fl_chart/blob/master/example/lib/presentation/samples/bar/bar_chart_sample7.dart
+  /// https://github.com/imaNNeo/fl_chart/blob/master/repo_files/documentations/line_chart.md#sample-1-source-code
   /// https://github.com/imaNNeo/fl_chart/blob/master/example/lib/presentation/samples/line/line_chart_sample1.dart
   Widget _buildLineChartTab(Fellowship fellowship) {
     final List<FellowshipMember> members = fellowship.members.values.toList();

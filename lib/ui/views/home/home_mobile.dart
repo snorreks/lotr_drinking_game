@@ -42,7 +42,7 @@ class _HomeMobile extends StatelessWidget {
                 },
                 child: const Icon(Icons.sports_bar),
               )),
-          body: Column(
+          body: ListView(
             children: <Widget>[
               const SizedBox(height: 15),
               FellowshipCard(
@@ -288,12 +288,8 @@ class RulesList extends StatelessWidget {
             color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
-        const SizedBox(
-            height: 10), // Adjust the spacing between the title and rules
-
-        // Use ListView.builder instead of RichText to display the bullet points
-        ListView(
-          shrinkWrap: true,
+        const SizedBox(height: 10),
+        Column(
           children: <Padding>[
             for (String rule in rules)
               Padding(
