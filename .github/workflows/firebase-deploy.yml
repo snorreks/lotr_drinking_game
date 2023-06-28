@@ -23,7 +23,7 @@ jobs:
       - name: Deploy to Firebase Hosting
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting
+          args: experiments:enable deploy --only hosting
         env:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}
 
@@ -45,6 +45,6 @@ jobs:
       - name: Deploy to Firebase App Distribution
         uses: w9jds/firebase-action@master
         with:
-          args: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"
+          args: appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"
         env:
           GCP_SA_KEY: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
