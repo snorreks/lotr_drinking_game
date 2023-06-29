@@ -64,26 +64,35 @@ class RootView extends ConsumerWidget {
                       stream: viewModel.memberStream,
                       builder: (BuildContext context,
                           AsyncSnapshot<FellowshipMember?> snapshot) {
-                        if (!snapshot.hasData && snapshot.data == null) {
-                          Button(
+                        if (!snapshot.hasData || snapshot.data == null) {
+                          return Button(
                               text: 'LOG ME OUT',
                               onPressed: () {
                                 viewModel.signOut();
                               });
                         }
-                        final FellowshipMember member = snapshot.data!;
-                        final Character character = member.character;
-                        return Column(children: [
-                          UserAccountsDrawerHeader(
-                            accountName: Text(member.name),
-                            accountEmail: Text(character.displayName),
-                            currentAccountPicture: Avatar(
-                              character,
-                              circle: true,
+
+                        try {
+                          final FellowshipMember member = snapshot.data!;
+                          final Character character = member.character;
+                          return Column(children: [
+                            UserAccountsDrawerHeader(
+                              accountName: Text(member.name),
+                              accountEmail: Text(character.displayName),
+                              currentAccountPicture: Avatar(
+                                character,
+                                circle: true,
+                              ),
                             ),
-                          ),
-                          _themeSwitcher(viewModel),
-                        ]);
+                            _themeSwitcher(viewModel),
+                          ]);
+                        } catch (e) {
+                          return Button(
+                              text: 'LOG ME OUT',
+                              onPressed: () {
+                                viewModel.signOut();
+                              });
+                        }
                       }),
                 ],
               ),
