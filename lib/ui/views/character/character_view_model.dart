@@ -41,7 +41,6 @@ class CharacterViewModel extends BaseViewModel {
     if (fellowship.members.isEmpty) {
       return true;
     }
-
     return false;
   }
 

@@ -36,7 +36,7 @@ class FellowshipMember {
   final List<DateTime> saves;
   @JsonKey(includeToJson: false)
   final String? callout;
-  @JsonKey()
+  @JsonKey(includeToJson: false)
   final bool isAdmin;
 
   @JsonKey(includeToJson: false)

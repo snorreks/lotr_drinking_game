@@ -5,6 +5,7 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
+import '../../widgets/logout.dart';
 import 'root_view_model.dart';
 
 class RootView extends ConsumerWidget {
@@ -51,42 +52,44 @@ class RootView extends ConsumerWidget {
       ),
       drawer: Drawer(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            StreamBuilder<FellowshipMember?>(
-              stream: viewModel.memberStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<FellowshipMember?> snapshot) {
-                if (!snapshot.hasData && snapshot.data == null) {
-                  return Container();
-                }
-                final FellowshipMember member = snapshot.data!;
-                final Character character = member.character;
-                return UserAccountsDrawerHeader(
-                  accountName: Text(member.name),
-                  accountEmail: Text(character.displayName),
-                  currentAccountPicture: Avatar(
-                    character,
-                    circle: true,
-                  ),
-                );
-              },
+            Expanded(
+              child: ListView(
+                // Disable ListView's padding to avoid issues with Column
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  StreamBuilder<FellowshipMember?>(
+                      stream: viewModel.memberStream,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<FellowshipMember?> snapshot) {
+                        if (!snapshot.hasData && snapshot.data == null) {
+                          return Container();
+                        }
+                        final FellowshipMember member = snapshot.data!;
+                        final Character character = member.character;
+                        return Column(children: [
+                          UserAccountsDrawerHeader(
+                            accountName: Text(member.name),
+                            accountEmail: Text(character.displayName),
+                            currentAccountPicture: Avatar(
+                              character,
+                              circle: true,
+                            ),
+                          ),
+                          _themeSwitcher(viewModel),
+                        ]);
+                      }),
+                ],
+              ),
             ),
-
-            _themeSwitcher(viewModel),
-
-            // ListTile(
-            //     leading: const Icon(Icons.local_bar),
-            //     title: const Text('Drinking settings'),
-            //     onTap: () {}),
-            const Spacer(), // Pushes the logout button to the bottom
-            _pinCode(viewModel),
-            const SizedBox(height: 20),
-            const Divider(),
-
-            ListTile(
-              leading: const Icon(Icons.exit_to_app),
-              title: const Text('Logout'),
-              onTap: viewModel.signOut,
+            Column(
+              children: <Widget>[
+                _pinCode(viewModel),
+                const SizedBox(height: 20),
+                const Divider(),
+                const LogoutTile(),
+              ],
             ),
           ],
         ),

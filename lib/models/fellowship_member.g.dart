@@ -23,13 +23,6 @@ FellowshipMember _$FellowshipMemberFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$FellowshipMemberToJson(FellowshipMember instance) =>
     <String, dynamic>{
       'name': instance.name,
-<<<<<<< master
-=======
-      'drinks': instance.drinks,
-      'saves': instance.saves,
-      'callout': instance.callout,
-      'isAdmin': instance.isAdmin,
->>>>>>> admin_handling
     };
 
 const _$CharacterEnumMap = {
