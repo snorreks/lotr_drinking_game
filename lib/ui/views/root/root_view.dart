@@ -5,6 +5,7 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
+import '../../widgets/button.dart';
 import '../../widgets/logout.dart';
 import 'root_view_model.dart';
 
@@ -64,7 +65,11 @@ class RootView extends ConsumerWidget {
                       builder: (BuildContext context,
                           AsyncSnapshot<FellowshipMember?> snapshot) {
                         if (!snapshot.hasData && snapshot.data == null) {
-                          return Container();
+                          Button(
+                              text: 'LOG ME OUT',
+                              onPressed: () {
+                                viewModel.signOut();
+                              });
                         }
                         final FellowshipMember member = snapshot.data!;
                         final Character character = member.character;
