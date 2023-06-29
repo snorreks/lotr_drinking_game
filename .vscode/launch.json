@@ -12,27 +12,13 @@
             "args": [
                 "-d",
                 "chrome"
-              ]          
+            ]
         },
         {
-            "name": "Android",
+            "name": "Launch Current",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
-            "args": [
-                "-d",
-                "android"
-              ]          
-        },
-        {
-            "name": "Ios",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
-            "args": [
-                "-d",
-                "ios"
-              ]          
         },
         {
             "name": "Firefox",
@@ -42,7 +28,7 @@
             "args": [
                 "-d",
                 "firefox"
-              ]          
+            ]
         },
         {
             "name": "Edge",
@@ -52,8 +38,7 @@
             "args": [
                 "-d",
                 "edge"
-              ]          
+            ]
         },
-     
     ]
 }

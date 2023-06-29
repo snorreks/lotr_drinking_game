@@ -38,4 +38,8 @@ We do not condone the use of ælkis, this is just made for fun. Stay aware of ho
 
 *   To deploy new version to firebase app distribution for android run
 
-  ```flutter build apk && firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"```
+  ```flutter build apk --release && firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:668643921360:android:6780eda95b60741b8cfdd5 --release-notes-file "distribution/release-notes.txt" --groups "android"```
+
+*   To deploy new version to firebase hosting run:
+
+  ```flutter build web && firebase deploy --only hosting```

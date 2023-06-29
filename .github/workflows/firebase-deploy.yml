@@ -1,54 +1,42 @@
-name: Deploy to Firebase Hosting and Firebase App Distribution
+name: Deploy to Firebase Hosting and App Distribution
+
 on:
   push:
     branches:
       - master
 
 jobs:
-  build_and_deploy_web:
+  build_deploy_android:
+    if: ${{ !contains(github.event.head_commit.message, 'skip-apk') }}
+    name: Build and Deploy Android to Firebase App Distribution
     runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+    - name: Build apk
+      run: flutter build apk
+    - name: Upload APK
+      uses: wzieba/Firebase-Distribution-Github-Action@v1
+      with:
+        appId: 1:668643921360:android:6780eda95b60741b8cfdd5
+        serviceCredentialsFileContent: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
+        groups: android
+        file: build/app/outputs/flutter-apk/app-release.apk
 
+  build_deploy_web:
+    if: ${{ !contains(github.event.head_commit.message, 'skip-web') }}
+    name: Build and Deploy Web to Firebase Hosting
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-      - run: flutter pub get
-
-      - name: Build web
-        run: flutter build web
-
-      - name: Deploy to Firebase Hosting
+      - uses: subosito/flutter-action@v2
+      - name: Build And Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}"
           channelId: live
           projectId: lotr-drinking-game
+          firebaseToolsVersion: '12.4.0'
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
-
-  build_and_deploy_android:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-      - run: flutter pub get
-
-      - name: Build apk
-        run: flutter build apk
-
-      - name: Deploy to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: 1:668643921360:android:6780eda95b60741b8cfdd5
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_APP_DISTRIBUTION_CREDENTIAL }}
-          groups: android
-          file: build/app/outputs/flutter-apk/app-release.apk

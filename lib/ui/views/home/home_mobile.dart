@@ -14,7 +14,10 @@ class _HomeMobile extends StatelessWidget {
         }
         final Fellowship fellowship = snapshot.data!;
         final Character character = viewModel.character!;
-        final FellowshipMember member = fellowship.members[character]!;
+        final FellowshipMember? member = fellowship.members[character];
+        if (member == null) {
+          return const Center(child: Loading());
+        }
         final String fellowshipName = fellowship.name;
 
         // Callout check, if callout exists, a dialog spawns!
@@ -26,36 +29,35 @@ class _HomeMobile extends StatelessWidget {
 
 
         return Scaffold(
-            floatingActionButton: InkWell(
-                splashColor: Colors.blue,
-                onLongPress: () {
-                  _showMenu(context, member, fellowship);
+          floatingActionButton: InkWell(
+              splashColor: Colors.blue,
+              onLongPress: () {
+                _showMenu(context, member, fellowship);
+              },
+              child: FloatingActionButton(
+                onPressed: () {
+                  viewModel.incrementDrink();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('+1 drink!'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
                 },
-                child: FloatingActionButton(
-                  onPressed: () {
-                    viewModel.incrementDrink();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('+1 drink!'),
-                        duration: Duration(seconds: 1),
-                      ),
-                    );
-                  },
-                  child: const Icon(Icons.sports_bar),
-                )),
-            body: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(height: 15),
-                  FellowshipCard(
-                    fellowshipName: fellowshipName,
-                    member: member,
-                  ),
-                  const SizedBox(height: 15),
-                  _rules(character),
-                ],
+                child: const Icon(Icons.sports_bar),
+              )),
+          body: ListView(
+            children: <Widget>[
+              const SizedBox(height: 15),
+              FellowshipCard(
+                fellowshipName: fellowshipName,
+                member: member,
               ),
-            ));
+              const SizedBox(height: 15),
+              _rules(character),
+            ],
+          ),
+        );
       },
     );
   }
@@ -257,8 +259,14 @@ class FellowshipCard extends StatelessWidget {
             children: <Expanded>[
               Expanded(
                 child: ListTile(
-                  title: Text(character.displayName),
+                  title: Text(member.name),
                   subtitle: Text('${member.drinksAmount} drinks'),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text(character.displayName),
+                  subtitle: Text('${member.savesAmount} saves'),
                 ),
               ),
             ],
@@ -291,12 +299,8 @@ class RulesList extends StatelessWidget {
             color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
-        ListView(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+        const SizedBox(height: 10),
+        Column(
           children: <Padding>[
             for (String rule in rules)
               Padding(
@@ -307,7 +311,7 @@ class RulesList extends StatelessWidget {
                     Text(
                       '• ',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                         fontWeight: FontWeight.bold,
                       ),
@@ -316,7 +320,7 @@ class RulesList extends StatelessWidget {
                       child: Text(
                         rule,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 14,
                           color: Theme.of(context).textTheme.bodyMedium!.color,
                         ),
                       ),

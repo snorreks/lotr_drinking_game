@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -50,17 +52,25 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   FellowshipService(this._ref)
       : _characterSubject = BehaviorSubject<Character?>.seeded(
             _ref.read(preferencesService).character) {
-    Rx.combineLatest2<Fellowship?, Character?, FellowshipMember?>(
-      fellowshipStream,
+    _memberStreamSubscription =
+        Rx.combineLatest2<Fellowship?, Character?, FellowshipMember?>(
+      _fellowshipSubject.stream,
       characterStream,
       (Fellowship? fellowship, Character? character) {
-        _updateMemberStream(fellowship, character);
-        return null;
+        if (fellowship == null || character == null) {
+          return null;
+        }
+
+        return fellowship.members[character];
       },
-    ).listen((_) {});
+    ).listen((FellowshipMember? member) {
+      _memberSubject.add(member);
+    });
   }
 
   final Ref _ref;
+
+  late StreamSubscription<FellowshipMember?> _memberStreamSubscription;
 
   PreferencesServiceModel get _preferencesService =>
       _ref.read(preferencesService);
@@ -110,16 +120,6 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
 
   @override
   Stream<FellowshipMember?> get memberStream => _memberSubject.stream;
-
-  void _updateMemberStream(Fellowship? fellowship, Character? character) {
-    if (fellowship == null || character == null) {
-      _memberSubject.add(null);
-      return;
-    }
-
-    final FellowshipMember? member = fellowship.members[character];
-    _memberSubject.add(member);
-  }
 
   @override
   Future<bool> createFellowship(String fellowshipName) async {
@@ -316,6 +316,14 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       logError('resolveCallout', e);
       return false;
     }
+  }
+
+  @override
+  dispose() {
+    _fellowshipSubject.close();
+    _memberSubject.close();
+    _characterSubject.close();
+    _memberStreamSubscription.cancel();
   }
 }
 
