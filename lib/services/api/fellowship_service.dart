@@ -27,14 +27,17 @@ abstract class FellowshipServiceModel {
 
   Future<bool> joinFellowship(String fellowshipPIN);
 
-  Future<bool> selectCharacter({
-    required String username,
-    required Character character,
-  });
+  Future<bool> selectCharacter(
+      {required String username,
+      required Character character,
+      required bool isFirst});
 
   Future<bool> createFellowship(String fellowshipId);
 
   Future<bool> leaveFellowship();
+
+  Future<bool> changeAdmin(
+      FellowshipMember newAdmin, FellowshipMember oldAdmin);
 
   Future<bool> incrementDrink();
 
@@ -175,6 +178,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   Future<bool> selectCharacter({
     required String username,
     required Character character,
+    required bool isFirst,
   }) async {
     try {
       if (_fellowshipId == null) {
@@ -182,9 +186,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       }
 
       await _fellowshipRepository.addMember(
-        _fellowshipId!,
-        FellowshipMember(name: username, character: character),
-      );
+          _fellowshipId!,
+          FellowshipMember(
+              name: username, character: character, isAdmin: isFirst));
 
       _preferencesService.character = character;
       _characterSubject.add(character);
@@ -230,6 +234,28 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       return true;
     } catch (e) {
       logError('leaveFellowship', e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> changeAdmin(
+      FellowshipMember newAdmin, FellowshipMember oldAdmin) async {
+    try {
+      if (_fellowshipId == null) {
+        throw Exception("Fellowship doesn't exist");
+      }
+      if (newAdmin.isAdmin) {
+        throw Exception('New admin is already admin');
+      }
+
+      if (!oldAdmin.isAdmin) {
+        throw Exception("Old admin isn't admin");
+      }
+      await _fellowshipRepository.changeAdmin(
+          _fellowshipId!, newAdmin, oldAdmin);
+      return true;
+    } catch (e) {
       return false;
     }
   }
@@ -287,7 +313,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return true;
       }
     } catch (e) {
-      logError('sendCallout', e);
+      logError('resolveCallout', e);
       return false;
     }
   }

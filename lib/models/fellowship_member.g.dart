@@ -17,6 +17,7 @@ FellowshipMember _$FellowshipMemberFromJson(Map<String, dynamic> json) =>
           ? const <DateTime>[]
           : timestampArrayFromJson(json['saves']),
       callout: json['callout'] as String?,
+      isAdmin: json['isAdmin'] as bool,
     );
 
 Map<String, dynamic> _$FellowshipMemberToJson(FellowshipMember instance) =>

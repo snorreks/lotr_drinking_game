@@ -48,6 +48,11 @@ class RootViewModel extends BaseViewModel {
     _ref.read(routerService).go(Location.login);
   }
 
+  Future<void> changeAdmin(
+      FellowshipMember newAdmin, FellowshipMember oldAdmin) async {
+    await _ref.read(fellowshipService).changeAdmin(newAdmin, oldAdmin);
+  }
+
   void changeTheme(ThemeMode themeMode) {
     _themeSubject.add(themeMode);
     _ref.read(applicationService).changeTheme(themeMode);

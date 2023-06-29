@@ -34,6 +34,8 @@ abstract class FellowshipRepositoryModel {
 
   Future<String> create(String fellowshipName);
   Future<void> addMember(String fellowshipId, FellowshipMember member);
+  Future<void> changeAdmin(String fellowshipId, FellowshipMember newAdmin,
+      FellowshipMember oldAdmin);
 
   Future<void> increment({
     required String fellowshipId,
@@ -135,10 +137,30 @@ class FellowshipRepository extends BaseService
       await docRef.update(<String, dynamic>{
         'members.${member.character.value}': <String, dynamic>{
           'name': member.name,
+          'isAdmin': member.isAdmin,
         }
       });
     } catch (e) {
       logError('updateFellowship', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> changeAdmin(String fellowshipId, FellowshipMember newAdmin,
+      FellowshipMember oldAdmin) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      await _db.runTransaction((Transaction transaction) async {
+        transaction.update(docRef, {
+          'members.${newAdmin.character.value}.isAdmin': true,
+          'members.${oldAdmin.character.value}.isAdmin': false
+        });
+      });
+    } catch (e) {
+      logError('changeAdmin', e);
       rethrow;
     }
   }
