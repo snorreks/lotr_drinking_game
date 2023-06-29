@@ -7,6 +7,7 @@ on:
 
 jobs:
   build_web:
+    if: ${{ !contains(github.event.head_commit.message, 'skip-web') }}
     name: Build Flutter (Web)
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +23,7 @@ jobs:
         name: web-build
         path: build/web
   build_apk:
+    if: ${{ !contains(github.event.head_commit.message, 'skip-apk') }}
     name: Build Flutter (Android)
     runs-on: ubuntu-latest
     steps:
@@ -55,6 +57,7 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOTR_DRINKING_GAME }}"
           channelId: live
           projectId: lotr-drinking-game
+          firebaseToolsVersion: '12.4.0'
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
       # - name: Deploy to Firebase
