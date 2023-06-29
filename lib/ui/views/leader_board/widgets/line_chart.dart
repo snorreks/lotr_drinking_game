@@ -40,12 +40,12 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
       final FellowshipMember firstMember = fellowshipMembers.first;
 
       fellowshipMembers[0] = FellowshipMember(
-        name: firstMember.name,
-        character: firstMember.character,
-        drinks: getMockDates(5, const Duration(minutes: 20)),
-        saves: getMockDates(5, const Duration(minutes: 20)),
-        callout: firstMember.callout,
-      );
+          name: firstMember.name,
+          character: firstMember.character,
+          drinks: getMockDates(5, const Duration(minutes: 20)),
+          saves: getMockDates(5, const Duration(minutes: 20)),
+          callout: firstMember.callout,
+          isAdmin: firstMember.isAdmin);
     }
 
     return fellowshipMembers;
