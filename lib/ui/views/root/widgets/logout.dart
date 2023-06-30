@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/fellowship.dart';
-import '../../models/fellowship_member.dart';
-import '../views/root/root_view_model.dart';
+import '../../../../models/fellowship.dart';
+import '../../../../models/fellowship_member.dart';
+import '../root_view_model.dart';
 
 class LogoutTile extends ConsumerStatefulWidget {
   const LogoutTile({super.key});
