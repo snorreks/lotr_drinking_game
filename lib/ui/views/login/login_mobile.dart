@@ -34,7 +34,7 @@ class _LoginMobile extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32.0),
-                  getLogo(),
+                  const Logo(),
                   const SizedBox(height: 32.0),
                   const Text(
                     'Join Session',

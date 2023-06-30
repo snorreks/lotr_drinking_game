@@ -6,6 +6,7 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
+import '../../widgets/logo.dart';
 import '../character/character_view.dart';
 import 'root_view_model.dart';
 import 'widgets/logout.dart';
@@ -35,11 +36,7 @@ class RootView extends ConsumerWidget {
         }
         return Scaffold(
           appBar: AppBar(
-            title: Image.asset(
-              'assets/images/logo/logo-title.png',
-              fit: BoxFit.contain,
-              height: 60,
-            ),
+            title: const Logo(type: LogoType.title),
             centerTitle: true,
           ),
           body: child,

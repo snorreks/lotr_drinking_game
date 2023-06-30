@@ -23,16 +23,15 @@ class _LogoutTileState extends ConsumerState<LogoutTile> {
       stream: viewModel.memberStream,
       builder:
           (BuildContext context, AsyncSnapshot<FellowshipMember?> snapshot) {
-        if (!snapshot.hasData && snapshot.data == null) {
-          return Container();
-        }
-        final FellowshipMember member = snapshot.data!;
+        final FellowshipMember? member =
+            snapshot.hasData ? snapshot.data : null;
+
         return ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
             onTap: () {
               //If member isAdmin, prompt change
-              if (member.isAdmin) {
+              if (member != null && member.isAdmin) {
                 _showAdminDialog(context, viewModel, member);
               } else {
                 viewModel.signOut();

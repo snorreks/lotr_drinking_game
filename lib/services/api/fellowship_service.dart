@@ -97,6 +97,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   Stream<Fellowship?>? _fellowshipStream;
   final BehaviorSubject<FellowshipMember?> _memberSubject =
       BehaviorSubject<FellowshipMember?>();
+  StreamSubscription<Fellowship?>? _fellowshipStreamListener;
 
   @override
   Stream<Fellowship?> get fellowshipStream {
@@ -109,10 +110,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
     }
 
     _fellowshipStream = _fellowshipRepository.stream(_fellowshipId!);
-    _fellowshipStream!.listen((Fellowship? fellowship) {
+    _fellowshipStreamListener =
+        _fellowshipStream!.listen((Fellowship? fellowship) {
       _fellowshipSubject.add(fellowship);
-    }).onDone(() {
-      _fellowshipStream = null; // Reset the stream reference when it's done
     });
 
     return _fellowshipSubject.stream;
@@ -222,14 +222,15 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   @override
   Future<bool> leaveFellowship() async {
     try {
-      if (_fellowshipId == null) {
-        return false;
-      }
       _fellowship = null;
       _preferencesService.fellowshipId = null;
       _preferencesService.character = null;
       _preferencesService.fellowshipPin = null;
       _characterSubject.add(null);
+      _fellowshipSubject.add(null);
+      _fellowshipStreamListener?.cancel();
+      _fellowshipStream = null;
+      _fellowshipStreamListener = null;
 
       return true;
     } catch (e) {
@@ -319,7 +320,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  dispose() {
+  void dispose() {
     _fellowshipSubject.close();
     _memberSubject.close();
     _characterSubject.close();
