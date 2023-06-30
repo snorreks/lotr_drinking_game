@@ -33,61 +33,59 @@ class RootView extends ConsumerWidget {
         if (snapshot.hasData && snapshot.data!) {
           return const CharacterView();
         }
-        return SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Logo(type: LogoType.title),
-              centerTitle: true,
-            ),
-            body: child,
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.format_list_numbered),
-                  label: 'Leader board',
-                ),
-                BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
-              ],
-              currentIndex: viewModel.currentIndex,
-              onTap: (int index) => viewModel.onItemTapped(index),
-            ),
-            drawer: StreamBuilder<FellowshipMember?>(
-              stream: viewModel.memberStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<FellowshipMember?> snapshot) {
-                final FellowshipMember? member =
-                    snapshot.hasData ? snapshot.data : null;
+        return Scaffold(
+          appBar: AppBar(
+            title: const Logo(type: LogoType.title),
+            centerTitle: true,
+          ),
+          body: child,
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.format_list_numbered),
+                label: 'Leader board',
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
+            ],
+            currentIndex: viewModel.currentIndex,
+            onTap: (int index) => viewModel.onItemTapped(index),
+          ),
+          drawer: StreamBuilder<FellowshipMember?>(
+            stream: viewModel.memberStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<FellowshipMember?> snapshot) {
+              final FellowshipMember? member =
+                  snapshot.hasData ? snapshot.data : null;
 
-                return Drawer(
-                  child: Column(
-                    children: <Widget>[
-                      if (member != null)
-                        UserAccountsDrawerHeader(
-                          accountName: Text(member.name),
-                          accountEmail: Text(member.character.displayName),
-                          currentAccountPicture: Avatar(
-                            member.character,
-                            circle: true,
-                          ),
-                          decoration: BoxDecoration(
-                            color: member.character.color,
-                          ),
+              return Drawer(
+                child: Column(
+                  children: <Widget>[
+                    if (member != null)
+                      UserAccountsDrawerHeader(
+                        accountName: Text(member.name),
+                        accountEmail: Text(member.character.displayName),
+                        currentAccountPicture: Avatar(
+                          member.character,
+                          circle: true,
                         ),
-                      _themeSwitcher(viewModel),
-                      const Spacer(),
-                      _pinCode(viewModel),
-                      const SizedBox(height: 20),
-                      const Divider(),
-                      const LogoutTile(),
-                    ],
-                  ),
-                );
-              },
-            ),
+                        decoration: BoxDecoration(
+                          color: member.character.color,
+                        ),
+                      ),
+                    _themeSwitcher(viewModel),
+                    const Spacer(),
+                    _pinCode(viewModel),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const LogoutTile(),
+                  ],
+                ),
+              );
+            },
           ),
         );
       },

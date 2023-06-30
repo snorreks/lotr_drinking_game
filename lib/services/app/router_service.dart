@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart'
+    show BuildContext, GlobalKey, NavigatorObserver, NavigatorState, Widget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -79,7 +80,7 @@ class RouterService extends BaseService implements RouterServiceModel {
       observers: <NavigatorObserver>[
         if (ref.read(applicationService).initialized)
           ref.read(analyticsService).analyticsObserver,
-        HeroController(),
+        ref.read(applicationService).heroController,
       ],
       routes: <RouteBase>[
         GoRoute(

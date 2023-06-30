@@ -54,6 +54,8 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
     return fellowshipMembers;
   }
 
+  final List<Character> hiddenCharacters = <Character>[];
+
   late LineChartView lineChartView = LineChartView.drinks;
 
   @override
@@ -84,13 +86,17 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16, left: 6),
                   child: _LineChart(
-                    lineChartView: lineChartView,
-                    members: members,
-                  ),
+                      lineChartView: lineChartView,
+                      members: members
+                          .where((FellowshipMember element) =>
+                              !hiddenCharacters.contains(element.character))
+                          .toList()),
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 150,
+                child: _memberList(),
               ),
             ],
           ),
@@ -110,6 +116,64 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _memberList() {
+    return ListView.builder(
+      itemCount: members.length,
+      itemBuilder: (BuildContext context, int index) {
+        final FellowshipMember member = members[index];
+        final Character character = member.character;
+        final bool isHidden = hiddenCharacters.contains(character);
+
+        double calculateAverageDrinksPerMinute() {
+          final List<DateTime> drinksOrSaves =
+              lineChartView == LineChartView.drinks
+                  ? member.drinks
+                  : member.saves;
+          if (drinksOrSaves.isEmpty) {
+            return 0;
+          }
+
+          final int amount = drinksOrSaves.length;
+
+          final int minutes =
+              drinksOrSaves.last.difference(drinksOrSaves.first).inMinutes;
+
+          return minutes != 0 ? amount / minutes : 0.0;
+        }
+
+        final double drinksOrSavesPrMin = calculateAverageDrinksPerMinute();
+
+        return ListTile(
+          onTap: () {
+            setState(() {
+              if (hiddenCharacters.contains(character)) {
+                hiddenCharacters.remove(character);
+              } else {
+                hiddenCharacters.add(character);
+              }
+            });
+          },
+          leading: Avatar(character, circle: true),
+          title: Text(
+            member.name,
+            style: TextStyle(
+              fontWeight: isHidden ? FontWeight.normal : FontWeight.bold,
+              color: isHidden ? Colors.grey : Colors.black,
+            ),
+          ),
+          tileColor: isHidden ? Colors.grey.withOpacity(0.2) : character.color,
+          trailing: Text(
+            '${drinksOrSavesPrMin.toStringAsFixed(2)} ${lineChartView.name}/min',
+            style: TextStyle(
+              fontWeight: isHidden ? FontWeight.normal : FontWeight.bold,
+              color: isHidden ? Colors.grey : Colors.black,
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -135,9 +199,19 @@ class _LineChart extends StatelessWidget {
         (FellowshipMember member) => LineChartBarData(
           isCurved: true,
           color: member.character.color,
-          barWidth: 8,
+          barWidth: 6,
           isStrokeCapRound: true,
-          dotData: const FlDotData(show: false),
+          dotData: FlDotData(
+            getDotPainter: (FlSpot spot, double xPercentage,
+                LineChartBarData bar, int index) {
+              return FlDotCirclePainter(
+                radius: 9,
+                color: member.character.color,
+                strokeWidth: 1.5,
+                strokeColor: Colors.white,
+              );
+            },
+          ),
           belowBarData: BarAreaData(),
           spots: countOccurrencesAndCreateSpots(
             lineChartView == LineChartView.drinks
