@@ -93,6 +93,7 @@ class RootView extends ConsumerWidget {
                                   ),
                                 ),
                                 _themeSwitcher(viewModel),
+                                _nextMovie(viewModel),
                               ]);
                             } catch (e) {
                               return Button(
@@ -198,6 +199,24 @@ class RootView extends ConsumerWidget {
             },
             child: const Text('Copy PIN'),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _nextMovie(RootViewModel viewModel) {
+    return StreamBuilder<Fellowship?>(
+      stream: viewModel.fellowshipStream,
+      builder: (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
+        if (!snapshot.hasData && snapshot.data == null) {
+          return Container();
+        }
+        final Fellowship selectedThemeMode = snapshot.data!;
+
+        return ListTile(
+          leading: const Icon(Icons.movie),
+          title: const Text('Next movie!'),
+          onTap: () {},
         );
       },
     );
