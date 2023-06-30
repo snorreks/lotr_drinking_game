@@ -6,7 +6,6 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/logout.dart';
 import '../character/character_view.dart';
 import 'root_view_model.dart';
 import 'widgets/logout.dart';
