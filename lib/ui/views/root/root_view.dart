@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
@@ -8,6 +9,7 @@ import '../../widgets/avatar.dart';
 import '../../widgets/logout.dart';
 import '../character/character_view.dart';
 import 'root_view_model.dart';
+import 'widgets/logout.dart';
 
 class RootView extends ConsumerWidget {
   /// Builds the "shell" for the app by building a Scaffold with a
