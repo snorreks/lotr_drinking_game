@@ -19,9 +19,6 @@ class RuleItem {
 }
 
 class RulesViewModel extends BaseNotifierViewModel {
-  RulesViewModel(this._ref);
-  final Ref _ref;
-
   final List<RuleItem> rules = <RuleItem>[
     RuleItem('Basics', rules: <String>[GameRules.basicRules]),
     RuleItem('Take a drink when', rules: GameRules.normalRules),
@@ -56,6 +53,6 @@ class RulesViewModel extends BaseNotifierViewModel {
 final AutoDisposeChangeNotifierProvider<RulesViewModel> rulesViewModel =
     ChangeNotifierProvider.autoDispose(
         (AutoDisposeChangeNotifierProviderRef<RulesViewModel> ref) {
-  final RulesViewModel viewModel = RulesViewModel(ref);
+  final RulesViewModel viewModel = RulesViewModel();
   return viewModel;
 });

@@ -5,7 +5,6 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/button.dart';
 import '../../widgets/logout.dart';
 import '../character/character_view.dart';
 import 'root_view_model.dart';
@@ -58,62 +57,38 @@ class RootView extends ConsumerWidget {
             currentIndex: viewModel.currentIndex,
             onTap: (int index) => viewModel.onItemTapped(index),
           ),
-          drawer: Drawer(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: ListView(
-                    // Disable ListView's padding to avoid issues with Column
-                    padding: EdgeInsets.zero,
-                    children: <Widget>[
-                      StreamBuilder<FellowshipMember?>(
-                          stream: viewModel.memberStream,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<FellowshipMember?> snapshot) {
-                            if (!snapshot.hasData || snapshot.data == null) {
-                              return Button(
-                                  text: 'LOG ME OUT',
-                                  onPressed: () {
-                                    viewModel.signOut();
-                                  });
-                            }
+          drawer: StreamBuilder<FellowshipMember?>(
+            stream: viewModel.memberStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<FellowshipMember?> snapshot) {
+              final FellowshipMember? member =
+                  snapshot.hasData ? snapshot.data : null;
 
-                            try {
-                              final FellowshipMember member = snapshot.data!;
-                              final Character character = member.character;
-                              return Column(children: [
-                                UserAccountsDrawerHeader(
-                                  accountName: Text(member.name),
-                                  accountEmail: Text(character.displayName),
-                                  currentAccountPicture: Avatar(
-                                    character,
-                                    circle: true,
-                                  ),
-                                ),
-                                _themeSwitcher(viewModel),
-                              ]);
-                            } catch (e) {
-                              return Button(
-                                  text: 'LOG ME OUT',
-                                  onPressed: () {
-                                    viewModel.signOut();
-                                  });
-                            }
-                          }),
-                    ],
-                  ),
-                ),
-                Column(
+              return Drawer(
+                child: Column(
                   children: <Widget>[
+                    if (member != null)
+                      UserAccountsDrawerHeader(
+                        accountName: Text(member.name),
+                        accountEmail: Text(member.character.displayName),
+                        currentAccountPicture: Avatar(
+                          member.character,
+                          circle: true,
+                        ),
+                        decoration: BoxDecoration(
+                          color: member.character.color,
+                        ),
+                      ),
+                    _themeSwitcher(viewModel),
+                    const Spacer(),
                     _pinCode(viewModel),
                     const SizedBox(height: 20),
                     const Divider(),
                     const LogoutTile(),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },
