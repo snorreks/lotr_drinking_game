@@ -28,9 +28,9 @@ class RulesViewModel extends BaseNotifierViewModel {
     RuleItem('Down the Hatch', rules: GameRules.dthRules),
     RuleItem(
       'Additional Rules',
-      rules: GameRules.additionalRules
-          .map((RuleWithName ruleWithName) =>
-              '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
+      subRuleItems: GameRules.additionalRules
+          .map((RuleWithName ruleWithName) => RuleItem(ruleWithName.ruleName,
+              rules: <String>[ruleWithName.ruleDescription]))
           .toList(),
     ),
     RuleItem(
