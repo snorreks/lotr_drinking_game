@@ -4,6 +4,9 @@ enum LineChartView { drinks, saves }
 
 final Color borderColor = Colors.white54.withOpacity(0.2);
 
+/// The number of drinks/saves to show each x minute interval
+const int intervalSeparator = 20;
+
 class FellowshipLineChart extends StatefulWidget {
   const FellowshipLineChart({super.key, required this.fellowship});
   final Fellowship fellowship;
@@ -160,17 +163,17 @@ class _LineChart extends StatelessWidget {
     return allDates;
   }
 
-  LineChartData get lineChartBarData => LineChartData(
-        lineTouchData: lineTouchData,
-        gridData: gridData,
-        titlesData: titlesData,
-        borderData: borderData,
-        lineBarsData: lineBarsData,
-        minX: 0,
-        maxX: 200,
-        maxY: 100,
-        minY: 0,
-      );
+  LineChartData get lineChartBarData {
+    return LineChartData(
+      lineTouchData: lineTouchData,
+      gridData: gridData,
+      titlesData: titlesData,
+      borderData: borderData,
+      lineBarsData: lineBarsData,
+      minX: 0,
+      minY: 0,
+    );
+  }
 
   LineTouchData get lineTouchData => LineTouchData(
         touchTooltipData: LineTouchTooltipData(
@@ -223,27 +226,13 @@ class _LineChart extends StatelessWidget {
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    // If the value is out of range, return an empty widget.
-    if (value < 0 || value >= dates.length) {
-      return const SizedBox.shrink();
-    }
-
-    // Calculate the time passed since the first date
-    final DateTime firstDate = dates.first;
-    final int index = value.toInt();
-    final DateTime currentDate = dates[index];
-    final Duration timePassed = currentDate.difference(firstDate);
-
-    // Convert the time passed to minutes and round it to the nearest 20 minutes
-    final int minutesPassed = timePassed.inMinutes;
-    final int roundedMinutes =
-        (minutesPassed / 20).round() * 20; // Round to nearest 20
+    final int minutes = value.toInt();
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 10,
       child: Text(
-        '$roundedMinutes',
+        '$minutes',
         style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
@@ -265,24 +254,24 @@ class _LineChart extends StatelessWidget {
       );
 
   List<FlSpot> countOccurrencesAndCreateSpots(List<DateTime> dates) {
-    final Map<DateTime, int> dateCounts = <DateTime, int>{};
+    final Map<int, int> intervalCounts = <int, int>{};
 
     for (final DateTime date in dates) {
-      final DateTime key = DateTime(date.year, date.month, date.day);
-      if (dateCounts.containsKey(key)) {
-        dateCounts[key] = dateCounts[key]! + 1;
+      final int interval =
+          (date.difference(dates.first).inMinutes / intervalSeparator).floor();
+      if (intervalCounts.containsKey(interval)) {
+        intervalCounts[interval] = intervalCounts[interval]! + 1;
       } else {
-        dateCounts[key] = 1;
+        intervalCounts[interval] = 1;
       }
     }
 
-    // Sort the dates
-    final List<DateTime> sortedDates = dateCounts.keys.toList()..sort();
     final List<FlSpot> spots = <FlSpot>[];
 
-    for (int i = 0; i < sortedDates.length; i++) {
-      spots.add(FlSpot(i.toDouble(), dateCounts[sortedDates[i]]!.toDouble()));
-    }
+    intervalCounts.forEach((int interval, int count) {
+      spots.add(
+          FlSpot(interval.toDouble() * intervalSeparator, count.toDouble()));
+    });
 
     return spots;
   }

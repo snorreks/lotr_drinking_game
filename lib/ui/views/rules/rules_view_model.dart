@@ -2,38 +2,60 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
-import '../../../models/fellowship.dart';
-import '../../../services/api/fellowship_service.dart';
-import '../../../services/app/preferences_service.dart';
-import '../../../services/app/router_service.dart';
+import '../../../constants/game_rules.dart';
 
-class RulesViewModel extends BaseViewModel {
+class RuleItem {
+  RuleItem(this.title, {this.rules, this.subRuleItems})
+      : assert(
+          rules != null || subRuleItems != null,
+          'Either rules or subRuleItems must be provided',
+        );
+
+  final String title;
+  final List<String>? rules;
+  final List<RuleItem>? subRuleItems;
+
+  bool isExpanded = false;
+}
+
+class RulesViewModel extends BaseNotifierViewModel {
   RulesViewModel(this._ref);
   final Ref _ref;
 
-  Character? get character => _ref.read(preferencesService).character;
+  final List<RuleItem> rules = <RuleItem>[
+    RuleItem('Basics', rules: <String>[GameRules.basicRules]),
+    RuleItem('Take a drink when', rules: GameRules.normalRules),
+    RuleItem('Down the Hatch', rules: GameRules.dthRules),
+    RuleItem(
+      'Additional Rules',
+      rules: GameRules.additionalRules
+          .map((RuleWithName ruleWithName) =>
+              '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
+          .toList(),
+    ),
+    RuleItem(
+      'Character',
+      subRuleItems: Character.values
+          .map((Character character) =>
+              RuleItem(character.displayName, rules: character.rules))
+          .toList(),
+    )
+  ];
 
-  Stream<bool> get showCharacterSelectStream => _ref
-      .read(fellowshipService)
-      .characterStream
-      .map((Character? character) => character == null);
+  void togglePanel(int index, bool isExpanded, {RuleItem? parent}) {
+    if (parent != null && parent.subRuleItems != null) {
+      parent.subRuleItems![index].isExpanded = !isExpanded;
+    } else {
+      rules[index].isExpanded = !isExpanded;
+    }
 
-  Stream<Fellowship?> get fellowshipStream =>
-      _ref.read(fellowshipService).fellowshipStream;
-
-  Future<void> signOut() async {
-    await _ref.read(fellowshipService).leaveFellowship();
-    _ref.read(routerService).go(Location.login);
-  }
-
-  Future<void> incrementDrink() {
-    return _ref.read(fellowshipService).incrementDrink();
+    notifyListeners();
   }
 }
 
-final AutoDisposeProvider<RulesViewModel> rulesViewModel =
-    Provider.autoDispose((AutoDisposeProviderRef<RulesViewModel> ref) {
+final AutoDisposeChangeNotifierProvider<RulesViewModel> rulesViewModel =
+    ChangeNotifierProvider.autoDispose(
+        (AutoDisposeChangeNotifierProviderRef<RulesViewModel> ref) {
   final RulesViewModel viewModel = RulesViewModel(ref);
-  ref.onDispose(viewModel.dispose);
   return viewModel;
 });

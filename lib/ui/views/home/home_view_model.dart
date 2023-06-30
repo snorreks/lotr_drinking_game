@@ -7,16 +7,11 @@ import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/preferences_service.dart';
 
-class HomeViewModel extends BaseNotifierViewModel {
+class HomeViewModel extends BaseViewModel {
   HomeViewModel(this._ref);
 
   final Ref _ref;
   Character? get character => _ref.read(preferencesService).character;
-
-  Stream<bool> get showCharacterSelectStream => _ref
-      .read(fellowshipService)
-      .characterStream
-      .map((Character? character) => character == null);
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;

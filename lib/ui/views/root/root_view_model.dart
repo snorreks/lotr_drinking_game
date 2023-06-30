@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../common/base_view_model.dart';
+import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
@@ -16,6 +17,11 @@ class RootViewModel extends BaseViewModel {
   final Ref _ref;
 
   final BehaviorSubject<ThemeMode> _themeSubject;
+
+  Stream<bool> get showCharacterSelectStream => _ref
+      .read(fellowshipService)
+      .characterStream
+      .map((Character? character) => character == null);
 
   Stream<ThemeMode> get themeStream => _themeSubject.stream;
 

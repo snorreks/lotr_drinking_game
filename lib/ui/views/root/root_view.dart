@@ -7,6 +7,7 @@ import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
 import '../../widgets/button.dart';
 import '../../widgets/logout.dart';
+import '../character/character_view.dart';
 import 'root_view_model.dart';
 
 class RootView extends ConsumerWidget {
@@ -26,88 +27,96 @@ class RootView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final RootViewModel viewModel = ref.watch(rootViewModel);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          'assets/images/logo/logo-title.png',
-          fit: BoxFit.contain,
-          height: 60,
-        ),
-        centerTitle: true,
-      ),
-      body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_numbered),
-            label: 'Leader board',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
-        ],
-        currentIndex: viewModel.currentIndex,
-        onTap: (int index) => viewModel.onItemTapped(index),
-      ),
-      drawer: Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: ListView(
-                // Disable ListView's padding to avoid issues with Column
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  StreamBuilder<FellowshipMember?>(
-                      stream: viewModel.memberStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<FellowshipMember?> snapshot) {
-                        if (!snapshot.hasData || snapshot.data == null) {
-                          return Button(
-                              text: 'LOG ME OUT',
-                              onPressed: () {
-                                viewModel.signOut();
-                              });
-                        }
-
-                        try {
-                          final FellowshipMember member = snapshot.data!;
-                          final Character character = member.character;
-                          return Column(children: [
-                            UserAccountsDrawerHeader(
-                              accountName: Text(member.name),
-                              accountEmail: Text(character.displayName),
-                              currentAccountPicture: Avatar(
-                                character,
-                                circle: true,
-                              ),
-                            ),
-                            _themeSwitcher(viewModel),
-                          ]);
-                        } catch (e) {
-                          return Button(
-                              text: 'LOG ME OUT',
-                              onPressed: () {
-                                viewModel.signOut();
-                              });
-                        }
-                      }),
-                ],
-              ),
+    return StreamBuilder<bool>(
+      stream: viewModel.showCharacterSelectStream,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data!) {
+          return const CharacterView();
+        }
+        return Scaffold(
+          appBar: AppBar(
+            title: Image.asset(
+              'assets/images/logo/logo-title.png',
+              fit: BoxFit.contain,
+              height: 60,
             ),
-            Column(
+            centerTitle: true,
+          ),
+          body: child,
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.format_list_numbered),
+                label: 'Leader board',
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
+            ],
+            currentIndex: viewModel.currentIndex,
+            onTap: (int index) => viewModel.onItemTapped(index),
+          ),
+          drawer: Drawer(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                _pinCode(viewModel),
-                const SizedBox(height: 20),
-                const Divider(),
-                const LogoutTile(),
+                Expanded(
+                  child: ListView(
+                    // Disable ListView's padding to avoid issues with Column
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      StreamBuilder<FellowshipMember?>(
+                          stream: viewModel.memberStream,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<FellowshipMember?> snapshot) {
+                            if (!snapshot.hasData || snapshot.data == null) {
+                              return Button(
+                                  text: 'LOG ME OUT',
+                                  onPressed: () {
+                                    viewModel.signOut();
+                                  });
+                            }
+
+                            try {
+                              final FellowshipMember member = snapshot.data!;
+                              final Character character = member.character;
+                              return Column(children: [
+                                UserAccountsDrawerHeader(
+                                  accountName: Text(member.name),
+                                  accountEmail: Text(character.displayName),
+                                  currentAccountPicture: Avatar(
+                                    character,
+                                    circle: true,
+                                  ),
+                                ),
+                                _themeSwitcher(viewModel),
+                              ]);
+                            } catch (e) {
+                              return Button(
+                                  text: 'LOG ME OUT',
+                                  onPressed: () {
+                                    viewModel.signOut();
+                                  });
+                            }
+                          }),
+                    ],
+                  ),
+                ),
+                Column(
+                  children: <Widget>[
+                    _pinCode(viewModel),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const LogoutTile(),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

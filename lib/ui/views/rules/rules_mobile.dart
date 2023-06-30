@@ -1,138 +1,70 @@
 part of 'rules_view.dart';
 
-class _RulesMobile extends StatefulWidget {
+class _RulesMobile extends StatelessWidget {
   const _RulesMobile(this.viewModel);
   final RulesViewModel viewModel;
 
   @override
-  _RulesMobileState createState() => _RulesMobileState();
-}
-
-class _RulesMobileState extends State<_RulesMobile> {
-  // Initialize all panels as closed.
-  // This assumes the total number of panels to be 4 (for basics, take a drink when, down the hatch, additional rules)
-  // + the number of Character.values
-  final List<bool> _panelOpen =
-      List<bool>.filled(5 + Character.values.length, false);
-
-  final List<bool> _characterPanelOpen =
-      List<bool>.filled(Character.values.length, false);
-
-  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        ExpansionPanelList(
-          expansionCallback: (int index, bool isExpanded) {
-            setState(() {
-              _panelOpen[index] = !isExpanded;
-            });
-          },
-          expandedHeaderPadding: const EdgeInsets.all(8),
-          children: <ExpansionPanel>[
-            _buildPanel('Basics', <String>[GameRules.basicRules], 0),
-            _buildPanel('Take a drink when', GameRules.normalRules, 1),
-            _buildPanel('Down the Hatch', GameRules.dthRules, 2),
-            _buildPanel(
-                'Additional Rules',
-                GameRules.additionalRules
-                    .map((RuleWithName ruleWithName) =>
-                        '${ruleWithName.ruleName}: ${ruleWithName.ruleDescription}')
-                    .toList(),
-                3),
-            ExpansionPanel(
-              headerBuilder: (BuildContext context, bool isExpanded) {
-                return const ListTile(title: Text('Characters Rules'));
-              },
-              canTapOnHeader: true,
-              body: Column(
-                children: Character.values
-                    .asMap()
-                    .entries
-                    .map((MapEntry<int, Character> entry) {
-                  final int index = entry.key;
-                  final Character character = entry.value;
-                  return ExpansionPanelList(
-                    expansionCallback: (int innerIndex, bool innerIsExpanded) {
-                      setState(() {
-                        _characterPanelOpen[index] = !innerIsExpanded;
-                      });
-                    },
-                    children: <ExpansionPanel>[
-                      _buildPanel(character.displayName, character.rules, index,
-                          isCharacterPanel: true)
-                    ],
-                  );
-                }).toList(),
-              ),
-              isExpanded: _panelOpen[4],
-            ),
-          ],
-        ),
-      ],
+    return SingleChildScrollView(
+      child: _expansionList(context, viewModel.rules),
     );
   }
 
-  ExpansionPanel _buildPanel(String header, List<dynamic> body, int index,
-      {bool isCharacterPanel = false}) {
+  ExpansionPanel _expansionItem(BuildContext context, RuleItem ruleItem) {
+    final List<RuleItem>? subRuleItems = ruleItem.subRuleItems;
+    if (subRuleItems != null) {
+      return ExpansionPanel(
+        headerBuilder: (BuildContext context, bool isExpanded) {
+          return ListTile(title: Text(ruleItem.title));
+        },
+        canTapOnHeader: true,
+        body: _expansionList(
+          context,
+          subRuleItems,
+          parent: ruleItem,
+        ),
+        isExpanded: ruleItem.isExpanded,
+      );
+    }
+    final List<String>? rules = ruleItem.rules;
+
+    if (rules == null) {
+      throw const FormatException(
+        'Either rules or subRuleItems must be provided',
+      );
+    }
+
     return ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return ListTile(title: Text(header));
+        return ListTile(title: Text(ruleItem.title));
       },
       canTapOnHeader: true,
-      body: Column(
-        children: body.map((dynamic item) {
-          if (item is RuleWithName) {
-            final List<String>? examples = item.ruleExamples;
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    item.ruleName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    item.ruleDescription,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 14,
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                    ),
-                  ),
-                  if (examples != null)
-                    ...examples.map(
-                      (String example) => Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          example,
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontSize: 14,
-                            color:
-                                Theme.of(context).textTheme.bodyMedium!.color,
-                          ),
-                        ),
-                      ),
-                    )
-                ],
-              ),
-            );
-          } else if (item is String) {
-            return ListTile(title: Text(item));
-          } else {
-            throw const FormatException('Unsupported body item type');
-          }
-        }).toList(),
-      ),
-      isExpanded:
-          isCharacterPanel ? _characterPanelOpen[index] : _panelOpen[index],
+      body: Column(children: <ListTile>[
+        for (String rule in rules) ListTile(title: Text(rule)),
+      ]),
+      isExpanded: ruleItem.isExpanded,
+    );
+  }
+
+  Column _expansionList(
+    BuildContext context,
+    List<RuleItem> ruleItems, {
+    RuleItem? parent,
+  }) {
+    return Column(
+      children: <Widget>[
+        ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            viewModel.togglePanel(index, isExpanded, parent: parent);
+          },
+          expandedHeaderPadding: const EdgeInsets.all(8),
+          children: <ExpansionPanel>[
+            for (int index = 0; index < ruleItems.length; index++)
+              _expansionItem(context, ruleItems[index]),
+          ],
+        ),
+      ],
     );
   }
 }
