@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants/characters.dart';
@@ -34,59 +33,61 @@ class RootView extends ConsumerWidget {
         if (snapshot.hasData && snapshot.data!) {
           return const CharacterView();
         }
-        return Scaffold(
-          appBar: AppBar(
-            title: const Logo(type: LogoType.title),
-            centerTitle: true,
-          ),
-          body: child,
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.format_list_numbered),
-                label: 'Leader board',
-              ),
-              BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
-            ],
-            currentIndex: viewModel.currentIndex,
-            onTap: (int index) => viewModel.onItemTapped(index),
-          ),
-          drawer: StreamBuilder<FellowshipMember?>(
-            stream: viewModel.memberStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<FellowshipMember?> snapshot) {
-              final FellowshipMember? member =
-                  snapshot.hasData ? snapshot.data : null;
-
-              return Drawer(
-                child: Column(
-                  children: <Widget>[
-                    if (member != null)
-                      UserAccountsDrawerHeader(
-                        accountName: Text(member.name),
-                        accountEmail: Text(member.character.displayName),
-                        currentAccountPicture: Avatar(
-                          member.character,
-                          circle: true,
-                        ),
-                        decoration: BoxDecoration(
-                          color: member.character.color,
-                        ),
-                      ),
-                    _themeSwitcher(viewModel),
-                    const Spacer(),
-                    _pinCode(viewModel),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    const LogoutTile(),
-                  ],
+        return SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Logo(type: LogoType.title),
+              centerTitle: true,
+            ),
+            body: child,
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
                 ),
-              );
-            },
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.format_list_numbered),
+                  label: 'Leader board',
+                ),
+                BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
+              ],
+              currentIndex: viewModel.currentIndex,
+              onTap: (int index) => viewModel.onItemTapped(index),
+            ),
+            drawer: StreamBuilder<FellowshipMember?>(
+              stream: viewModel.memberStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<FellowshipMember?> snapshot) {
+                final FellowshipMember? member =
+                    snapshot.hasData ? snapshot.data : null;
+
+                return Drawer(
+                  child: Column(
+                    children: <Widget>[
+                      if (member != null)
+                        UserAccountsDrawerHeader(
+                          accountName: Text(member.name),
+                          accountEmail: Text(member.character.displayName),
+                          currentAccountPicture: Avatar(
+                            member.character,
+                            circle: true,
+                          ),
+                          decoration: BoxDecoration(
+                            color: member.character.color,
+                          ),
+                        ),
+                      _themeSwitcher(viewModel),
+                      const Spacer(),
+                      _pinCode(viewModel),
+                      const SizedBox(height: 20),
+                      const Divider(),
+                      const LogoutTile(),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         );
       },
@@ -152,21 +153,16 @@ class RootView extends ConsumerWidget {
           return Container();
         }
         final Fellowship selectedThemeMode = snapshot.data!;
-        final String pinCode = selectedThemeMode.pin;
+        final String pin = selectedThemeMode.pin;
 
         return ListTile(
           title: Align(
             alignment: Alignment.centerRight,
-            child: Text('PIN: $pinCode'),
+            child: Text('PIN: $pin'),
           ),
           subtitle: ElevatedButton(
             onPressed: () {
-              Clipboard.setData(
-                ClipboardData(text: pinCode),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('PIN copied to clipboard')),
-              );
+              viewModel.copyPin(pin);
             },
             child: const Text('Copy PIN'),
           ),

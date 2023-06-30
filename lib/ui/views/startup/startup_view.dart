@@ -11,12 +11,14 @@ class StartupView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: FutureBuilder<void>(
-        future: ref.watch(startupViewModel).initialize(),
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          return const SplashScreen();
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: FutureBuilder<void>(
+          future: ref.watch(startupViewModel).initialize(),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            return const SplashScreen();
+          },
+        ),
       ),
     );
   }

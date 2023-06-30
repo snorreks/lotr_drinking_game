@@ -13,8 +13,6 @@ class LeaderBoardViewModel extends BaseViewModel {
 
   Character? get character => _ref.read(preferencesService).character;
 
-  bool get showCharacterSelectView => character == null;
-
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;
 

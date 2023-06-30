@@ -15,7 +15,6 @@ import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
 import '../../widgets/callout_menu.dart';
 import '../../widgets/loading.dart';
-import '../character/character_view.dart';
 import 'leader_board_view_model.dart';
 
 part 'leader_board_mobile.dart';
@@ -28,10 +27,6 @@ class LeaderBoardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final LeaderBoardViewModel viewModel = ref.watch(leaderBoardViewModel);
-
-    if (viewModel.showCharacterSelectView) {
-      return const CharacterView();
-    }
 
     return _LeaderBoardMobile(viewModel);
   }

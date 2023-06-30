@@ -39,7 +39,7 @@ abstract class FellowshipServiceModel {
   Future<bool> changeAdmin(
       FellowshipMember newAdmin, FellowshipMember oldAdmin);
 
-  Future<bool> incrementDrink();
+  Future<bool> incrementDrink({int? amount});
 
   Future<bool> incrementSaves();
 
@@ -136,11 +136,12 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  Future<bool> incrementDrink() => _increment(IncrementType.drinks);
+  Future<bool> incrementDrink({int? amount}) =>
+      _increment(IncrementType.drinks, amount: amount);
 
   @override
   Future<bool> incrementSaves() => _increment(IncrementType.saves);
-  Future<bool> _increment(IncrementType type) async {
+  Future<bool> _increment(IncrementType type, {int? amount}) async {
     try {
       if (_fellowshipId == null) {
         throw Exception('FellowshipId is null');
@@ -165,6 +166,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         fellowshipId: _fellowshipId!,
         character: character,
         type: type,
+        amount: amount,
       );
 
       return true;

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "668643921360-7iq6spnosdkfid6mfj56ugs74lb6j5ns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lotr_drinking_game",
+            "certificate_hash": "62842309c620d8a502637515118e4dcc88a95eb6"
+          }
+        },
+        {
           "client_id": "668643921360-5bo6lq1tbf22d97hmcthdsnqf7q42ngg.apps.googleusercontent.com",
           "client_type": 3
         }

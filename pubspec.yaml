@@ -1,5 +1,5 @@
 name: lotr_drinking_game
-description: LOTR Drinking Game
+description: Fellowship of the Drink
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.1+2
@@ -10,8 +10,13 @@ environment:
 dependencies:
   cloud_firestore: ^4.8.1
   cupertino_icons: ^1.0.5
+  firebase_analytics: ^10.4.3
   firebase_core: ^2.14.0
+  firebase_crashlytics: ^3.3.3
+  firebase_performance: ^0.9.2+3
+  firebase_remote_config: ^4.2.3
   fl_chart: ^0.63.0
+  flash: ^3.0.5+1
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.0.2
@@ -21,6 +26,8 @@ dependencies:
   json_annotation: ^4.8.1
   json_serializable: ^6.7.0
   logger: ^1.4.0
+  package_info_plus: ^4.0.2
+  rflutter_alert: ^2.0.7
   rxdart: ^0.27.7
 
 dev_dependencies:

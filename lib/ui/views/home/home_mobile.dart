@@ -36,12 +36,6 @@ class _HomeMobile extends StatelessWidget {
               child: FloatingActionButton(
                 onPressed: () {
                   viewModel.incrementDrink();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('+1 drink!'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
                 },
                 child: const Icon(Icons.sports_bar),
               )),
@@ -97,12 +91,6 @@ class _HomeMobile extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 viewModel.resolveCallout(true);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('You have accepted the callout. +2 drinks'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
               },
             ),
             TextButton(
@@ -110,12 +98,6 @@ class _HomeMobile extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 viewModel.resolveCallout(false);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('You have rejected the call out...'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
               },
             ),
           ],
@@ -167,26 +149,10 @@ class _HomeMobile extends StatelessWidget {
           case 'save1':
             {
               viewModel.incrementSaves();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Skipped 1 sip!'),
-                  duration: Duration(seconds: 1),
-                ),
-              );
             }
           case 'dth2':
             {
-              //Calculate how many "sips" go down the hatch, then run with it.
-              final int drinksAmount = member.drinksAmount;
-              final int downTheHatchSips =
-                  amountOfSipsUntilNextUnit(drinksAmount);
-              viewModel.incrementDownTheHatch(downTheHatchSips);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Drank $downTheHatchSips !'),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
+              viewModel.downTheHatch(member);
             }
           case 'callout':
             {

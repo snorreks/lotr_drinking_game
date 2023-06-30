@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart'
-    show BuildContext, GlobalKey, NavigatorState, Widget;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +9,8 @@ import '../../ui/views/login/login_view.dart';
 import '../../ui/views/root/root_view.dart';
 import '../../ui/views/rules/rules_view.dart';
 import '../../ui/views/startup/startup_view.dart';
+import '../../ui/widgets/dialog_manager.dart';
+import '../api/analytics_service.dart';
 import '../api/fellowship_service.dart';
 import 'application_service.dart';
 
@@ -75,6 +76,11 @@ class RouterService extends BaseService implements RouterServiceModel {
       navigatorKey: _appNavigatorKey,
       debugLogDiagnostics: true,
       initialLocation: StartupView.routeLocation,
+      observers: <NavigatorObserver>[
+        if (ref.read(applicationService).initialized)
+          ref.read(analyticsService).analyticsObserver,
+        HeroController(),
+      ],
       routes: <RouteBase>[
         GoRoute(
           path: StartupView.routeLocation,
@@ -95,7 +101,7 @@ class RouterService extends BaseService implements RouterServiceModel {
         ShellRoute(
           navigatorKey: _rootNavigatorKey,
           builder: (BuildContext context, GoRouterState state, Widget child) {
-            return RootView(child: child);
+            return DialogManager(RootView(child: child));
           },
           routes: <RouteBase>[
             GoRoute(
