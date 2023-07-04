@@ -60,9 +60,33 @@ class RootView extends ConsumerWidget {
                 AsyncSnapshot<FellowshipMember?> snapshot) {
               final FellowshipMember? member =
                   snapshot.hasData ? snapshot.data : null;
-
-              return Drawer(
-                child: Column(
+                            try {
+                              final FellowshipMember member = snapshot.data!;
+                              final Character character = member.character;
+                              return Column(children: [
+                                UserAccountsDrawerHeader(
+                                  accountName: Text(member.name),
+                                  accountEmail: Text(character.displayName),
+                                  currentAccountPicture: Avatar(
+                                    character,
+                                    circle: true,
+                                  ),
+                                ),
+                                _themeSwitcher(viewModel),
+                                _nextMovie(viewModel),
+                              ]);
+                            } catch (e) {
+                              return Button(
+                                  text: 'LOG ME OUT',
+                                  onPressed: () {
+                                    viewModel.signOut();
+                                  });
+                            }
+                          }),
+                    ],
+                  ),
+                ),
+                Column(
                   children: <Widget>[
                     if (member != null)
                       UserAccountsDrawerHeader(
@@ -164,6 +188,24 @@ class RootView extends ConsumerWidget {
             },
             child: const Text('Copy PIN'),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _nextMovie(RootViewModel viewModel) {
+    return StreamBuilder<Fellowship?>(
+      stream: viewModel.fellowshipStream,
+      builder: (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
+        if (!snapshot.hasData && snapshot.data == null) {
+          return Container();
+        }
+        final Fellowship selectedThemeMode = snapshot.data!;
+
+        return ListTile(
+          leading: const Icon(Icons.movie),
+          title: const Text('Next movie!'),
+          onTap: () {},
         );
       },
     );
