@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' show GlobalKey, NavigatorState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/base_service.dart';
+import '../../models/fellowship_member.dart';
 
 enum NotificationType {
   success,
@@ -29,11 +30,18 @@ abstract class DialogServiceModel {
   GlobalKey<NavigatorState> get dialogNavigationKey;
 
   /// Register a listener to use display a notification in the [DialogManager]
-  void registerNotificationListener(
-      Function(NotificationRequest) showNotificationListener);
+  void registerNotificationListener(Function(NotificationRequest) listener);
+
+  void registerCalloutListener(Function(FellowshipMember?) listener);
+
+  void registerCalledOutListener(Function(Callout) listener);
 
   /// Displays a notification dialog
   void showNotification(NotificationRequest notificationRequest);
+
+  void showCalloutDialog(FellowshipMember? selectedPlayer);
+
+  void showCalledOutDialog(Callout callout);
 }
 
 class DialogService extends BaseService implements DialogServiceModel {
@@ -42,19 +50,40 @@ class DialogService extends BaseService implements DialogServiceModel {
 
   // Listeners
   late Function(NotificationRequest) _showNotificationListener;
+  late Function(FellowshipMember?) _showCalloutListener;
+  late Function(Callout) _showCalledOutListener;
 
   @override
   GlobalKey<NavigatorState> get dialogNavigationKey => _dialogNavigationKey;
 
   @override
-  void registerNotificationListener(
-      Function(NotificationRequest) showNotificationListener) {
-    _showNotificationListener = showNotificationListener;
+  void registerNotificationListener(Function(NotificationRequest) listener) {
+    _showNotificationListener = listener;
+  }
+
+  @override
+  void registerCalloutListener(Function(FellowshipMember?) listener) {
+    _showCalloutListener = listener;
+  }
+
+  @override
+  void registerCalledOutListener(Function(Callout) listener) {
+    _showCalledOutListener = listener;
   }
 
   @override
   void showNotification(NotificationRequest notificationRequest) {
     _showNotificationListener(notificationRequest);
+  }
+
+  @override
+  void showCalloutDialog(FellowshipMember? selectedPlayer) {
+    _showCalloutListener(selectedPlayer);
+  }
+
+  @override
+  void showCalledOutDialog(Callout callout) {
+    _showCalledOutListener(callout);
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
@@ -43,26 +44,22 @@ class HomeViewModel extends BaseViewModel {
         );
   }
 
-  Future<void> sendCallout(FellowshipMember player, String rule) async {
-    await _ref.read(fellowshipService).sendCallout(player, rule);
+  void showCalloutDialog() {
+    _ref.read(dialogService).showCalloutDialog(null);
   }
 
-  Future<void> resolveCallout(bool hasAccepted) async {
-    await _ref.read(fellowshipService).resolveCallout(hasAccepted);
-    if (hasAccepted) {
-      _ref.read(dialogService).showNotification(
-            const NotificationRequest(
-                message: 'You have accepted the callout. +2 drinks'),
-          );
-    } else {
-      _ref.read(dialogService).showNotification(
-            const NotificationRequest(
-              type: NotificationType.error,
-              title: 'Bitch',
-              message: 'You have declined the callout',
-            ),
-          );
-    }
+  void wakeyBaky() {
+    Wakelock.enable();
+  }
+
+  void sleepyDeepy() {
+    Wakelock.disable();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    sleepyDeepy();
   }
 }
 

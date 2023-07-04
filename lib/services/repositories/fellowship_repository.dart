@@ -48,6 +48,7 @@ abstract class FellowshipRepositoryModel {
     required String fellowshipId,
     required Character character,
     required String rule,
+    required String caller,
   });
   Future<void> resolveCallout({
     required String fellowshipId,
@@ -193,10 +194,14 @@ class FellowshipRepository extends BaseService
     required String fellowshipId,
     required Character character,
     required String rule,
+    required String caller,
   }) async {
     try {
       await _updateDocument(fellowshipId, <String, dynamic>{
-        'members.${character.value}.callout': rule,
+        'members.${character.value}.callout': <String, dynamic>{
+          'rule': rule,
+          'caller': caller,
+        },
       });
     } catch (e) {
       logError('createCallout', e);

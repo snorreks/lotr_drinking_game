@@ -7,6 +7,7 @@ import '../../common/base_service.dart';
 import '../../constants/characters.dart';
 import '../../models/fellowship.dart';
 import '../../models/fellowship_member.dart';
+import '../app/dialog_service.dart';
 import '../app/preferences_service.dart';
 import '../repositories/fellowship_repository.dart';
 
@@ -24,6 +25,10 @@ abstract class FellowshipServiceModel {
 
   /// The current fellowship
   Stream<Fellowship?> get fellowshipStream;
+
+  Fellowship? get fellowship;
+  FellowshipMember? get member;
+  Character? get character;
 
   Future<bool> joinFellowship(String fellowshipPIN);
 
@@ -64,6 +69,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return fellowship.members[character];
       },
     ).listen((FellowshipMember? member) {
+      if (member?.callout != null) {
+        _ref.read(dialogService).showCalledOutDialog(member!.callout!);
+      }
+
       _memberSubject.add(member);
     });
   }
@@ -83,6 +92,13 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
 
   @override
   bool get hasJoinedFellowship => _fellowshipId != null;
+
+  @override
+  Fellowship? get fellowship => _fellowshipSubject.valueOrNull;
+  @override
+  FellowshipMember? get member => _memberSubject.valueOrNull;
+  @override
+  Character? get character => _characterSubject.valueOrNull;
 
   Fellowship? _fellowship;
 
@@ -112,6 +128,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
     _fellowshipStream = _fellowshipRepository.stream(_fellowshipId!);
     _fellowshipStreamListener =
         _fellowshipStream!.listen((Fellowship? fellowship) {
+      if (fellowship == null) {
+        leaveFellowship();
+      }
       _fellowshipSubject.add(fellowship);
     });
 
@@ -217,6 +236,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       return true;
     } catch (e) {
       logError('joinFellowship', e);
+      _ref.read(dialogService).showNotification(const NotificationRequest(
+            message: 'Fellowship not found',
+            type: NotificationType.error,
+          ));
       return false;
     }
   }
@@ -264,20 +287,13 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  Future<bool> sendCallout(FellowshipMember member, String rule) async {
+  Future<bool> sendCallout(FellowshipMember player, String rule) async {
     try {
-      if (_fellowshipId == null) {
-        return false;
-      }
-
-      if (rule == '') {
-        return false;
-      }
-
       await _fellowshipRepository.createCallout(
         fellowshipId: _fellowshipId!,
-        character: member.character,
+        character: player.character,
         rule: rule,
+        caller: member!.name,
       );
       return true;
     } catch (e) {

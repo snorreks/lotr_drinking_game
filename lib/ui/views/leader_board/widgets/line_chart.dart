@@ -16,47 +16,56 @@ class FellowshipLineChart extends StatefulWidget {
 }
 
 class FellowshipLineChartState extends State<FellowshipLineChart> {
-  // List<FellowshipMember> get members =>
-  //     widget.fellowship.members.values.toList();
-
-  List<DateTime> getMockDates(int count, Duration interval) {
-    final List<DateTime> dates = <DateTime>[];
-    DateTime currentDate = DateTime.now();
-    final math.Random random = math.Random();
-
-    for (int i = 0; i < count; i++) {
-      final int randomAmount = random.nextInt(10) + 1; // Random value up to 10
-      for (int j = 0; j < randomAmount; j++) {
-        dates.add(currentDate);
-      }
-      currentDate = currentDate.add(interval);
-    }
-
-    return dates;
-  }
-
-  List<FellowshipMember> get members {
-    final List<FellowshipMember> fellowshipMembers =
-        widget.fellowship.members.values.toList();
-
-    if (fellowshipMembers.isNotEmpty) {
-      final FellowshipMember firstMember = fellowshipMembers.first;
-
-      fellowshipMembers[0] = FellowshipMember(
-          name: firstMember.name,
-          character: firstMember.character,
-          drinks: getMockDates(5, const Duration(minutes: 20)),
-          saves: getMockDates(5, const Duration(minutes: 20)),
-          callout: firstMember.callout,
-          isAdmin: firstMember.isAdmin);
-    }
-
-    return fellowshipMembers;
-  }
-
   final List<Character> hiddenCharacters = <Character>[];
 
-  late LineChartView lineChartView = LineChartView.drinks;
+  LineChartView lineChartView = LineChartView.drinks;
+
+  List<FellowshipMember> get members =>
+      widget.fellowship.members.values.toList()
+        ..sort((FellowshipMember a, FellowshipMember b) {
+          final int aAmount = lineChartView == LineChartView.drinks
+              ? a.drinksAmount
+              : a.savesAmount;
+          final int bAmount = lineChartView == LineChartView.drinks
+              ? b.drinksAmount
+              : b.savesAmount;
+          return bAmount.compareTo(aAmount);
+        });
+
+  // List<DateTime> getMockDates(int count, Duration interval) {
+  //   final List<DateTime> dates = <DateTime>[];
+  //   DateTime currentDate = DateTime.now();
+  //   final math.Random random = math.Random();
+
+  //   for (int i = 0; i < count; i++) {
+  //     final int randomAmount = random.nextInt(10) + 1; // Random value up to 10
+  //     for (int j = 0; j < randomAmount; j++) {
+  //       dates.add(currentDate);
+  //     }
+  //     currentDate = currentDate.add(interval);
+  //   }
+
+  //   return dates;
+  // }
+
+  // List<FellowshipMember> get members {
+  //   final List<FellowshipMember> fellowshipMembers =
+  //       widget.fellowship.members.values.toList();
+
+  //   if (fellowshipMembers.isNotEmpty) {
+  //     final FellowshipMember firstMember = fellowshipMembers.first;
+
+  //     fellowshipMembers[0] = FellowshipMember(
+  //         name: firstMember.name,
+  //         character: firstMember.character,
+  //         drinks: getMockDates(5, const Duration(minutes: 20)),
+  //         saves: getMockDates(5, const Duration(minutes: 20)),
+  //         callout: firstMember.callout,
+  //         isAdmin: firstMember.isAdmin);
+  //   }
+
+  //   return fellowshipMembers;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -67,24 +76,17 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const SizedBox(
-                height: 37,
-              ),
               Text(
                 lineChartView == LineChartView.drinks ? 'Drinks' : 'Saves',
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(
-                height: 37,
-              ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 6),
+                  padding: const EdgeInsets.only(right: 16, left: 6, top: 20),
                   child: _LineChart(
                       lineChartView: lineChartView,
                       members: members

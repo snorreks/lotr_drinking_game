@@ -37,12 +37,12 @@ class LoginViewModel extends BaseViewModel {
 
   Future<void> submitJoin() async {
     _loadingSubject.add(true);
-    try {
-      await _ref.read(fellowshipService).joinFellowship(pinCodeController.text);
+    final bool responseOk = await _ref
+        .read(fellowshipService)
+        .joinFellowship(pinCodeController.text);
+
+    if (responseOk) {
       await _ref.read(routerService).go(Location.home);
-    } catch (e) {
-      _loadingSubject.add(false);
-      rethrow;
     }
   }
 

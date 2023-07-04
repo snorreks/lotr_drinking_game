@@ -2,6 +2,9 @@ import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../services/app/dialog_service.dart';
+import '../../models/fellowship_member.dart';
+import 'called_out/called_out_dialog.dart';
+import 'callout/callout_dialog.dart';
 
 /// This handles popup dialogs and snackbar in the application.
 class DialogManager extends ConsumerStatefulWidget {
@@ -20,6 +23,8 @@ class _DialogManagerState extends ConsumerState<DialogManager> {
     super.initState();
     _dialogService = ref.read(dialogService);
     _dialogService.registerNotificationListener(_showNotification);
+    _dialogService.registerCalledOutListener(_showCalledOutDialog);
+    _dialogService.registerCalloutListener(_showCalloutDialog);
   }
 
   @override
@@ -84,6 +89,24 @@ class _DialogManagerState extends ConsumerState<DialogManager> {
             onPressed: () => controller.dismiss(),
           ),
         );
+      },
+    );
+  }
+
+  Future<void> _showCalledOutDialog(Callout callout) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CalledOutDialog(callout: callout);
+      },
+    );
+  }
+
+  Future<void> _showCalloutDialog(FellowshipMember? member) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return CalloutDialog(member: member);
       },
     );
   }

@@ -39,7 +39,6 @@ class StartupViewModel extends BaseViewModel {
     await Hive.initFlutter();
 
     await _ref.read(remoteConfigService).initialize();
-    await _ref.read(remoteConfigService).checkAppVersion();
     await _ref.read(preferencesService).initialize();
     await _ref.read(applicationService).initialize();
 

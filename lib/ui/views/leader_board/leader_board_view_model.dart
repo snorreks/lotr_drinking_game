@@ -5,6 +5,7 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
+import '../../../services/app/dialog_service.dart';
 import '../../../services/app/preferences_service.dart';
 
 class LeaderBoardViewModel extends BaseViewModel {
@@ -16,8 +17,8 @@ class LeaderBoardViewModel extends BaseViewModel {
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;
 
-  Future<void> sendCallout(FellowshipMember player, String rule) async {
-    await _ref.read(fellowshipService).sendCallout(player, rule);
+  void showCalloutDialog(FellowshipMember player) {
+    _ref.read(dialogService).showCalloutDialog(player);
   }
 }
 

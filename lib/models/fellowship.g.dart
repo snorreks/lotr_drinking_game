@@ -24,5 +24,4 @@ Map<String, dynamic> _$FellowshipToJson(Fellowship instance) =>
       'id': instance.id,
       'name': instance.name,
       'pin': instance.pin,
-      'members': membersToJson(instance.members),
     };
