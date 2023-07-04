@@ -12,10 +12,13 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget image = Image.asset(
-      'assets/images/characters/${character.value}.png',
-      fit: fit,
-      height: height,
+    final Widget image = Hero(
+      tag: character,
+      child: Image.asset(
+        'assets/images/characters/${character.value}.png',
+        fit: fit,
+        height: height,
+      ),
     );
 
     if (!circle) {

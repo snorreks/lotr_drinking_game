@@ -21,7 +21,7 @@ void showCalloutModal({
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Container(
+            return ColoredBox(
               color: Colors.transparent,
               child: Container(
                 decoration: const BoxDecoration(

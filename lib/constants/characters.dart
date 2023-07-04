@@ -121,19 +121,19 @@ extension CharacterExtension on Character {
   Color get color {
     switch (this) {
       case Character.frodo:
-        return Colors.black;
+        return Colors.brown;
       case Character.sam:
-        return Colors.yellow;
-      case Character.merrypippin:
-        return Colors.red;
-      case Character.gandalf:
         return Colors.green;
+      case Character.merrypippin:
+        return Colors.orange;
+      case Character.gandalf:
+        return Colors.grey;
       case Character.aragorn:
         return Colors.blue;
       case Character.legolas:
-        return Colors.white;
+        return Colors.lightGreen;
       case Character.gimli:
-        return Colors.pink;
+        return Colors.red;
     }
   }
 }

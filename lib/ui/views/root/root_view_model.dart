@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -7,6 +8,7 @@ import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/application_service.dart';
+import '../../../services/app/dialog_service.dart';
 import '../../../services/app/router_service.dart';
 
 class RootViewModel extends BaseViewModel {
@@ -69,6 +71,14 @@ class RootViewModel extends BaseViewModel {
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;
+
+  Future<void> copyPin(String pin) async {
+    Clipboard.setData(ClipboardData(text: pin));
+
+    _ref.read(dialogService).showNotification(
+          const NotificationRequest(message: 'Pin Copied'),
+        );
+  }
 }
 
 final AutoDisposeProvider<RootViewModel> rootViewModel =

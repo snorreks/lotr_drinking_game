@@ -16,45 +16,56 @@ class FellowshipLineChart extends StatefulWidget {
 }
 
 class FellowshipLineChartState extends State<FellowshipLineChart> {
-  // List<FellowshipMember> get members =>
-  //     widget.fellowship.members.values.toList();
+  final List<Character> hiddenCharacters = <Character>[];
 
-  List<DateTime> getMockDates(int count, Duration interval) {
-    final List<DateTime> dates = <DateTime>[];
-    DateTime currentDate = DateTime.now();
-    final math.Random random = math.Random();
+  LineChartView lineChartView = LineChartView.drinks;
 
-    for (int i = 0; i < count; i++) {
-      final int randomAmount = random.nextInt(10) + 1; // Random value up to 10
-      for (int j = 0; j < randomAmount; j++) {
-        dates.add(currentDate);
-      }
-      currentDate = currentDate.add(interval);
-    }
+  List<FellowshipMember> get members =>
+      widget.fellowship.members.values.toList()
+        ..sort((FellowshipMember a, FellowshipMember b) {
+          final int aAmount = lineChartView == LineChartView.drinks
+              ? a.drinksAmount
+              : a.savesAmount;
+          final int bAmount = lineChartView == LineChartView.drinks
+              ? b.drinksAmount
+              : b.savesAmount;
+          return bAmount.compareTo(aAmount);
+        });
 
-    return dates;
-  }
+  // List<DateTime> getMockDates(int count, Duration interval) {
+  //   final List<DateTime> dates = <DateTime>[];
+  //   DateTime currentDate = DateTime.now();
+  //   final math.Random random = math.Random();
 
-  List<FellowshipMember> get members {
-    final List<FellowshipMember> fellowshipMembers =
-        widget.fellowship.members.values.toList();
+  //   for (int i = 0; i < count; i++) {
+  //     final int randomAmount = random.nextInt(10) + 1; // Random value up to 10
+  //     for (int j = 0; j < randomAmount; j++) {
+  //       dates.add(currentDate);
+  //     }
+  //     currentDate = currentDate.add(interval);
+  //   }
 
-    if (fellowshipMembers.isNotEmpty) {
-      final FellowshipMember firstMember = fellowshipMembers.first;
+  //   return dates;
+  // }
 
-      fellowshipMembers[0] = FellowshipMember(
-          name: firstMember.name,
-          character: firstMember.character,
-          drinks: getMockDates(5, const Duration(minutes: 20)),
-          saves: getMockDates(5, const Duration(minutes: 20)),
-          callout: firstMember.callout,
-          isAdmin: firstMember.isAdmin);
-    }
+  // List<FellowshipMember> get members {
+  //   final List<FellowshipMember> fellowshipMembers =
+  //       widget.fellowship.members.values.toList();
 
-    return fellowshipMembers;
-  }
+  //   if (fellowshipMembers.isNotEmpty) {
+  //     final FellowshipMember firstMember = fellowshipMembers.first;
 
-  late LineChartView lineChartView = LineChartView.drinks;
+  //     fellowshipMembers[0] = FellowshipMember(
+  //         name: firstMember.name,
+  //         character: firstMember.character,
+  //         drinks: getMockDates(5, const Duration(minutes: 20)),
+  //         saves: getMockDates(5, const Duration(minutes: 20)),
+  //         callout: firstMember.callout,
+  //         isAdmin: firstMember.isAdmin);
+  //   }
+
+  //   return fellowshipMembers;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -65,32 +76,29 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const SizedBox(
-                height: 37,
-              ),
               Text(
                 lineChartView == LineChartView.drinks ? 'Drinks' : 'Saves',
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(
-                height: 37,
-              ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 6),
+                  padding: const EdgeInsets.only(right: 16, left: 6, top: 20),
                   child: _LineChart(
-                    lineChartView: lineChartView,
-                    members: members,
-                  ),
+                      lineChartView: lineChartView,
+                      members: members
+                          .where((FellowshipMember element) =>
+                              !hiddenCharacters.contains(element.character))
+                          .toList()),
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 150,
+                child: _memberList(),
               ),
             ],
           ),
@@ -110,6 +118,64 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _memberList() {
+    return ListView.builder(
+      itemCount: members.length,
+      itemBuilder: (BuildContext context, int index) {
+        final FellowshipMember member = members[index];
+        final Character character = member.character;
+        final bool isHidden = hiddenCharacters.contains(character);
+
+        double calculateAverageDrinksPerMinute() {
+          final List<DateTime> drinksOrSaves =
+              lineChartView == LineChartView.drinks
+                  ? member.drinks
+                  : member.saves;
+          if (drinksOrSaves.isEmpty) {
+            return 0;
+          }
+
+          final int amount = drinksOrSaves.length;
+
+          final int minutes =
+              drinksOrSaves.last.difference(drinksOrSaves.first).inMinutes;
+
+          return minutes != 0 ? amount / minutes : 0.0;
+        }
+
+        final double drinksOrSavesPrMin = calculateAverageDrinksPerMinute();
+
+        return ListTile(
+          onTap: () {
+            setState(() {
+              if (hiddenCharacters.contains(character)) {
+                hiddenCharacters.remove(character);
+              } else {
+                hiddenCharacters.add(character);
+              }
+            });
+          },
+          leading: Avatar(character, circle: true),
+          title: Text(
+            member.name,
+            style: TextStyle(
+              fontWeight: isHidden ? FontWeight.normal : FontWeight.bold,
+              color: isHidden ? Colors.grey : Colors.black,
+            ),
+          ),
+          tileColor: isHidden ? Colors.grey.withOpacity(0.2) : character.color,
+          trailing: Text(
+            '${drinksOrSavesPrMin.toStringAsFixed(2)} ${lineChartView.name}/min',
+            style: TextStyle(
+              fontWeight: isHidden ? FontWeight.normal : FontWeight.bold,
+              color: isHidden ? Colors.grey : Colors.black,
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -135,9 +201,19 @@ class _LineChart extends StatelessWidget {
         (FellowshipMember member) => LineChartBarData(
           isCurved: true,
           color: member.character.color,
-          barWidth: 8,
+          barWidth: 6,
           isStrokeCapRound: true,
-          dotData: const FlDotData(show: false),
+          dotData: FlDotData(
+            getDotPainter: (FlSpot spot, double xPercentage,
+                LineChartBarData bar, int index) {
+              return FlDotCirclePainter(
+                radius: 9,
+                color: member.character.color,
+                strokeWidth: 1.5,
+                strokeColor: Colors.white,
+              );
+            },
+          ),
           belowBarData: BarAreaData(),
           spots: countOccurrencesAndCreateSpots(
             lineChartView == LineChartView.drinks

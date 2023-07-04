@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../utils/logo.dart';
 import 'loading.dart';
+import 'logo.dart';
 
 class SplashScreen extends ConsumerWidget {
   const SplashScreen({super.key, this.showLoading = true});
@@ -15,7 +15,7 @@ class SplashScreen extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            getLogo(),
+            const Logo(),
             if (showLoading)
               const Padding(
                 padding: EdgeInsets.only(top: 50),

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show ChangeNotifier, ThemeMode;
+import 'package:flutter/material.dart'
+    show ChangeNotifier, HeroController, ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/base_service.dart';
@@ -13,6 +14,7 @@ abstract class ApplicationServiceModel implements ChangeNotifier {
   bool get initialized;
 
   ThemeMode get themeMode;
+  HeroController get heroController;
 
   void changeTheme(ThemeMode themeMode);
 
@@ -27,6 +29,9 @@ class ApplicationService extends BaseService
   ApplicationService(this._ref);
 
   final Ref _ref;
+
+  @override
+  final HeroController heroController = HeroController();
 
   @override
   bool get initialized => _initialized;

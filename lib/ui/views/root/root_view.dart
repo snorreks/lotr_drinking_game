@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/button.dart';
+import '../../widgets/logo.dart';
 import '../character/character_view.dart';
 import 'root_view_model.dart';
 import 'widgets/logout.dart';
@@ -36,11 +35,7 @@ class RootView extends ConsumerWidget {
         }
         return Scaffold(
           appBar: AppBar(
-            title: Image.asset(
-              'assets/images/logo/logo-title.png',
-              fit: BoxFit.contain,
-              height: 60,
-            ),
+            title: const Logo(type: LogoType.title),
             centerTitle: true,
           ),
           body: child,
@@ -59,27 +54,12 @@ class RootView extends ConsumerWidget {
             currentIndex: viewModel.currentIndex,
             onTap: (int index) => viewModel.onItemTapped(index),
           ),
-          drawer: Drawer(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: ListView(
-                    // Disable ListView's padding to avoid issues with Column
-                    padding: EdgeInsets.zero,
-                    children: <Widget>[
-                      StreamBuilder<FellowshipMember?>(
-                          stream: viewModel.memberStream,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<FellowshipMember?> snapshot) {
-                            if (!snapshot.hasData || snapshot.data == null) {
-                              return Button(
-                                  text: 'LOG ME OUT',
-                                  onPressed: () {
-                                    viewModel.signOut();
-                                  });
-                            }
-
+          drawer: StreamBuilder<FellowshipMember?>(
+            stream: viewModel.memberStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<FellowshipMember?> snapshot) {
+              final FellowshipMember? member =
+                  snapshot.hasData ? snapshot.data : null;
                             try {
                               final FellowshipMember member = snapshot.data!;
                               final Character character = member.character;
@@ -108,14 +88,28 @@ class RootView extends ConsumerWidget {
                 ),
                 Column(
                   children: <Widget>[
+                    if (member != null)
+                      UserAccountsDrawerHeader(
+                        accountName: Text(member.name),
+                        accountEmail: Text(member.character.displayName),
+                        currentAccountPicture: Avatar(
+                          member.character,
+                          circle: true,
+                        ),
+                        decoration: BoxDecoration(
+                          color: member.character.color,
+                        ),
+                      ),
+                    _themeSwitcher(viewModel),
+                    const Spacer(),
                     _pinCode(viewModel),
                     const SizedBox(height: 20),
                     const Divider(),
                     const LogoutTile(),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },
@@ -181,21 +175,16 @@ class RootView extends ConsumerWidget {
           return Container();
         }
         final Fellowship selectedThemeMode = snapshot.data!;
-        final String pinCode = selectedThemeMode.pin;
+        final String pin = selectedThemeMode.pin;
 
         return ListTile(
           title: Align(
             alignment: Alignment.centerRight,
-            child: Text('PIN: $pinCode'),
+            child: Text('PIN: $pin'),
           ),
           subtitle: ElevatedButton(
             onPressed: () {
-              Clipboard.setData(
-                ClipboardData(text: pinCode),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('PIN copied to clipboard')),
-              );
+              viewModel.copyPin(pin);
             },
             child: const Text('Copy PIN'),
           ),

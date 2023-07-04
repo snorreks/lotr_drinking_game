@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'
-    show BuildContext, GlobalKey, NavigatorState, Widget;
+    show BuildContext, GlobalKey, NavigatorObserver, NavigatorState, Widget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +10,8 @@ import '../../ui/views/login/login_view.dart';
 import '../../ui/views/root/root_view.dart';
 import '../../ui/views/rules/rules_view.dart';
 import '../../ui/views/startup/startup_view.dart';
+import '../../ui/widgets/dialog_manager.dart';
+import '../api/analytics_service.dart';
 import '../api/fellowship_service.dart';
 import 'application_service.dart';
 
@@ -62,7 +64,7 @@ abstract class RouterServiceModel {
   /// Pop the top-most route off the selected navItem.
   ///
   /// If navItem = null, it uses the appNavigatorKey.
-  void pop<T>(T result);
+  void pop<T>({T result});
 
   GoRouter get router;
 
@@ -75,51 +77,66 @@ class RouterService extends BaseService implements RouterServiceModel {
       navigatorKey: _appNavigatorKey,
       debugLogDiagnostics: true,
       initialLocation: StartupView.routeLocation,
+      observers: <NavigatorObserver>[
+        if (ref.read(applicationService).initialized)
+          ref.read(analyticsService).analyticsObserver,
+        ref.read(applicationService).heroController,
+      ],
       routes: <RouteBase>[
-        GoRoute(
-          path: StartupView.routeLocation,
-          name: StartupView.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return const StartupView();
-          },
-        ),
-        GoRoute(
-          path: Location.login.value,
-          name: Location.login.name,
-          builder: (BuildContext context, GoRouterState state) {
-            return const LoginView();
-          },
-        ),
-
-        /// Application shell
         ShellRoute(
-          navigatorKey: _rootNavigatorKey,
+          navigatorKey: _dialogWrapperNavigatorKey,
           builder: (BuildContext context, GoRouterState state, Widget child) {
-            return RootView(child: child);
+            return DialogManager(child);
           },
           routes: <RouteBase>[
             GoRoute(
-              path: Location.home.value,
-              name: Location.home.name,
+              path: StartupView.routeLocation,
+              name: StartupView.routeName,
               builder: (BuildContext context, GoRouterState state) {
-                return const HomeView();
+                return const StartupView();
               },
             ),
 
-            /// The first screen to display in the bottom navigation bar.
             GoRoute(
-              path: Location.leaderBoard.value,
-              name: Location.leaderBoard.name,
+              path: Location.login.value,
+              name: Location.login.name,
               builder: (BuildContext context, GoRouterState state) {
-                return const LeaderBoardView();
+                return const LoginView();
               },
             ),
-            GoRoute(
-              path: Location.rules.value,
-              name: Location.rules.name,
-              builder: (BuildContext context, GoRouterState state) {
-                return const RulesView();
+
+            /// Application shell
+            ShellRoute(
+              navigatorKey: _rootNavigatorKey,
+              builder:
+                  (BuildContext context, GoRouterState state, Widget child) {
+                return RootView(child: child);
               },
+              routes: <RouteBase>[
+                GoRoute(
+                  path: Location.home.value,
+                  name: Location.home.name,
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const HomeView();
+                  },
+                ),
+
+                /// The first screen to display in the bottom navigation bar.
+                GoRoute(
+                  path: Location.leaderBoard.value,
+                  name: Location.leaderBoard.name,
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const LeaderBoardView();
+                  },
+                ),
+                GoRoute(
+                  path: Location.rules.value,
+                  name: Location.rules.name,
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const RulesView();
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -167,7 +184,8 @@ class RouterService extends BaseService implements RouterServiceModel {
       GlobalKey<NavigatorState>(debugLabel: 'app');
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
-
+  static final GlobalKey<NavigatorState> _dialogWrapperNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'wrapper');
   final GoRouter _router;
 
   @override
@@ -184,7 +202,7 @@ class RouterService extends BaseService implements RouterServiceModel {
   }
 
   @override
-  void pop<T>(T result) {
+  void pop<T>({T? result}) {
     return router.pop();
   }
 }

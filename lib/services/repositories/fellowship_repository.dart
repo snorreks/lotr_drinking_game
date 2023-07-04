@@ -41,12 +41,14 @@ abstract class FellowshipRepositoryModel {
     required String fellowshipId,
     required Character character,
     required IncrementType type,
+    int? amount,
   });
 
   Future<void> createCallout({
     required String fellowshipId,
     required Character character,
     required String rule,
+    required String caller,
   });
   Future<void> resolveCallout({
     required String fellowshipId,
@@ -170,13 +172,15 @@ class FellowshipRepository extends BaseService
     required String fellowshipId,
     required Character character,
     required IncrementType type,
+    int? amount,
   }) async {
     try {
       await _updateDocument(fellowshipId, <String, dynamic>{
         'members.${character.value}.${type.value}': FieldValue.arrayUnion(
-          <Timestamp>[
-            Timestamp.now(),
-          ],
+          List<Timestamp>.generate(
+            amount ?? 1,
+            (int index) => Timestamp.now(),
+          ),
         ),
       });
     } catch (e) {
@@ -190,10 +194,14 @@ class FellowshipRepository extends BaseService
     required String fellowshipId,
     required Character character,
     required String rule,
+    required String caller,
   }) async {
     try {
       await _updateDocument(fellowshipId, <String, dynamic>{
-        'members.${character.value}.callout': rule,
+        'members.${character.value}.callout': <String, dynamic>{
+          'rule': rule,
+          'caller': caller,
+        },
       });
     } catch (e) {
       logError('createCallout', e);
@@ -211,12 +219,12 @@ class FellowshipRepository extends BaseService
       if (drinks > 0) {
         await _updateDocument(fellowshipId, <String, dynamic>{
           'members.${character.value}.callout': FieldValue.delete(),
-          'members.${character.value}.drinks':
-              FieldValue.arrayUnion(<Timestamp>[Timestamp.now()]),
-        });
-        await _updateDocument(fellowshipId, <String, dynamic>{
-          'members.${character.value}.drinks':
-              FieldValue.arrayUnion(<Timestamp>[Timestamp.now()]),
+          'members.${character.value}.drinks': FieldValue.arrayUnion(
+            List<Timestamp>.generate(
+              drinks,
+              (int index) => Timestamp.now(),
+            ),
+          ),
         });
       } else {
         await _updateDocument(fellowshipId, <String, dynamic>{

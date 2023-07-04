@@ -1,6 +1,6 @@
 {
-    "name": "lotr_drinking_game",
-    "short_name": "lotr_drinking_game",
+    "name": "Fellowship of the Drink",
+    "short_name": "Fellowship of the Drink",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

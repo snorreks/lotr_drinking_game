@@ -28,13 +28,13 @@ class _LoginMobile extends StatelessWidget {
                 children: <Widget>[
                   const SizedBox(height: 32.0),
                   const Text(
-                    'LOTR Drinking Game',
+                    'Fellowship of the Drink',
                     style:
                         TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32.0),
-                  getLogo(),
+                  const Logo(),
                   const SizedBox(height: 32.0),
                   const Text(
                     'Join Session',
@@ -42,9 +42,6 @@ class _LoginMobile extends StatelessWidget {
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                  // add a divider here that says "or"
-                  const Divider(),
-
                   const SizedBox(height: 16.0),
                   StreamBuilder<String>(
                     stream: viewModel.pinCode,
@@ -66,7 +63,9 @@ class _LoginMobile extends StatelessWidget {
                     text: 'Join',
                     onPressed: viewModel.submitJoin,
                   ),
-                  const SizedBox(height: 32.0),
+                  const SizedBox(height: 16.0),
+                  const Divider(),
+                  const SizedBox(height: 16.0),
                   const Text(
                     'Create Session',
                     style:

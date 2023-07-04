@@ -120,7 +120,6 @@ class FellowshipBarChartState extends State<FellowshipBarChart> {
               return generateBarGroup(
                   index, character.color, drinksAmount, savesAmount);
             }).toList(),
-            maxY: 20,
             barTouchData: BarTouchData(
               enabled: true,
               handleBuiltInTouches: false,

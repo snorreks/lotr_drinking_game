@@ -10,19 +10,37 @@ Map<Character, FellowshipMember> membersFromJson(dynamic value) {
       <Character, FellowshipMember>{};
   for (final MapEntry<String, dynamic> entry
       in (value as Map<String, dynamic>).entries) {
-    members[CharacterExtension.fromValue(entry.key)] =
-        FellowshipMember.fromJson(<String, dynamic>{
-      ...entry.value as Map<String, dynamic>,
-      'character': entry.key,
-    });
-  }
-  return members;
-}
+    final Map<String, dynamic> json = entry.value as Map<String, dynamic>;
+    // ignore: always_specify_types
+    const Map<Character, String> $CharacterEnumMap = {
+      Character.frodo: 'frodo',
+      Character.sam: 'sam',
+      Character.merrypippin: 'merrypippin',
+      Character.gandalf: 'gandalf',
+      Character.aragorn: 'aragorn',
+      Character.legolas: 'legolas',
+      Character.gimli: 'gimli',
+    };
 
-Map<String, dynamic> membersToJson(Map<Character, FellowshipMember> value) {
-  final Map<String, dynamic> members = <String, dynamic>{};
-  for (final MapEntry<Character, FellowshipMember> entry in value.entries) {
-    members[entry.key.value] = entry.value.toJson();
+    members[CharacterExtension.fromValue(entry.key)] = FellowshipMember(
+      name: json['name'] as String,
+      character: $enumDecode($CharacterEnumMap, entry.key),
+      drinks: json['drinks'] == null
+          ? const <DateTime>[]
+          : timestampArrayFromJson(json['drinks']),
+      saves: json['saves'] == null
+          ? const <DateTime>[]
+          : timestampArrayFromJson(json['saves']),
+      callout: json['callout'] == null
+          ? null
+          : Callout(
+              // ignore: avoid_dynamic_calls
+              rule: json['callout']['rule'] as String,
+              // ignore: avoid_dynamic_calls
+              caller: json['callout']['caller'] as String,
+            ),
+      isAdmin: json['isAdmin'] as bool,
+    );
   }
   return members;
 }
@@ -48,8 +66,10 @@ class Fellowship {
   @JsonKey(required: true)
   final String pin;
 
-  @JsonKey(fromJson: membersFromJson, toJson: membersToJson)
+  @JsonKey(fromJson: membersFromJson)
   final Map<Character, FellowshipMember> members;
 
   Map<String, dynamic> toJson() => _$FellowshipToJson(this);
+
+  List<FellowshipMember> get membersList => members.values.toList();
 }
