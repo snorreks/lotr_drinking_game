@@ -51,6 +51,7 @@ class Fellowship {
     required this.id,
     required this.pin,
     required this.name,
+    required this.currentMovie,
     required this.members,
   });
 
@@ -65,6 +66,9 @@ class Fellowship {
 
   @JsonKey(required: true)
   final String pin;
+
+  @JsonKey(required: true)
+  final String currentMovie;
 
   @JsonKey(fromJson: membersFromJson)
   final Map<Character, FellowshipMember> members;

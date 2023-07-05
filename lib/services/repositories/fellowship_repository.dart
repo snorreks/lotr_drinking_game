@@ -36,6 +36,7 @@ abstract class FellowshipRepositoryModel {
   Future<void> addMember(String fellowshipId, FellowshipMember member);
   Future<void> changeAdmin(String fellowshipId, FellowshipMember newAdmin,
       FellowshipMember oldAdmin);
+  Future<void> nextMovie(String fellowshipId, String currentMovie);
 
   Future<void> increment({
     required String fellowshipId,
@@ -120,6 +121,7 @@ class FellowshipRepository extends BaseService
         'name': fellowshipName,
         'pin': randomPin,
         'createdAt': FieldValue.serverTimestamp(),
+        'currentMovie': 'Fellowship of the Ring',
         'members': <String, dynamic>{}
       });
 
@@ -159,6 +161,42 @@ class FellowshipRepository extends BaseService
         transaction.update(docRef, {
           'members.${newAdmin.character.value}.isAdmin': true,
           'members.${oldAdmin.character.value}.isAdmin': false
+        });
+      });
+    } catch (e) {
+      logError('changeAdmin', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> nextMovie(String fellowshipId, String currentMovie) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      String nextMovie = '';
+
+      //hardcoded logic... i hate it but I am too sleepy to think of other solutions
+      switch (currentMovie) {
+        case ('Fellowship of the Ring'):
+          {
+            nextMovie = 'The Two Towers';
+          }
+        case ('The Two Towers'):
+          {
+            nextMovie = 'Return of the King';
+          }
+        case ('Return of the King'):
+          {
+            //commence ending sequence
+            nextMovie = 'Fellowship of the Ring';
+          }
+      }
+
+      await _db.runTransaction((Transaction transaction) async {
+        transaction.update(docRef, {
+          'currentMovie': nextMovie,
         });
       });
     } catch (e) {
