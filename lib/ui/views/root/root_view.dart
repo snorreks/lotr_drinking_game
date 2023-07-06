@@ -77,6 +77,11 @@ class RootView extends ConsumerWidget {
                         ),
                       ),
                     _themeSwitcher(viewModel),
+                    if (member != null && member.isAdmin)
+                      ListTile(
+                          leading: const Icon(Icons.movie),
+                          title: const Text('Next movie!'),
+                          onTap: viewModel.nextMovie),
                     const Spacer(),
                     _pinCode(viewModel),
                     const SizedBox(height: 20),

@@ -61,6 +61,10 @@ class RootViewModel extends BaseViewModel {
     await _ref.read(fellowshipService).changeAdmin(newAdmin, oldAdmin);
   }
 
+  Future<void> nextMovie() async {
+    await _ref.read(fellowshipService).nextMovie();
+  }
+
   void changeTheme(ThemeMode themeMode) {
     _themeSubject.add(themeMode);
     _ref.read(applicationService).changeTheme(themeMode);

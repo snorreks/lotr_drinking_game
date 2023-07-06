@@ -44,6 +44,8 @@ abstract class FellowshipServiceModel {
   Future<bool> changeAdmin(
       FellowshipMember newAdmin, FellowshipMember oldAdmin);
 
+  Future<bool> nextMovie();
+
   Future<bool> incrementDrink({int? amount});
 
   Future<bool> incrementSaves();
@@ -280,6 +282,20 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       }
       await _fellowshipRepository.changeAdmin(
           _fellowshipId!, newAdmin, oldAdmin);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> nextMovie() async {
+    try {
+      if (fellowship == null) {
+        throw Exception("Fellowship doesn't exist");
+      }
+      await _fellowshipRepository.nextMovie(
+          fellowship!.id, fellowship!.currentMovie);
       return true;
     } catch (e) {
       return false;

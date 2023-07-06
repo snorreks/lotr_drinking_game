@@ -5,13 +5,15 @@ import '../button.dart';
 import 'callout_dialog_model.dart';
 
 class CalloutDialog extends ConsumerWidget {
-  const CalloutDialog({this.member, super.key});
+  const CalloutDialog({super.key, this.member});
 
   final FellowshipMember? member;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final CalloutViewModel viewModel = ref.watch(calloutViewModel(member));
+    final CalloutViewModel viewModel = ref.watch(
+      calloutViewModel(member),
+    );
 
     return ColoredBox(
       color: Colors.transparent,
@@ -36,16 +38,16 @@ class CalloutDialog extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
-                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                     ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 5, right: 5),
                     child: Button(
-                      onPressed: viewModel.canSubmit && !viewModel.busy
-                          ? () {
-                              viewModel.sendCallout();
+                      onPressed: viewModel.canSubmit
+                          ? () async {
+                              viewModel.sendCallout(ref);
                               Navigator.of(context).pop();
                             }
                           : null,
@@ -81,17 +83,19 @@ class CalloutDialog extends ConsumerWidget {
                 ),
               ),
               DropdownButton<FellowshipMember>(
-                  value: viewModel.selectedPlayer,
-                  hint: const Text('Select player'),
-                  items: viewModel.players
-                      .map<DropdownMenuItem<FellowshipMember>>(
-                          (FellowshipMember player) {
-                    return DropdownMenuItem<FellowshipMember>(
-                      value: player,
-                      child: Text(player.name),
-                    );
-                  }).toList(),
-                  onChanged: viewModel.selectPlayer),
+                value: viewModel.selectedPlayer,
+                hint: const Text('Select player'),
+                items: viewModel.players
+                    .map<DropdownMenuItem<FellowshipMember>>(
+                        (FellowshipMember player) {
+                  return DropdownMenuItem<FellowshipMember>(
+                    value: player,
+                    child: Text(player.name),
+                  );
+                }).toList(),
+                onChanged: (FellowshipMember? newPlayer) =>
+                    viewModel.selectPlayer(newPlayer),
+              ),
               DropdownButton<String>(
                 value: viewModel.selectedCategory,
                 hint: const Text('Select category'),
@@ -102,27 +106,29 @@ class CalloutDialog extends ConsumerWidget {
                     child: Text(value),
                   );
                 }).toList(),
-                onChanged: viewModel.selectCategory,
+                onChanged: (String? newCategory) =>
+                    viewModel.selectCategory(newCategory),
               ),
               if (viewModel.rules != null)
                 DropdownButton<String>(
-                    value: viewModel.selectedRule,
-                    hint: const Text('Select rule'),
-                    items: viewModel.rules!
-                        .map<DropdownMenuItem<String>>((String rule) {
-                      return DropdownMenuItem<String>(
-                        value: rule,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width *
-                              0.8, // Here we are setting width of DropdownMenuItem to be 80% of screen width.
-                          child: Text(
-                            rule,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                  value: viewModel.selectedRule,
+                  hint: const Text('Select rule'),
+                  items: viewModel.rules!
+                      .map<DropdownMenuItem<String>>((String rule) {
+                    return DropdownMenuItem<String>(
+                      value: rule,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.8, // Here we are setting width of DropdownMenuItem to be 80% of screen width.
+                        child: Text(
+                          rule,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      );
-                    }).toList(),
-                    onChanged: viewModel.selectRule)
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String? newRule) => viewModel.selectRule(newRule),
+                )
             ],
           ),
         ),

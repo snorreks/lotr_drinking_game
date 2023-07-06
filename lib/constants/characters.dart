@@ -70,7 +70,108 @@ extension CharacterExtension on Character {
     }
   }
 
-  List<String> get rules {
+  List<String> get rulesFellowship {
+    switch (this) {
+      case Character.frodo:
+        return <String>[
+          'The ring affects his behavior.',
+          'He mentions Bilbo.',
+          'His eyes are wide-open in fear or amazement.',
+          'He trips over his own feet.'
+        ];
+      case Character.sam:
+        return <String>[
+          'He says, “Mr Frodo”.',
+          "He's mean to Gollum.",
+          'He supports a Frodo who has once again fucked up or is having a Heroic BSoD'
+        ];
+      case Character.merrypippin:
+        return <String>[
+          'They cause trouble or create mischief.',
+          'They talk about food.',
+          'They are drinking or eating',
+          'They manage to make a seemingly hopeless situation light-hearted.'
+        ];
+      case Character.gandalf:
+        return <String>[
+          'He lights up his pipe (Give one to another person if he is smoking with someone)',
+          'Drink when he refers to someone by their full name.',
+          'Drink whenever he mysteriously disappears or appears without clear explanation',
+          'Drink whenever he calls on the name of a higher power like "Elbereth", "Mithrandir", or "Udun"'
+        ];
+      case Character.aragorn:
+        return <String>[
+          'He lights up his pipe.',
+          'He refers to Frodo and Sam as "Mr. Frodo" and "Mr. Sam".',
+          'He unsheathes his sword.'
+        ];
+      case Character.legolas:
+        return <String>[
+          "He uses his bow (extra sip if it's a major action scene).",
+          'He gives a silent, knowing look.',
+          'His hair blows dramatically in the wind.'
+        ];
+      case Character.gimli:
+        return <String>[
+          'He says “dwarf” or “elf”.',
+          "He's used as a comic relief (Beware of the Director's Cut).",
+          'He grumbles or complains.',
+          'He mentions his father, ancestors or the skill of dwarves.'
+        ];
+    }
+  }
+
+  List<String> get rulesTwoTowers {
+    switch (this) {
+      case Character.frodo:
+        return <String>[
+          'He clutches his chest (where the Ring is).',
+          'He talks about the heaviness or burden of the Ring.',
+          'He trips over his own feet.'
+        ];
+      case Character.sam:
+        return <String>[
+          'He says, “Mr Frodo”.',
+          "He's mean to Gollum.",
+          'He talks about food (taters, rabbit stew, lembas bread, etc.).',
+          'He pulls out his small sword.'
+        ];
+      case Character.merrypippin:
+        return <String>[
+          'They cause trouble or create mischief.',
+          'They talk about food.',
+          'They show bravery despite their fear.',
+          'They manage to make a seemingly hopeless situation light-hearted.'
+        ];
+      case Character.gandalf:
+        return <String>[
+          'He gives sage advice or shares a piece of ancient wisdom.',
+          'Drink whenever he mysteriously disappears or appears without clear explanation',
+          'Drink whenever he calls on the name of a higher power like "Elbereth", "Mithrandir", or "Udun"'
+        ];
+      case Character.aragorn:
+        return <String>[
+          'He kills something.',
+          "He's doubtful of his ability to be the rightful king of Gondor.",
+          'He smiles like an idiot'
+        ];
+      case Character.legolas:
+        return <String>[
+          "He uses his bow (extra sip if it's a major action scene).",
+          'He gives a silent, knowing look.',
+          'He interacts with Gimli, displaying their unique friendship.'
+        ];
+      case Character.gimli:
+        return <String>[
+          'He says “dwarf” or “elf”.',
+          "He's used as a comic relief (Beware of the Director's Cut).",
+          'He laughs heartily.',
+          'He is seen panting or struggling to keep up.'
+        ];
+    }
+  }
+
+  List<String> get rulesROTK {
     switch (this) {
       case Character.frodo:
         return <String>[

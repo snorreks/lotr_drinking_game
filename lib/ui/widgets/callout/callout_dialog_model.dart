@@ -16,21 +16,8 @@ class CalloutViewModel extends BaseNotifierViewModel {
   final Ref _ref;
   Character? get character => _ref.read(preferencesService).character;
 
-  List<String> get categories => GameRules.rules.keys.toList();
-
-  List<String>? get rules {
-    if (selectedCategory == null) {
-      return null;
-    }
-    final List<String>? rules = GameRules.rules[selectedCategory];
-    if (rules == null || selectedPlayer == null) {
-      return rules?.toSet().toList();
-    }
-
-    return <String>{...rules, ...selectedPlayer!.character.rules}
-        .toSet()
-        .toList();
-  }
+  String get currentMovie =>
+      _ref.read(fellowshipService).fellowship!.currentMovie;
 
   List<FellowshipMember> get players =>
       (_ref.read(fellowshipService).fellowship?.membersList ??
@@ -39,19 +26,45 @@ class CalloutViewModel extends BaseNotifierViewModel {
               element.character != _ref.read(preferencesService).character)
           .toList();
 
-  bool get canSubmit => selectedRule != null && selectedPlayer != null;
+  List<String> get categories =>
+      GameRules.applicableRules(currentMovie).keys.toList();
 
-  Future<void> sendCallout() async {
-    if (selectedPlayer == null || selectedRule == null) {
-      return;
+  List<String>? get rules {
+    if (selectedCategory == null) {
+      return null;
     }
 
-    busy = true;
-    await _ref
-        .read(fellowshipService)
-        .sendCallout(selectedPlayer!, selectedRule!);
-    busy = false;
+    List<String>? rules;
+    List<String>? characterRules;
+    switch (currentMovie) {
+      case ('Fellowship of the Ring'):
+        {
+          rules = GameRules.rulesFellowship[selectedCategory];
+          characterRules = selectedPlayer!.character.rulesFellowship;
+          break;
+        }
+      case ('The Two Towers'):
+        {
+          rules = GameRules.rulesTwoTowers[selectedCategory];
+          characterRules = selectedPlayer!.character.rulesTwoTowers;
+          break;
+        }
+      case ('Return of the King'):
+        {
+          rules = GameRules.rulesROTK[selectedCategory];
+          characterRules = selectedPlayer!.character.rulesROTK;
+          break;
+        }
+    }
+
+    if (rules == null || selectedPlayer == null || characterRules == null) {
+      return rules?.toSet().toList();
+    }
+
+    return <String>{...rules, ...characterRules}.toSet().toList();
   }
+
+  bool get canSubmit => selectedRule != null && selectedPlayer != null;
 
   void selectPlayer(FellowshipMember? player) {
     selectedPlayer = player;
@@ -66,6 +79,15 @@ class CalloutViewModel extends BaseNotifierViewModel {
   void selectRule(String? rule) {
     selectedRule = rule;
     notifyListeners();
+  }
+
+  Future<void> sendCallout(WidgetRef ref) async {
+    if (selectedPlayer == null || selectedRule == null) {
+      return;
+    }
+    await ref
+        .read(fellowshipService)
+        .sendCallout(selectedPlayer!, selectedRule!);
   }
 }
 
