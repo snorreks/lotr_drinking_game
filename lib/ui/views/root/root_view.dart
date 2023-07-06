@@ -78,13 +78,13 @@ class RootView extends ConsumerWidget {
                       ),
                     _themeDropdown(viewModel),
                     _zenModeSwitch(viewModel),
+                    const Spacer(),
                     if (member != null && member.isAdmin)
                       ListTile(
                         leading: const Icon(Icons.movie),
                         title: const Text('Next movie!'),
                         onTap: viewModel.nextMovie,
                       ),
-                    const Spacer(),
                     _pinCode(viewModel),
                     const SizedBox(height: 20),
                     const Divider(),
