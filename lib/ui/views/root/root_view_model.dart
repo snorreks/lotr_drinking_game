@@ -27,6 +27,13 @@ class RootViewModel extends BaseViewModel {
 
   Stream<ThemeMode> get themeStream => _themeSubject.stream;
 
+  Stream<bool> get zenModeEnabledStream =>
+      _ref.read(applicationService).zenModeEnabledStream;
+
+  void toggleZenMode() {
+    _ref.read(applicationService).toggleZenMode();
+  }
+
   int get currentIndex {
     final Location location = _ref.read(routerService).location;
     if (location == Location.leaderBoard) {

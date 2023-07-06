@@ -76,12 +76,14 @@ class RootView extends ConsumerWidget {
                           color: member.character.color,
                         ),
                       ),
-                    _themeSwitcher(viewModel),
+                    _themeDropdown(viewModel),
+                    _zenModeSwitch(viewModel),
                     if (member != null && member.isAdmin)
                       ListTile(
-                          leading: const Icon(Icons.movie),
-                          title: const Text('Next movie!'),
-                          onTap: viewModel.nextMovie),
+                        leading: const Icon(Icons.movie),
+                        title: const Text('Next movie!'),
+                        onTap: viewModel.nextMovie,
+                      ),
                     const Spacer(),
                     _pinCode(viewModel),
                     const SizedBox(height: 20),
@@ -97,7 +99,26 @@ class RootView extends ConsumerWidget {
     );
   }
 
-  Widget _themeSwitcher(RootViewModel viewModel) {
+  Widget _zenModeSwitch(RootViewModel viewModel) {
+    return StreamBuilder<bool>(
+      stream: viewModel.zenModeEnabledStream,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        final bool zenModeEnabled = snapshot.data ?? false;
+
+        return ListTile(
+          leading: const Text('Zen Mode'),
+          title: Switch(
+            value: zenModeEnabled,
+            onChanged: (bool value) {
+              viewModel.toggleZenMode();
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _themeDropdown(RootViewModel viewModel) {
     return StreamBuilder<ThemeMode>(
       stream: viewModel.themeStream,
       builder: (BuildContext context, AsyncSnapshot<ThemeMode> snapshot) {
