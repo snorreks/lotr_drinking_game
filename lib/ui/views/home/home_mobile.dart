@@ -9,24 +9,16 @@ class _HomeMobile extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          appBar: AppBar(
-            title: const TabBar(
-              tabs: <Tab>[
-                Tab(text: 'Default'),
-                Tab(text: 'Zen'),
-              ],
-            ),
-          ),
           body: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: <Widget>[
-                _DefaultView(viewModel),
-                _ZenView(viewModel),
-              ],
-            ),
-          )),
+        padding: const EdgeInsets.only(top: 8.0),
+        child: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            _DefaultView(viewModel),
+            _ZenView(viewModel),
+          ],
+        ),
+      )),
     );
   }
 }

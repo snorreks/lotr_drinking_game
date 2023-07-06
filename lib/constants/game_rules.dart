@@ -1,14 +1,37 @@
 class GameRules {
   static const String basicRules =
       'This drinking game works by there being collective rules, meaning rules effecting everyone and character-based rules, effecting only the specific character a player has chosen. When a "Take a drink" or a character-based rule occurs, take only a singular drink out of your drink and press the plus button. If a "Down the Hatch" rule occurs, you must finish whatever contents there are left in the vessel you pour your drink in. There are also additional rules, which are optional rules which the creator of the room selected. These can have varying effects, like having to take extra drinks, taking fewer drinks or being punished for breaking rules.';
-  static final List<String> normalRules = <String>[
-    //singular drink rules
+
+  static final List<String> normalRulesAllMovies = <String>[
     'There is a close up of the Eye of Sauron.',
     'A main bad guy dies',
     'When victory is achieved in a battle, everyone raises a toast and takes a sip.',
     'A character gives an epic speech or monologue.',
     'Memes like "One does not simply walk into Mordor", "You Shall Not Pass" or "...and my axe!"',
   ];
+
+  static final List<String> normalRulesFellowship = <String>[
+    //singular drink rules
+    "A character says 'precious'.",
+    'A character uses a non-English (non-common) language.',
+    'A scenic shot of New Zealand (Middle Earth) appears.'
+  ];
+
+  static final List<String> normalRulesTwoTowers = <String>[
+    "Someone says 'Saruman' or 'Orthanc'.",
+    'Someone talks about Gondor.',
+    'Gollum and Smeagol have a conversation.',
+    "Someone talks about the 'old world' passing.",
+    "There's a shot of the Uruk-hai marching or preparing for battle."
+  ];
+
+  static final List<String> normalRulesROTK = <String>[
+    "Someone says 'Mordor'.",
+    "The phrase 'Return of the King' is spoken.",
+    'A hobbit talks about peace or returning home.',
+    "The Ring's inscription is shown or spoken.",
+  ];
+
   static final List<String> dthRules = <String>[
     //down the hatch rules
     'The fellowship is founded.',
@@ -35,10 +58,36 @@ class GameRules {
         'Upon the start of each movie, a viewer may call for a round of merry Rescue Dice Poker (RDP). RDP works as five card draw poker does, except what you may bet is the rescue die which will be used for the following film. This includes rollover dice. \nBefore the start of the movie, you count up your total of rescue dice. This value will be converted into a set of poker chips, where each rescue dice is a red chip. These may be broken down into blue, green and white chips. A regular game of poker will commence. The game has to last a minimum of two rounds around the table before pulling out, unless someone has lost all their rescue dice.\nParticipation is voluntary.'),
   ];
 
-  static final Map<String, List<String>> rules = <String, List<String>>{
-    'Take a drink': normalRules,
+  static final Map<String, List<String>> rulesFellowship =
+      <String, List<String>>{
+    'Take a drink': normalRulesAllMovies,
+    'Take a drink (Fellowship)': normalRulesFellowship,
     'Down the Hatch': dthRules,
   };
+  static final Map<String, List<String>> rulesTwoTowers =
+      <String, List<String>>{
+    'Take a drink': normalRulesAllMovies,
+    'Take a drink (Two Towers)': normalRulesFellowship,
+    'Down the Hatch': dthRules,
+  };
+  static final Map<String, List<String>> rulesROTK = <String, List<String>>{
+    'Take a drink': normalRulesAllMovies,
+    'Take a drink (RotK)': normalRulesFellowship,
+    'Down the Hatch': dthRules,
+  };
+
+  static Map<String, List<String>> applicableRules(String currentMovie) {
+    switch (currentMovie) {
+      case 'Fellowship of the Ring':
+        return rulesFellowship;
+      case 'The Two Towers':
+        return rulesTwoTowers;
+      case 'Return of the King':
+        return rulesROTK;
+      default:
+        return {}; // Return an empty map as default (or you may choose to handle this differently)
+    }
+  }
 }
 
 class RuleWithName {
