@@ -41,7 +41,7 @@ class _DefaultView extends StatelessWidget {
                 member: member,
               ),
               const SizedBox(height: 15),
-              _rules(character),
+              _rules(character, fellowship.currentMovie),
             ],
           ),
         );
@@ -49,16 +49,35 @@ class _DefaultView extends StatelessWidget {
     );
   }
 
-  Widget _rules(Character character) {
+  Widget _rules(Character character, String currentMovie) {
+    List<String> charRules;
+    List<String> normalRules;
+    switch (currentMovie) {
+      case ('Fellowship of the Ring'):
+        {
+          charRules = character.rulesFellowship;
+          normalRules = GameRules.normalRulesFellowship;
+        }
+      case ('The Two Towers'):
+        {
+          charRules = character.rulesTwoTowers;
+          normalRules = GameRules.normalRulesTwoTowers;
+        }
+      case ('Return of the King'):
+        {
+          charRules = character.rulesROTK;
+          normalRules = GameRules.normalRulesROTK;
+        }
+    }
     return Card(
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             const SizedBox(height: 15),
-            RulesList(rules: character.rules, title: 'Your rules:'),
+            RulesList(rules: character.rulesFellowship, title: 'Your rules:'),
             const SizedBox(height: 15),
             RulesList(
-              rules: GameRules.normalRules,
+              rules: GameRules.normalRulesFellowship,
               title: 'Everyone takes a drink when:',
             ),
             const SizedBox(height: 15),

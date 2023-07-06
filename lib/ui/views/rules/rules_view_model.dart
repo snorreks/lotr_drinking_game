@@ -21,7 +21,12 @@ class RuleItem {
 class RulesViewModel extends BaseNotifierViewModel {
   final List<RuleItem> rules = <RuleItem>[
     RuleItem('Basics', rules: <String>[GameRules.basicRules]),
-    RuleItem('Take a drink when', rules: GameRules.normalRules),
+    RuleItem('Take a drink when', subRuleItems: <RuleItem>[
+      RuleItem('Fellowship of the Ring',
+          rules: GameRules.normalRulesFellowship),
+      RuleItem('The Two Towers', rules: GameRules.normalRulesTwoTowers),
+      RuleItem('Return of the King', rules: GameRules.normalRulesROTK)
+    ]),
     RuleItem('Down the Hatch', rules: GameRules.dthRules),
     RuleItem(
       'Additional Rules',
@@ -34,7 +39,12 @@ class RulesViewModel extends BaseNotifierViewModel {
       'Character',
       subRuleItems: Character.values
           .map((Character character) =>
-              RuleItem(character.displayName, rules: character.rules))
+              RuleItem(character.displayName, subRuleItems: <RuleItem>[
+                RuleItem('Fellowship of the Ring',
+                    rules: character.rulesFellowship),
+                RuleItem('The Two Towers', rules: character.rulesTwoTowers),
+                RuleItem('Return of the King', rules: character.rulesROTK)
+              ]))
           .toList(),
     )
   ];

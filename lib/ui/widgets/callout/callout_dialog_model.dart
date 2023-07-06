@@ -8,28 +8,50 @@ import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/preferences_service.dart';
 
 class CalloutViewModel extends BaseNotifierViewModel {
-  CalloutViewModel(this._ref, this.selectedPlayer);
+  CalloutViewModel(this._ref, this.selectedPlayer, this.currentMovie);
 
   FellowshipMember? selectedPlayer;
+  String? currentMovie;
   String? selectedCategory;
   String? selectedRule;
   final Ref _ref;
   Character? get character => _ref.read(preferencesService).character;
 
-  List<String> get categories => GameRules.rules.keys.toList();
+  List<String> get categories =>
+      GameRules.applicableRules(currentMovie ?? 'Fellowship of the Ring')
+          .keys
+          .toList();
 
   List<String>? get rules {
     if (selectedCategory == null) {
       return null;
     }
-    final List<String>? rules = GameRules.rules[selectedCategory];
-    if (rules == null || selectedPlayer == null) {
+
+    List<String>? rules;
+    List<String>? characterRules;
+    switch (currentMovie) {
+      case ('Fellowship of the Ring'):
+        {
+          rules = GameRules.rulesFellowship[selectedCategory];
+          characterRules = selectedPlayer!.character.rulesFellowship;
+        }
+      case ('The Two Towers'):
+        {
+          rules = GameRules.rulesFellowship[selectedCategory];
+          characterRules = selectedPlayer!.character.rulesTwoTowers;
+        }
+      case ('Return of the King'):
+        {
+          rules = GameRules.rulesFellowship[selectedCategory];
+          characterRules = selectedPlayer!.character.rulesROTK;
+        }
+    }
+
+    if (rules == null || selectedPlayer == null || characterRules == null) {
       return rules?.toSet().toList();
     }
 
-    return <String>{...rules, ...selectedPlayer!.character.rules}
-        .toSet()
-        .toList();
+    return <String>{...rules, ...characterRules}.toSet().toList();
   }
 
   List<FellowshipMember> get players =>
@@ -69,11 +91,19 @@ class CalloutViewModel extends BaseNotifierViewModel {
   }
 }
 
-final AutoDisposeChangeNotifierProviderFamily<CalloutViewModel,
-        FellowshipMember?> calloutViewModel =
-    ChangeNotifierProvider.family.autoDispose(
-        (AutoDisposeChangeNotifierProviderRef<Object?> ref,
-            FellowshipMember? selectedPlayer) {
-  final CalloutViewModel viewModel = CalloutViewModel(ref, selectedPlayer);
-  return viewModel;
-});
+final AutoDisposeChangeNotifierProviderFamily<CalloutViewModel, CalloutParams>
+    calloutViewModel =
+    ChangeNotifierProvider.family.autoDispose<CalloutViewModel, CalloutParams>(
+  (AutoDisposeChangeNotifierProviderRef<Object?> ref, CalloutParams params) {
+    final CalloutViewModel viewModel =
+        CalloutViewModel(ref, params.selectedPlayer, params.currentMovie);
+    return viewModel;
+  },
+);
+
+class CalloutParams {
+  CalloutParams({required this.selectedPlayer, required this.currentMovie});
+
+  final FellowshipMember? selectedPlayer;
+  final String? currentMovie;
+}

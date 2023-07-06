@@ -5,14 +5,21 @@ import '../button.dart';
 import 'callout_dialog_model.dart';
 
 class CalloutDialog extends ConsumerWidget {
-  const CalloutDialog({this.member, super.key});
+  const CalloutDialog({this.member, this.currentMovie, super.key});
 
   final FellowshipMember? member;
+  final String? currentMovie;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final CalloutViewModel viewModel = ref.watch(calloutViewModel(member));
-
+    final CalloutViewModel viewModel = ref.watch(
+      calloutViewModel(
+        CalloutParams(
+          selectedPlayer: member,
+          currentMovie: currentMovie,
+        ),
+      ),
+    );
     return ColoredBox(
       color: Colors.transparent,
       child: Container(
