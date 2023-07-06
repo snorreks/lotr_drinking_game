@@ -16,6 +16,8 @@ Fellowship _$FellowshipFromJson(Map<String, dynamic> json) {
     pin: json['pin'] as String,
     name: json['name'] as String,
     currentMovie: json['currentMovie'] as String,
+    lastSummaryShown: json['lastSummaryShown'] as String,
+    currentMovieStart: json['currentMovieStart'] as DateTime,
     members: membersFromJson(json['members']),
   );
 }

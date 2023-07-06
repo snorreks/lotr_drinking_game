@@ -37,6 +37,7 @@ abstract class FellowshipRepositoryModel {
   Future<void> changeAdmin(String fellowshipId, FellowshipMember newAdmin,
       FellowshipMember oldAdmin);
   Future<void> nextMovie(String fellowshipId, String currentMovie);
+  Future<void> updateLastSummaryShown(String fellowshipId, String nextMovie);
 
   Future<void> increment({
     required String fellowshipId,
@@ -201,6 +202,23 @@ class FellowshipRepository extends BaseService
       });
     } catch (e) {
       logError('changeAdmin', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateLastSummaryShown(
+      String fellowshipId, String nextMovie) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> docRef =
+          _getFellowshipDocumentReference(fellowshipId);
+
+      await docRef.update(<String, dynamic>{
+        'lastSummaryShown': nextMovie,
+        'currentMovieStart': Timestamp.now()
+      });
+    } catch (e) {
+      logError('updateLastSummaryShown', e);
       rethrow;
     }
   }

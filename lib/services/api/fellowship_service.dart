@@ -46,6 +46,8 @@ abstract class FellowshipServiceModel {
 
   Future<bool> nextMovie();
 
+  Future<bool> showSummaryIfNeeded();
+
   Future<bool> incrementDrink({int? amount});
 
   Future<bool> incrementSaves();
@@ -67,7 +69,6 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         if (fellowship == null || character == null) {
           return null;
         }
-
         return fellowship.members[character];
       },
     ).listen((FellowshipMember? member) {
@@ -300,6 +301,20 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
     } catch (e) {
       return false;
     }
+  }
+
+  @override
+  Future<bool> showSummaryIfNeeded() async {
+    if (fellowship != null &&
+        fellowship!.currentMovie != fellowship!.lastSummaryShown) {
+      // Show the summary dialog
+      _ref.read(dialogService).showSummaryDialog();
+      // Update lastSummaryShown
+      await _fellowshipRepository.updateLastSummaryShown(
+          fellowship!.id, fellowship!.currentMovie);
+      return true;
+    }
+    return false;
   }
 
   @override
