@@ -1,36 +1,41 @@
 import 'package:flutter/material.dart';
 
-final ThemeData lightTheme = ThemeData(
-  // Define the default brightness and colors.
-  brightness: Brightness.light,
-  primaryColor: Colors.lightBlue[800],
-  // Define the default font family.
-  fontFamily: 'Georgia',
+final Color ringColor = const Color.fromRGBO(212, 175, 55, 1);
 
-  // Define the default `TextTheme`. Use this to specify the default
-  // text styling for headlines, titles, bodies of text, and more.
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
-    titleLarge: TextStyle(fontSize: 36, fontStyle: FontStyle.italic),
-    bodyMedium:
-        TextStyle(fontSize: 14, fontFamily: 'Hind', color: Colors.black),
+final ThemeData lightTheme = ThemeData(
+  brightness: Brightness.light,
+  colorScheme: ColorScheme.light(
+    primary: Colors.green[600]!,
+    secondary: ringColor, // Ring color
+    onSurface: Colors.brown[800]!,
+  ),
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.green[600],
+    titleTextStyle: const TextStyle(
+      color: Colors.white,
+      fontSize: 20.0,
+    ),
+  ),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: ringColor, // FAB color
   ),
 );
 
 final ThemeData darkTheme = ThemeData(
-  // Define the default brightness and colors.
   brightness: Brightness.dark,
-  primaryColor: Colors.lightBlue[800],
-
-  // Define the default font family.
-  fontFamily: 'Georgia',
-
-  // Define the default `TextTheme`. Use this to specify the default
-  // text styling for headlines, titles, bodies of text, and more.
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
-    titleLarge: TextStyle(fontSize: 36, fontStyle: FontStyle.italic),
-    bodyMedium:
-        TextStyle(fontSize: 14, fontFamily: 'Hind', color: Colors.white),
+  colorScheme: ColorScheme.dark(
+    primary: Colors.green[900]!, // Darker shade of green for primary color
+    secondary: ringColor, // Ring color
+    surface: Colors.black,
+  ),
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.green[900], // Darker shade of green for AppBar
+    titleTextStyle: const TextStyle(
+      color: Colors.white,
+      fontSize: 20.0,
+    ),
+  ),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: ringColor, // FAB color
   ),
 );

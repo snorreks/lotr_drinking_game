@@ -7,13 +7,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:lotr_drinking_game/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    final Box<dynamic> preferencesBox =
+        await Hive.openBox<dynamic>('preferences');
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const App());
+    await tester.pumpWidget(App(preferencesBox));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

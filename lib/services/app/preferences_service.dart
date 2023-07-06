@@ -25,7 +25,7 @@ abstract class PreferencesServiceModel {
   Character? get character;
   set character(Character? value);
 
-  Future<void> initialize();
+  void setBox(Box<dynamic> box);
 }
 
 class PreferencesService extends BaseService
@@ -68,13 +68,13 @@ class PreferencesService extends BaseService
   set character(Character? value) => _box?.put(_characterKey, value?.value);
 
   @override
-  Future<void> initialize() async {
-    try {
-      _box = await Hive.openBox<dynamic>('preferences');
-      _initialized = true;
-    } catch (e) {
-      logError('initialize', e);
+  Future<void> setBox(Box<dynamic> box) async {
+    if (_box != null) {
+      return;
     }
+
+    _box = box;
+    _initialized = true;
   }
 }
 

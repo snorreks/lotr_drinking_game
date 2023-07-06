@@ -75,9 +75,6 @@ class ApplicationService extends BaseService
   @override
   Future<void> initialize() async {
     _initialized = true;
-    if (themeMode != ThemeMode.system) {
-      notifyListeners();
-    }
   }
 }
 

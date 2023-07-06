@@ -10,7 +10,6 @@ import '../../../firebase_options.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/api/remote_config_service.dart';
 import '../../../services/app/application_service.dart';
-import '../../../services/app/preferences_service.dart';
 import '../../../services/app/router_service.dart';
 
 class StartupViewModel extends BaseViewModel {
@@ -39,7 +38,6 @@ class StartupViewModel extends BaseViewModel {
     await Hive.initFlutter();
 
     await _ref.read(remoteConfigService).initialize();
-    await _ref.read(preferencesService).initialize();
     await _ref.read(applicationService).initialize();
 
     await _redirect();
