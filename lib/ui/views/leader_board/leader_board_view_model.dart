@@ -6,13 +6,12 @@ import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/dialog_service.dart';
-import '../../../services/app/preferences_service.dart';
 
 class LeaderBoardViewModel extends BaseViewModel {
   LeaderBoardViewModel(this._ref);
   final Ref _ref;
 
-  Character? get character => _ref.read(preferencesService).character;
+  Character? get currentCharacter => _ref.read(fellowshipService).character;
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;

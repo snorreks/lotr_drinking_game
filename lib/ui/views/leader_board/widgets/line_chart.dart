@@ -85,17 +85,21 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
                 textAlign: TextAlign.center,
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 6, top: 20),
-                  child: _LineChart(
+                child: ColoredBox(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        right: 16, left: 6, top: 40, bottom: 10),
+                    child: _LineChart(
                       lineChartView: lineChartView,
                       members: members
                           .where((FellowshipMember element) =>
                               !hiddenCharacters.contains(element.character))
-                          .toList()),
+                          .toList(),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 10),
               SizedBox(
                 height: 150,
                 child: _memberList(),
@@ -210,7 +214,7 @@ class _LineChart extends StatelessWidget {
                 radius: 9,
                 color: member.character.color,
                 strokeWidth: 1.5,
-                strokeColor: Colors.white,
+                strokeColor: Colors.grey,
               );
             },
           ),
