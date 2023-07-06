@@ -64,7 +64,7 @@ dependency_overrides:
     git:
       url: https://github.com/davidmartos96/wakelock
       path: wakelock_windows
-      ref: update 
+      ref: update
 
 flutter_icons:
   ios: true
