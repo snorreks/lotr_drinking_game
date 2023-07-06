@@ -50,8 +50,8 @@ class _DefaultView extends StatelessWidget {
   }
 
   Widget _rules(Character character, String currentMovie) {
-    List<String> charRules;
-    List<String> normalRules;
+    List<String> charRules = [];
+    List<String> normalRules = [];
     switch (currentMovie) {
       case ('Fellowship of the Ring'):
         {
@@ -74,10 +74,10 @@ class _DefaultView extends StatelessWidget {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 15),
-            RulesList(rules: character.rulesFellowship, title: 'Your rules:'),
+            RulesList(rules: charRules, title: 'Your rules:'),
             const SizedBox(height: 15),
             RulesList(
-              rules: GameRules.normalRulesFellowship,
+              rules: normalRules,
               title: 'Everyone takes a drink when:',
             ),
             const SizedBox(height: 15),
