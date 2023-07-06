@@ -47,6 +47,7 @@ class CalloutDialog extends ConsumerWidget {
                     child: Button(
                       onPressed: viewModel.canSubmit
                           ? () async {
+                              viewModel.sendCallout(ref);
                               Navigator.of(context).pop();
                             }
                           : null,
