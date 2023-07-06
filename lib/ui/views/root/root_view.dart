@@ -5,7 +5,6 @@ import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/button.dart';
 import '../../widgets/logo.dart';
 import '../character/character_view.dart';
 import 'root_view_model.dart';
@@ -55,58 +54,43 @@ class RootView extends ConsumerWidget {
             currentIndex: viewModel.currentIndex,
             onTap: (int index) => viewModel.onItemTapped(index),
           ),
-          drawer: Drawer(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: ListView(
-                    // Disable ListView's padding to avoid issues with Column
-                    padding: EdgeInsets.zero,
-                    children: <Widget>[
-                      StreamBuilder<FellowshipMember?>(
-                          stream: viewModel.memberStream,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<FellowshipMember?> snapshot) {
-                            try {
-                              final FellowshipMember member = snapshot.data!;
-                              final Character character = member.character;
-                              return Column(children: [
-                                UserAccountsDrawerHeader(
-                                  accountName: Text(member.name),
-                                  accountEmail: Text(character.displayName),
-                                  currentAccountPicture: Avatar(
-                                    character,
-                                    circle: true,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: member.character.color,
-                                  ),
-                                ),
-                                _themeSwitcher(viewModel),
-                                _nextMovie(viewModel, member),
-                              ]);
-                            } catch (e) {
-                              return Button(
-                                  text: 'LOG ME OUT',
-                                  onPressed: () {
-                                    viewModel.signOut();
-                                  });
-                            }
-                          }),
-                    ],
-                  ),
-                ),
-                Column(
+          drawer: StreamBuilder<FellowshipMember?>(
+            stream: viewModel.memberStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<FellowshipMember?> snapshot) {
+              final FellowshipMember? member =
+                  snapshot.hasData ? snapshot.data : null;
+
+              return Drawer(
+                child: Column(
                   children: <Widget>[
+                    if (member != null)
+                      UserAccountsDrawerHeader(
+                        accountName: Text(member.name),
+                        accountEmail: Text(member.character.displayName),
+                        currentAccountPicture: Avatar(
+                          member.character,
+                          circle: true,
+                        ),
+                        decoration: BoxDecoration(
+                          color: member.character.color,
+                        ),
+                      ),
+                    _themeSwitcher(viewModel),
+                    if (member != null && member.isAdmin)
+                      ListTile(
+                          leading: const Icon(Icons.movie),
+                          title: const Text('Next movie!'),
+                          onTap: viewModel.nextMovie),
+                    const Spacer(),
                     _pinCode(viewModel),
                     const SizedBox(height: 20),
                     const Divider(),
                     const LogoutTile(),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },
@@ -188,30 +172,5 @@ class RootView extends ConsumerWidget {
         );
       },
     );
-  }
-
-  Widget _nextMovie(RootViewModel viewModel, FellowshipMember member) {
-    //A member MUST be admin to progress to the next movie.
-    if (member.isAdmin) {
-      return StreamBuilder<Fellowship?>(
-        stream: viewModel.fellowshipStream,
-        builder: (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
-          if (!snapshot.hasData && snapshot.data == null) {
-            return Container();
-          }
-          final Fellowship fellowship = snapshot.data!;
-          return ListTile(
-            leading: const Icon(Icons.movie),
-            title: const Text('Next movie!'),
-            onTap: () {
-              viewModel.nextMovie(fellowship.currentMovie);
-            },
-          );
-        },
-      );
-    } else {
-      //If not an admin, only an empty space will be returned.
-      return Container();
-    }
   }
 }
