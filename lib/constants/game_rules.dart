@@ -85,7 +85,9 @@ class GameRules {
       case 'Return of the King':
         return rulesROTK;
       default:
-        return {}; // Return an empty map as default (or you may choose to handle this differently)
+        return <String,
+            List<
+                String>>{}; // Return an empty map as default (or you may choose to handle this differently)
     }
   }
 }

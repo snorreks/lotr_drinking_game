@@ -50,8 +50,8 @@ class _DefaultView extends StatelessWidget {
   }
 
   Widget _rules(Character character, String currentMovie) {
-    List<String> charRules = [];
-    List<String> normalRules = [];
+    List<String> charRules = <String>[];
+    List<String> normalRules = <String>[];
     switch (currentMovie) {
       case ('Fellowship of the Ring'):
         {

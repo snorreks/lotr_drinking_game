@@ -4,13 +4,15 @@ import 'package:video_player/video_player.dart';
 import '../../common/base_service.dart';
 import '../../constants/characters.dart';
 
-enum Sound { bababoie }
+enum Sound { night2remember, shallnotpass }
 
 extension SoundExtension on Sound {
   String get path {
     switch (this) {
-      case Sound.bababoie:
-        return 'other/night2remember.wav';
+      case Sound.night2remember:
+        return 'other/night2remember.mp3';
+      case Sound.shallnotpass:
+        return 'other/shallnotpass.mp3';
     }
   }
 }
@@ -42,7 +44,7 @@ class AudioPlayerService extends BaseService
     try {
       final String fileName = character.value;
 
-      await _setPlayer('$basePath/$fileName.wav');
+      await _setPlayer('$basePath/characters/$fileName.mp3');
     } catch (error) {
       logError('playCharacterSound', error);
     }

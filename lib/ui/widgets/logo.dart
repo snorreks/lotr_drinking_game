@@ -18,7 +18,8 @@ class Logo extends ConsumerWidget {
     final double height = size ?? (type == LogoType.title ? 55 : 100);
 
     return GestureDetector(
-      onDoubleTap: () => ref.read(audioPlayerService).playSound(Sound.bababoie),
+      onDoubleTap: () =>
+          ref.read(audioPlayerService).playSound(Sound.night2remember),
       child: Hero(
         tag: type,
         child: Image.asset(

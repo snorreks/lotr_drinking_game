@@ -34,7 +34,7 @@ We do not condone the use of ælkis, this is just made for fun. Stay aware of ho
 
 *   To update generated files, run `dart run build_runner build` in the root directory of the project.
 
-*   To update logo, run `flutter pub run flutter_launcher_icons` in the root directory of the project.
+*   To update logo, run `dart run flutter_launcher_icons` in the root directory of the project.
 
 *   To deploy new version to firebase app distribution for android run
 

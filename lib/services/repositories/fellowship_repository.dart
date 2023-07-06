@@ -158,7 +158,7 @@ class FellowshipRepository extends BaseService
           _getFellowshipDocumentReference(fellowshipId);
 
       await _db.runTransaction((Transaction transaction) async {
-        transaction.update(docRef, {
+        transaction.update(docRef, <String, dynamic>{
           'members.${newAdmin.character.value}.isAdmin': true,
           'members.${oldAdmin.character.value}.isAdmin': false
         });
@@ -195,7 +195,7 @@ class FellowshipRepository extends BaseService
       }
 
       await _db.runTransaction((Transaction transaction) async {
-        transaction.update(docRef, {
+        transaction.update(docRef, <String, dynamic>{
           'currentMovie': nextMovie,
         });
       });

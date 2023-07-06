@@ -1,41 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-final Color ringColor = const Color.fromRGBO(212, 175, 55, 1);
+const Color ringColor = Color.fromRGBO(212, 175, 55, 1);
 
-final ThemeData lightTheme = ThemeData(
-  brightness: Brightness.light,
-  colorScheme: ColorScheme.light(
-    primary: Colors.green[600]!,
-    secondary: ringColor, // Ring color
-    onSurface: Colors.brown[800]!,
-  ),
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.green[600],
-    titleTextStyle: const TextStyle(
-      color: Colors.white,
-      fontSize: 20.0,
+ThemeData _getTheme(Brightness brightness) {
+  final ThemeData baseTheme = ThemeData(brightness: brightness);
+  return baseTheme.copyWith(
+    colorScheme: baseTheme.colorScheme.copyWith(
+      primary: Colors.green[brightness == Brightness.light ? 600 : 900],
+      secondary: ringColor,
     ),
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: ringColor, // FAB color
-  ),
-);
+    textTheme: GoogleFonts.exo2TextTheme(baseTheme.textTheme),
+  );
+}
 
-final ThemeData darkTheme = ThemeData(
-  brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark(
-    primary: Colors.green[900]!, // Darker shade of green for primary color
-    secondary: ringColor, // Ring color
-    surface: Colors.black,
-  ),
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.green[900], // Darker shade of green for AppBar
-    titleTextStyle: const TextStyle(
-      color: Colors.white,
-      fontSize: 20.0,
-    ),
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: ringColor, // FAB color
-  ),
-);
+final ThemeData darkTheme = _getTheme(Brightness.dark);
+
+final ThemeData lightTheme = _getTheme(Brightness.light);
