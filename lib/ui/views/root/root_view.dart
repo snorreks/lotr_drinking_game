@@ -72,6 +72,16 @@ class RootView extends ConsumerWidget {
                           member.character,
                           circle: true,
                         ),
+                        // otherAccountsPictures: [
+                        //   Text(
+                        //     'Drinks: ${member.drinksAmount}',
+                        //     style: const TextStyle(
+                        //       color: Colors.white,
+                        //       fontSize: 12,
+                        //       fontWeight: FontWeight.bold,
+                        //     ),
+                        //   ),
+                        // ],
                         decoration: BoxDecoration(
                           color: member.character.color,
                         ),

@@ -19,6 +19,7 @@ class _LeaderBoardMobile extends StatelessWidget {
           child: Scaffold(
               appBar: AppBar(
                 title: const TabBar(
+                  indicatorColor: Colors.white,
                   tabs: <Tab>[
                     Tab(text: 'Members'),
                     Tab(text: 'Bar Chart'),

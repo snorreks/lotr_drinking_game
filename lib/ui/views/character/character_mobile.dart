@@ -34,7 +34,7 @@ class _CharacterMobile extends StatelessWidget {
                 builder: (BuildContext context,
                     AsyncSnapshot<Fellowship?> snapshot) {
                   if (!snapshot.hasData || snapshot.data == null) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: Loading());
                   }
                   final Fellowship fellowship = snapshot.data!;
                   final bool isFirst = viewModel.isFirst(fellowship);

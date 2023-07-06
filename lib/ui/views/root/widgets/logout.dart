@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../models/fellowship.dart';
 import '../../../../models/fellowship_member.dart';
+import '../../../widgets/loading.dart';
 import '../root_view_model.dart';
 
 class LogoutTile extends ConsumerStatefulWidget {
@@ -50,7 +51,7 @@ class _LogoutTileState extends ConsumerState<LogoutTile> {
           stream: viewModel.fellowshipStream,
           builder: (BuildContext context, AsyncSnapshot<Fellowship?> snapshot) {
             if (!snapshot.hasData && snapshot.data == null) {
-              return const CircularProgressIndicator();
+              return const Loading();
             }
             final Fellowship fellowship = snapshot.data!;
             final List<FellowshipMember> members = fellowship.members.values

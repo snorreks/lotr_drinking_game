@@ -264,7 +264,9 @@ class _LineChart extends StatelessWidget {
               final int index = flSpot.barIndex;
               final FellowshipMember member = members[index];
               final String name = member.name;
-              final int minutesAfterStart = flSpot.x.toInt();
+              final int minutesBeforeStart = flSpot.x.toInt();
+              final int minutesAfterStart =
+                  minutesBeforeStart + intervalSeparator;
               final int drinksAmount = flSpot.y.toInt();
               final String drinksOrSaves =
                   lineChartView == LineChartView.drinks ? 'drinks' : 'saves';

@@ -9,8 +9,21 @@ ThemeData _getTheme(Brightness brightness) {
     colorScheme: baseTheme.colorScheme.copyWith(
       primary: Colors.green[brightness == Brightness.light ? 600 : 900],
       secondary: ringColor,
+      onPrimary: Colors.white,
+      onSurface:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
     ),
-    textTheme: GoogleFonts.exo2TextTheme(baseTheme.textTheme),
+    tabBarTheme: baseTheme.tabBarTheme.copyWith(
+      indicatorColor: Colors.white,
+    ),
+    textTheme: GoogleFonts.exo2TextTheme(baseTheme.textTheme).apply(
+      bodyColor:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+      displayColor:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+      decorationColor:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+    ),
   );
 }
 
