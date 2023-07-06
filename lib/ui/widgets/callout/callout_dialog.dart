@@ -1,44 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/fellowship_member.dart';
-import '../../../services/api/fellowship_service.dart';
-import '../../../services/app/preferences_service.dart';
 import '../button.dart';
 import 'callout_dialog_model.dart';
 
-final AutoDisposeProviderFamily<CalloutViewModel, CalloutParams>
-    calloutViewModel =
-    Provider.autoDispose.family<CalloutViewModel, CalloutParams>(
-  (AutoDisposeProviderRef<CalloutViewModel> ref, CalloutParams params) {
-    final PreferencesServiceModel prefs = ref.watch(preferencesService);
-    final FellowshipServiceModel fellowship = ref.watch(fellowshipService);
-    return CalloutViewModel(prefs, fellowship, params);
-  },
-);
-
 class CalloutDialog extends ConsumerWidget {
-  const CalloutDialog({super.key, this.member, this.currentMovie});
+  const CalloutDialog({super.key, this.member});
 
   final FellowshipMember? member;
-  final String? currentMovie;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final CalloutParams viewModelState = ref
-        .watch(
-          calloutViewModel(
-            CalloutParams(selectedPlayer: member, currentMovie: currentMovie),
-          ),
-        )
-        .state;
-
-    final CalloutViewModel viewModel = ref.read(calloutViewModel(
-      CalloutParams(selectedPlayer: member, currentMovie: currentMovie),
-    ));
-
-    print('Player: ${viewModelState.selectedPlayer?.name}');
-    print('Category: ${viewModelState.selectedCategory}');
-    print('Rule: ${viewModelState.selectedRule}');
+    final CalloutViewModel viewModel = ref.watch(
+      calloutViewModel(member),
+    );
 
     return ColoredBox(
       color: Colors.transparent,
@@ -107,7 +82,7 @@ class CalloutDialog extends ConsumerWidget {
                 ),
               ),
               DropdownButton<FellowshipMember>(
-                value: viewModelState.selectedPlayer,
+                value: viewModel.selectedPlayer,
                 hint: const Text('Select player'),
                 items: viewModel.players
                     .map<DropdownMenuItem<FellowshipMember>>(
@@ -121,7 +96,7 @@ class CalloutDialog extends ConsumerWidget {
                     viewModel.selectPlayer(newPlayer),
               ),
               DropdownButton<String>(
-                value: viewModelState.selectedCategory,
+                value: viewModel.selectedCategory,
                 hint: const Text('Select category'),
                 items: viewModel.categories
                     .map<DropdownMenuItem<String>>((String value) {
@@ -135,7 +110,7 @@ class CalloutDialog extends ConsumerWidget {
               ),
               if (viewModel.rules != null)
                 DropdownButton<String>(
-                  value: viewModelState.selectedRule,
+                  value: viewModel.selectedRule,
                   hint: const Text('Select rule'),
                   items: viewModel.rules!
                       .map<DropdownMenuItem<String>>((String rule) {
