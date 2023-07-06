@@ -121,6 +121,10 @@ class _DefaultView extends StatelessWidget {
             value: 'callout',
             child: Text('Call out a player'),
           ),
+          const PopupMenuItem<String>(
+            value: 'zenMode',
+            child: Text('Zen Mode'),
+          ),
         ],
         elevation: 8.0,
         shape: RoundedRectangleBorder(
@@ -139,6 +143,13 @@ class _DefaultView extends StatelessWidget {
           case 'callout':
             {
               viewModel.showCalloutDialog();
+            }
+          case 'zenMode':
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => _ZenView(viewModel)),
+              );
             }
         }
       }

@@ -25,7 +25,8 @@ class RulesViewModel extends BaseNotifierViewModel {
       RuleItem('Fellowship of the Ring',
           rules: GameRules.normalRulesFellowship),
       RuleItem('The Two Towers', rules: GameRules.normalRulesTwoTowers),
-      RuleItem('Return of the King', rules: GameRules.normalRulesROTK)
+      RuleItem('Return of the King', rules: GameRules.normalRulesROTK),
+      RuleItem('All movies', rules: GameRules.normalRulesAllMovies)
     ]),
     RuleItem('Down the Hatch', rules: GameRules.dthRules),
     RuleItem(

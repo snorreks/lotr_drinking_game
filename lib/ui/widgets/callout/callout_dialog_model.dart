@@ -1,21 +1,33 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
 import '../../../constants/game_rules.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/preferences_service.dart';
 
-class CalloutViewModel extends BaseNotifierViewModel {
-  CalloutViewModel(this._ref, this.selectedPlayer, this.currentMovie);
+class CalloutViewModel extends StateNotifier<CalloutParams> {
+  CalloutViewModel(
+    this._preferencesService,
+    this._fellowshipService,
+    CalloutParams params,
+  ) : super(params);
 
-  FellowshipMember? selectedPlayer;
-  String? currentMovie;
-  String? selectedCategory;
-  String? selectedRule;
-  final Ref _ref;
-  Character? get character => _ref.read(preferencesService).character;
+  final PreferencesServiceModel _preferencesService;
+  final FellowshipServiceModel _fellowshipService;
+
+  FellowshipMember? get selectedPlayer => state.selectedPlayer;
+  String? get currentMovie => state.currentMovie;
+  String? get selectedCategory => state.selectedCategory;
+  String? get selectedRule => state.selectedRule;
+
+  Character? get character => _preferencesService.character;
+
+  List<FellowshipMember> get players =>
+      (_fellowshipService.fellowship?.membersList ?? <FellowshipMember>[])
+          .where((FellowshipMember element) =>
+              element.character != _preferencesService.character)
+          .toList();
 
   List<String> get categories =>
       GameRules.applicableRules(currentMovie ?? 'Fellowship of the Ring')
@@ -34,16 +46,19 @@ class CalloutViewModel extends BaseNotifierViewModel {
         {
           rules = GameRules.rulesFellowship[selectedCategory];
           characterRules = selectedPlayer!.character.rulesFellowship;
+          break;
         }
       case ('The Two Towers'):
         {
-          rules = GameRules.rulesFellowship[selectedCategory];
+          rules = GameRules.rulesTwoTowers[selectedCategory];
           characterRules = selectedPlayer!.character.rulesTwoTowers;
+          break;
         }
       case ('Return of the King'):
         {
-          rules = GameRules.rulesFellowship[selectedCategory];
+          rules = GameRules.rulesROTK[selectedCategory];
           characterRules = selectedPlayer!.character.rulesROTK;
+          break;
         }
     }
 
@@ -54,56 +69,72 @@ class CalloutViewModel extends BaseNotifierViewModel {
     return <String>{...rules, ...characterRules}.toSet().toList();
   }
 
-  List<FellowshipMember> get players =>
-      (_ref.read(fellowshipService).fellowship?.membersList ??
-              <FellowshipMember>[])
-          .where((FellowshipMember element) =>
-              element.character != _ref.read(preferencesService).character)
-          .toList();
-
   bool get canSubmit => selectedRule != null && selectedPlayer != null;
 
-  Future<void> sendCallout() async {
-    if (selectedPlayer == null || selectedRule == null) {
-      return;
-    }
-
-    busy = true;
-    await _ref
-        .read(fellowshipService)
-        .sendCallout(selectedPlayer!, selectedRule!);
-    busy = false;
-  }
-
   void selectPlayer(FellowshipMember? player) {
-    selectedPlayer = player;
-    notifyListeners();
-  }
-
-  void selectCategory(String? category) {
-    selectedCategory = category;
-    notifyListeners();
+    print(state.selectedPlayer);
+    state = state.copyWith(selectedPlayer: player);
+    print(state.selectedPlayer);
   }
 
   void selectRule(String? rule) {
-    selectedRule = rule;
-    notifyListeners();
+    print(state.selectedRule);
+    state = state.copyWith(selectedRule: rule);
+    print(state.selectedRule);
+  }
+
+  void selectCategory(String? category) {
+    print(state.selectedCategory);
+    state = state.copyWith(selectedCategory: category);
+    print(state.selectedCategory);
+  }
+
+  Future<void> sendCallout(WidgetRef ref) async {
+    if (selectedPlayer == null || selectedRule == null) {
+      return;
+    }
+    await ref
+        .read(fellowshipService)
+        .sendCallout(selectedPlayer!, selectedRule!);
   }
 }
 
-final AutoDisposeChangeNotifierProviderFamily<CalloutViewModel, CalloutParams>
-    calloutViewModel =
-    ChangeNotifierProvider.family.autoDispose<CalloutViewModel, CalloutParams>(
-  (AutoDisposeChangeNotifierProviderRef<Object?> ref, CalloutParams params) {
-    final CalloutViewModel viewModel =
-        CalloutViewModel(ref, params.selectedPlayer, params.currentMovie);
-    return viewModel;
+final AutoDisposeStateNotifierProviderFamily<CalloutViewModel, CalloutParams,
+        CalloutParams> calloutViewModel =
+    StateNotifierProvider.family
+        .autoDispose<CalloutViewModel, CalloutParams, CalloutParams>(
+  (AutoDisposeStateNotifierProviderRef<CalloutViewModel, CalloutParams> ref,
+      CalloutParams params) {
+    final PreferencesServiceModel prefs = ref.watch(preferencesService);
+    final FellowshipServiceModel fellowship = ref.watch(fellowshipService);
+    return CalloutViewModel(prefs, fellowship, params);
   },
 );
 
 class CalloutParams {
-  CalloutParams({required this.selectedPlayer, required this.currentMovie});
+  CalloutParams({
+    this.selectedPlayer,
+    this.currentMovie,
+    this.selectedCategory,
+    this.selectedRule,
+  });
 
   final FellowshipMember? selectedPlayer;
   final String? currentMovie;
+  final String? selectedCategory;
+  final String? selectedRule;
+
+  CalloutParams copyWith({
+    FellowshipMember? selectedPlayer,
+    String? currentMovie,
+    String? selectedCategory,
+    String? selectedRule,
+  }) {
+    return CalloutParams(
+      selectedPlayer: selectedPlayer ?? this.selectedPlayer,
+      currentMovie: currentMovie ?? this.currentMovie,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
+      selectedRule: selectedRule ?? this.selectedRule,
+    );
+  }
 }
