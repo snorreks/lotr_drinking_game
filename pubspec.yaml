@@ -30,7 +30,7 @@ dependencies:
   rxdart: ^0.27.7
   wakelock: ^0.6.2
   easter_egg_trigger: ^1.0.1
-  just_audio: ^0.9.34
+  video_player: ^2.7.0
 
 dev_dependencies:
   build_runner: ^2.4.5

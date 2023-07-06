@@ -9,9 +9,9 @@ class _ZenView extends StatelessWidget {
     viewModel.wakeyBaky();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Zen Mode'),
+        title: const Text('Zen Mode'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -41,7 +41,7 @@ class _ZenView extends StatelessWidget {
                   viewModel.incrementDrink();
                 },
               ),
-              SizedBox(
+              const SizedBox(
                   height: 20), // provides some space between the two buttons
               ElevatedButton.icon(
                 icon: const Icon(Icons.skip_next),

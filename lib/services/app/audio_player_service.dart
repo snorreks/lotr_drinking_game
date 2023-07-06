@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../common/base_service.dart';
 import '../../constants/characters.dart';
@@ -23,7 +23,7 @@ abstract class AudioPlayerServiceModel {
 
 class AudioPlayerService extends BaseService
     implements AudioPlayerServiceModel {
-  final AudioPlayer player = AudioPlayer();
+  VideoPlayerController? _player;
 
   static const String basePath = 'assets/audio';
 
@@ -31,7 +31,7 @@ class AudioPlayerService extends BaseService
   Future<void> playSound(Sound sound) async {
     try {
       final String path = sound.path;
-      await player.play(AssetSource('$basePath/$path'));
+      await _setPlayer('$basePath/$path');
     } catch (error) {
       logError('playSound', error);
     }
@@ -41,10 +41,18 @@ class AudioPlayerService extends BaseService
   Future<void> playCharacterSound(Character character) async {
     try {
       final String fileName = character.value;
-      await player.play(AssetSource('$basePath/$fileName.wav'));
+
+      await _setPlayer('$basePath/$fileName.wav');
     } catch (error) {
       logError('playCharacterSound', error);
     }
+  }
+
+  Future<void> _setPlayer(String path) async {
+    _player?.dispose();
+    _player = VideoPlayerController.asset(path);
+    await _player!.initialize();
+    await _player!.play();
   }
 }
 
