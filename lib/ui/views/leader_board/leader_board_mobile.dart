@@ -56,11 +56,20 @@ class _LeaderBoardMobile extends StatelessWidget {
         return Card(
           child: ListTile(
             leading: Avatar(character),
-            title: Text(member.name),
-            subtitle: Text(member.character.displayName),
+            title: Text(
+              member.name,
+            ),
+            subtitle: Text(
+              member.character.displayName,
+              style: TextStyle(
+                color: character.color,
+              ),
+            ),
             trailing: Text(
                 'Drinks: ${member.drinksAmount}\nUnits: ${showUnits(member.drinksAmount)}'),
-            onTap: () => viewModel.showCalloutDialog(member),
+            onTap: viewModel.currentCharacter == character
+                ? null
+                : () => viewModel.showCalloutDialog(member),
           ),
         );
       },
