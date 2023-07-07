@@ -82,7 +82,7 @@ android {
               'proguard-android-optimize.txt'),
               'proguard-rules.pro'
 
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
         debug {
             minifyEnabled true
@@ -90,6 +90,8 @@ android {
             proguardFiles getDefaultProguardFile(
               'proguard-android-optimize.txt'),
               'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+
         }
     }
 }
