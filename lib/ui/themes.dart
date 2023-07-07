@@ -13,9 +13,6 @@ ThemeData _getTheme(Brightness brightness) {
       onSurface:
           brightness == Brightness.light ? Colors.grey[900] : Colors.white,
     ),
-    tabBarTheme: baseTheme.tabBarTheme.copyWith(
-      indicatorColor: Colors.white,
-    ),
     textTheme: GoogleFonts.exo2TextTheme(baseTheme.textTheme).apply(
       bodyColor:
           brightness == Brightness.light ? Colors.grey[900] : Colors.white,

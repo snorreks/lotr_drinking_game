@@ -3,7 +3,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 // import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../firebase_options.dart';
@@ -24,7 +23,9 @@ class StartupViewModel extends BaseViewModel {
     }
 
     await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     if (!kIsWeb) {
       if (kDebugMode) {
         // Force disable Crashlytics collection while doing every day development.
@@ -35,7 +36,6 @@ class StartupViewModel extends BaseViewModel {
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
       }
     }
-    await Hive.initFlutter();
 
     await _ref.read(remoteConfigService).initialize();
     await _ref.read(applicationService).initialize();

@@ -27,6 +27,7 @@ class App extends ConsumerWidget {
     final GoRouter router = ref.read(routerService).router;
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
       title: 'Fellowship Drinking Game',
       theme: lightTheme,
