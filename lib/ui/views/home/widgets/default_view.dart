@@ -51,8 +51,8 @@ class _DefaultView extends StatelessWidget {
   }
 
   Widget _rules(Character character, String currentMovie) {
-    List<String> charRules = [];
-    List<String> normalRules = [];
+    List<String> charRules = <String>[];
+    List<String> normalRules = <String>[];
     switch (currentMovie) {
       case ('Fellowship of the Ring'):
         {
@@ -122,10 +122,6 @@ class _DefaultView extends StatelessWidget {
             value: 'callout',
             child: Text('Call out a player'),
           ),
-          const PopupMenuItem<String>(
-            value: 'zenMode',
-            child: Text('Zen Mode'),
-          ),
         ],
         elevation: 8.0,
         shape: RoundedRectangleBorder(
@@ -144,13 +140,6 @@ class _DefaultView extends StatelessWidget {
           case 'callout':
             {
               viewModel.showCalloutDialog();
-            }
-          case 'zenMode':
-            {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => _ZenView(viewModel)),
-              );
             }
         }
       }

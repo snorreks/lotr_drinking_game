@@ -10,7 +10,6 @@ import '../../widgets/avatar.dart';
 import '../../widgets/loading.dart';
 import 'home_view_model.dart';
 
-part 'home_mobile.dart';
 part 'widgets/default_view.dart';
 part 'widgets/zen_view.dart';
 
@@ -21,6 +20,14 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final HomeViewModel viewModel = ref.watch(homeViewModel);
 
-    return _HomeMobile(viewModel);
+    return StreamBuilder<bool>(
+      stream: viewModel.zenModeEnabledStream,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data!) {
+          return _ZenView(viewModel);
+        }
+        return _DefaultView(viewModel);
+      },
+    );
   }
 }

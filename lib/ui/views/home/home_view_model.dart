@@ -7,6 +7,7 @@ import '../../../constants/conversions.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
+import '../../../services/app/application_service.dart';
 import '../../../services/app/dialog_service.dart';
 import '../../../services/app/preferences_service.dart';
 
@@ -18,6 +19,9 @@ class HomeViewModel extends BaseViewModel {
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;
+
+  Stream<bool> get zenModeEnabledStream =>
+      _ref.read(applicationService).zenModeEnabledStream;
 
   Future<void> incrementDrink() async {
     await _ref.read(fellowshipService).incrementDrink();
