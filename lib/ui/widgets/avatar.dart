@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/characters.dart';
+import '../../services/app/audio_player_service.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar(this.character, this.currentMovie,
@@ -12,13 +14,17 @@ class Avatar extends StatelessWidget {
   final bool circle;
 
   @override
-  Widget build(BuildContext context) {
-    final Widget image = Hero(
-      tag: character,
-      child: Image.asset(
-        'assets/images/characters/${character.value}${currentMovie == "Return of the King" ? "2" : ""}.png',
-        fit: fit,
-        height: height,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Widget image = GestureDetector(
+      onDoubleTap: () =>
+          ref.read(audioPlayerService).playCharacterSound(character),
+      child: Hero(
+        tag: character,
+        child: Image.asset(
+          'assets/images/characters/${character.value}${currentMovie == "Return of the King" ? "2" : ""}.png',,
+          fit: fit,
+          height: height,
+        ),
       ),
     );
 

@@ -16,16 +16,19 @@ abstract class PreferencesServiceModel {
   set fellowshipId(String? value);
   set fellowshipPin(String? value);
 
-  /// If isDarkMode is true, the theme is dark
-  /// If isDarkMode is false, the theme is light
-  /// If isDarkMode is null, the theme is system
-  bool? get isDarkMode;
-  set isDarkMode(bool? value);
+  /// If darkModeEnabled is true, the theme is dark
+  /// If darkModeEnabled is false, the theme is light
+  /// If darkModeEnabled is null, the theme is system
+  bool? get darkModeEnabled;
+  set darkModeEnabled(bool? value);
+
+  bool get zenModeEnabled;
+  set zenModeEnabled(bool value);
 
   Character? get character;
   set character(Character? value);
 
-  Future<void> initialize();
+  void setBox(Box<dynamic> box);
 }
 
 class PreferencesService extends BaseService
@@ -37,7 +40,9 @@ class PreferencesService extends BaseService
   bool get initialized => _initialized;
 
   static const String _fellowshipIdKey = 'fellowship_id';
-  static const String _isDarkModeKey = 'is_dark_mode';
+  static const String _darkModeEnabledKey = 'dark_mode_enabled';
+  static const String _zenModeEnabledKey = 'zen_mode_enabled';
+
   static const String _characterKey = 'character';
   static const String _fellowshipPin = 'fellowship_pin';
 
@@ -52,9 +57,15 @@ class PreferencesService extends BaseService
   set fellowshipPin(String? value) => _box?.put(_fellowshipPin, value);
 
   @override
-  bool? get isDarkMode => _box?.get(_isDarkModeKey) as bool?;
+  bool? get darkModeEnabled => _box?.get(_darkModeEnabledKey) as bool?;
   @override
-  set isDarkMode(bool? value) => _box?.put(_isDarkModeKey, value);
+  set darkModeEnabled(bool? value) => _box?.put(_darkModeEnabledKey, value);
+
+  @override
+  bool get zenModeEnabled =>
+      _box?.get(_zenModeEnabledKey, defaultValue: false) as bool;
+  @override
+  set zenModeEnabled(bool value) => _box?.put(_zenModeEnabledKey, value);
 
   @override
   Character? get character {
@@ -68,13 +79,13 @@ class PreferencesService extends BaseService
   set character(Character? value) => _box?.put(_characterKey, value?.value);
 
   @override
-  Future<void> initialize() async {
-    try {
-      _box = await Hive.openBox<dynamic>('preferences');
-      _initialized = true;
-    } catch (e) {
-      logError('initialize', e);
+  Future<void> setBox(Box<dynamic> box) async {
+    if (_box != null) {
+      return;
     }
+
+    _box = box;
+    _initialized = true;
   }
 }
 

@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-final ThemeData lightTheme = ThemeData(
-  // Define the default brightness and colors.
-  brightness: Brightness.light,
-  primaryColor: Colors.lightBlue[800],
-  // Define the default font family.
-  fontFamily: 'Georgia',
+const Color ringColor = Color.fromRGBO(212, 175, 55, 1);
 
-  // Define the default `TextTheme`. Use this to specify the default
-  // text styling for headlines, titles, bodies of text, and more.
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
-    titleLarge: TextStyle(fontSize: 36, fontStyle: FontStyle.italic),
-    bodyMedium:
-        TextStyle(fontSize: 14, fontFamily: 'Hind', color: Colors.black),
-  ),
-);
+ThemeData _getTheme(Brightness brightness) {
+  final ThemeData baseTheme = ThemeData(brightness: brightness);
+  return baseTheme.copyWith(
+    colorScheme: baseTheme.colorScheme.copyWith(
+      primary: Colors.green[brightness == Brightness.light ? 600 : 900],
+      secondary: ringColor,
+      onPrimary: Colors.white,
+      onSurface:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+    ),
+    textTheme: GoogleFonts.exo2TextTheme(baseTheme.textTheme).apply(
+      bodyColor:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+      displayColor:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+      decorationColor:
+          brightness == Brightness.light ? Colors.grey[900] : Colors.white,
+    ),
+  );
+}
 
-final ThemeData darkTheme = ThemeData(
-  // Define the default brightness and colors.
-  brightness: Brightness.dark,
-  primaryColor: Colors.lightBlue[800],
+final ThemeData darkTheme = _getTheme(Brightness.dark);
 
-  // Define the default font family.
-  fontFamily: 'Georgia',
-
-  // Define the default `TextTheme`. Use this to specify the default
-  // text styling for headlines, titles, bodies of text, and more.
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
-    titleLarge: TextStyle(fontSize: 36, fontStyle: FontStyle.italic),
-    bodyMedium:
-        TextStyle(fontSize: 14, fontFamily: 'Hind', color: Colors.white),
-  ),
-);
+final ThemeData lightTheme = _getTheme(Brightness.light);
