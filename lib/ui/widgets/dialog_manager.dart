@@ -5,6 +5,7 @@ import '../../../services/app/dialog_service.dart';
 import '../../models/fellowship_member.dart';
 import 'called_out/called_out_dialog.dart';
 import 'callout/callout_dialog.dart';
+import 'movie_summary/summary_dialog.dart';
 
 /// This handles popup dialogs and snackbar in the application.
 class DialogManager extends ConsumerStatefulWidget {
@@ -25,6 +26,7 @@ class _DialogManagerState extends ConsumerState<DialogManager> {
     _dialogService.registerNotificationListener(_showNotification);
     _dialogService.registerCalledOutListener(_showCalledOutDialog);
     _dialogService.registerCalloutListener(_showCalloutDialog);
+    _dialogService.registerSummaryDialogListener(_showSummaryDialog);
   }
 
   @override
@@ -109,5 +111,13 @@ class _DialogManagerState extends ConsumerState<DialogManager> {
         return CalloutDialog(member: member);
       },
     );
+  }
+
+  Future<void> _showSummaryDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const SummaryDialog();
+        });
   }
 }

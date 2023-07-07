@@ -39,6 +39,7 @@ class _DefaultView extends StatelessWidget {
               FellowshipCard(
                 fellowshipName: fellowshipName,
                 member: member,
+                currentMovie: fellowship.currentMovie,
               ),
               const SizedBox(height: 15),
               _rules(character, fellowship.currentMovie),
@@ -69,6 +70,7 @@ class _DefaultView extends StatelessWidget {
           normalRules = GameRules.normalRulesROTK;
         }
     }
+    normalRules.addAll(GameRules.normalRulesAllMovies);
     return Card(
       child: SingleChildScrollView(
         child: Column(
@@ -162,9 +164,11 @@ class FellowshipCard extends StatelessWidget {
     super.key,
     required this.fellowshipName,
     required this.member,
+    required this.currentMovie,
   });
 
   final String fellowshipName;
+  final String currentMovie;
   final FellowshipMember member;
 
   @override
@@ -198,6 +202,7 @@ class FellowshipCard extends StatelessWidget {
           const SizedBox(height: 5),
           Avatar(
             character,
+            currentMovie,
             fit: BoxFit.contain,
             height: 200,
           ),

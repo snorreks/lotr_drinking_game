@@ -84,6 +84,7 @@ class _CharacterMobile extends StatelessWidget {
                                           .saturation, // this is what applies the gray scale effect
                                   child: Avatar(
                                     character,
+                                    "Fellowship of the Ring",
                                     fit: BoxFit.fitHeight,
                                   ),
                                 ),

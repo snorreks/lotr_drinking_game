@@ -55,7 +55,7 @@ class _LeaderBoardMobile extends StatelessWidget {
         final Character character = member.character;
         return Card(
           child: ListTile(
-            leading: Avatar(character),
+            leading: Avatar(character, fellowship.currentMovie),
             title: Text(
               member.name,
             ),

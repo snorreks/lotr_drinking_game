@@ -70,6 +70,7 @@ class RootView extends ConsumerWidget {
                         accountEmail: Text(member.character.displayName),
                         currentAccountPicture: Avatar(
                           member.character,
+                          'Fellowship of the Ring',
                           circle: true,
                         ),
                         decoration: BoxDecoration(

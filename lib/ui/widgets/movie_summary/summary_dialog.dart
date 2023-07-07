@@ -8,43 +8,44 @@ class SummaryDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Dialog(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: PageView(
-          controller: PageController(),
-          onPageChanged: (int page) {
-            ref.read(summaryDialogViewModelProvider).changePage(page);
-          },
-          children: [
-            _buildPage(
-              context,
-              title: 'Movie Finished',
-              content: 'The movie is done. The next movie is XYZ.',
-            ),
-            _buildPage(
-              context,
-              title: 'Who Drank the Most?',
-              content: 'The person who drank the most in this movie is ABC.',
-            ),
-            _buildPage(
-              context,
-              title: 'Who Skipped the Most?',
-              content: 'The person who used the most skips is DEF.',
-            ),
-            _buildPage(
-              context,
-              title: 'Top 3 Players',
-              content: 'The top 3 players currently are GHI, JKL, and MNO.',
-            ),
-            _buildPage(
-              context,
-              title: 'Attention',
-              content: 'Pay attention to your rules, they have changed!',
-            ),
-          ],
-        ),
+    final SummaryDialogViewModel viewModel =
+        ref.watch(summaryDialogViewModelProvider);
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: PageView(
+        controller: PageController(),
+        onPageChanged: (int page) {
+          ref.read(summaryDialogViewModelProvider).changePage(page);
+        },
+        children: [
+          _buildPage(
+            context,
+            title: 'Movie Finished',
+            content: 'The movie is done. The next movie is XYZ.',
+          ),
+          _buildPage(
+            context,
+            title: 'Who Drank the Most?',
+            content: 'The person who drank the most in this movie is ABC.',
+          ),
+          _buildPage(
+            context,
+            title: 'Who Skipped the Most?',
+            content: 'The person who used the most skips is DEF.',
+          ),
+          _buildPage(
+            context,
+            title: 'Top 3 Players',
+            content: 'The top 3 players currently are GHI, JKL, and MNO.',
+          ),
+          _buildPage(
+            context,
+            title: 'Attention',
+            content: 'Pay attention to your rules, they have changed!',
+          ),
+        ],
       ),
     );
   }
