@@ -18,10 +18,9 @@ class GameRules {
   ];
 
   static final List<String> normalRulesTwoTowers = <String>[
-    "Someone says 'Saruman' or 'Orthanc'.",
+    "Someone says 'Saruman'.",
     'Someone talks about Gondor.',
     'Gollum and Smeagol have a conversation.',
-    "Someone talks about the 'old world' passing.",
     "There's a shot of the Uruk-hai marching or preparing for battle."
   ];
 
