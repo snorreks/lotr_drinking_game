@@ -27,18 +27,13 @@ class SummaryDialog extends ConsumerWidget {
           ),
           _buildPage(
             context,
-            title: 'Who Drank the Most?',
-            content: 'The person who drank the most in this movie is ABC.',
+            title: 'Top 3 Players',
+            content: 'The top 3 players currently are GHI, JKL, and MNO.',
           ),
           _buildPage(
             context,
             title: 'Who Skipped the Most?',
             content: 'The person who used the most skips is DEF.',
-          ),
-          _buildPage(
-            context,
-            title: 'Top 3 Players',
-            content: 'The top 3 players currently are GHI, JKL, and MNO.',
           ),
           _buildPage(
             context,

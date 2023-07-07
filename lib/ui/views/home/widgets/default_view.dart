@@ -57,20 +57,19 @@ class _DefaultView extends StatelessWidget {
       case ('Fellowship of the Ring'):
         {
           charRules = character.rulesFellowship;
-          normalRules = GameRules.normalRulesFellowship;
+          normalRules = GameRules.sipRulesFellowship;
         }
       case ('The Two Towers'):
         {
           charRules = character.rulesTwoTowers;
-          normalRules = GameRules.normalRulesTwoTowers;
+          normalRules = GameRules.sipRulesTwoTowers;
         }
       case ('Return of the King'):
         {
           charRules = character.rulesROTK;
-          normalRules = GameRules.normalRulesROTK;
+          normalRules = GameRules.sipRulesROTK;
         }
     }
-    normalRules.addAll(GameRules.normalRulesAllMovies);
     return Card(
       child: SingleChildScrollView(
         child: Column(

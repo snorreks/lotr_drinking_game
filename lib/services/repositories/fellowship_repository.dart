@@ -123,6 +123,7 @@ class FellowshipRepository extends BaseService
         'pin': randomPin,
         'createdAt': FieldValue.serverTimestamp(),
         'currentMovie': 'Fellowship of the Ring',
+        'lastSummaryShown': 'Fellowship of the Ring',
         'members': <String, dynamic>{}
       });
 

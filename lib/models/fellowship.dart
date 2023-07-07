@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../constants/characters.dart';
@@ -47,7 +46,6 @@ Map<Character, FellowshipMember> membersFromJson(dynamic value) {
 }
 
 @JsonSerializable()
-@JsonSerializable()
 class Fellowship {
   Fellowship({
     required this.id,
@@ -56,7 +54,6 @@ class Fellowship {
     required this.currentMovie,
     required this.members,
     this.lastSummaryShown,
-    this.currentMovieStart,
   });
 
   factory Fellowship.fromJson(Map<String, dynamic> json) =>
@@ -79,13 +76,7 @@ class Fellowship {
 
   final String? lastSummaryShown;
 
-  @JsonKey(fromJson: timestampFromJson, toJson: timestampToJson)
-  final DateTime? currentMovieStart;
-
   Map<String, dynamic> toJson() => _$FellowshipToJson(this);
 
   List<FellowshipMember> get membersList => members.values.toList();
 }
-
-DateTime timestampFromJson(Timestamp timestamp) => timestamp.toDate();
-Timestamp timestampToJson(DateTime dateTime) => Timestamp.fromDate(dateTime);

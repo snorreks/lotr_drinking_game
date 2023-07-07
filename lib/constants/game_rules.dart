@@ -76,6 +76,13 @@ class GameRules {
     'Down the Hatch': dthRules,
   };
 
+  static final List<String> sipRulesFellowship =
+      List.from(normalRulesFellowship)..addAll(normalRulesAllMovies);
+  static final List<String> sipRulesTwoTowers = List.from(normalRulesTwoTowers)
+    ..addAll(normalRulesAllMovies);
+  static final List<String> sipRulesROTK = List.from(normalRulesROTK)
+    ..addAll(normalRulesAllMovies);
+
   static Map<String, List<String>> applicableRules(String currentMovie) {
     switch (currentMovie) {
       case 'Fellowship of the Ring':
