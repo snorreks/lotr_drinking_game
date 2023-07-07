@@ -36,12 +36,16 @@ abstract class DialogServiceModel {
 
   void registerCalledOutListener(Function(Callout) listener);
 
+  void registerSummaryDialogListener(Function() listener);
+
   /// Displays a notification dialog
   void showNotification(NotificationRequest notificationRequest);
 
   void showCalloutDialog(FellowshipMember? selectedPlayer);
 
   void showCalledOutDialog(Callout callout);
+
+  void showSummaryDialog();
 }
 
 class DialogService extends BaseService implements DialogServiceModel {
@@ -52,6 +56,7 @@ class DialogService extends BaseService implements DialogServiceModel {
   late Function(NotificationRequest) _showNotificationListener;
   late Function(FellowshipMember?) _showCalloutListener;
   late Function(Callout) _showCalledOutListener;
+  late Function() _showSummaryDialogListener;
 
   @override
   GlobalKey<NavigatorState> get dialogNavigationKey => _dialogNavigationKey;
@@ -72,6 +77,11 @@ class DialogService extends BaseService implements DialogServiceModel {
   }
 
   @override
+  void registerSummaryDialogListener(Function() listener) {
+    _showSummaryDialogListener = listener;
+  }
+
+  @override
   void showNotification(NotificationRequest notificationRequest) {
     _showNotificationListener(notificationRequest);
   }
@@ -84,6 +94,11 @@ class DialogService extends BaseService implements DialogServiceModel {
   @override
   void showCalledOutDialog(Callout callout) {
     _showCalledOutListener(callout);
+  }
+
+  @override
+  void showSummaryDialog() {
+    _showSummaryDialogListener();
   }
 }
 

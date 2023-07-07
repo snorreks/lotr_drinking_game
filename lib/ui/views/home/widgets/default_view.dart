@@ -39,6 +39,7 @@ class _DefaultView extends StatelessWidget {
               FellowshipCard(
                 fellowshipName: fellowshipName,
                 member: member,
+                currentMovie: fellowship.currentMovie,
               ),
               const SizedBox(height: 15),
               _rules(character, fellowship.currentMovie),
@@ -56,17 +57,17 @@ class _DefaultView extends StatelessWidget {
       case ('Fellowship of the Ring'):
         {
           charRules = character.rulesFellowship;
-          normalRules = GameRules.normalRulesFellowship;
+          normalRules = GameRules.sipRulesFellowship;
         }
       case ('The Two Towers'):
         {
           charRules = character.rulesTwoTowers;
-          normalRules = GameRules.normalRulesTwoTowers;
+          normalRules = GameRules.sipRulesTwoTowers;
         }
       case ('Return of the King'):
         {
           charRules = character.rulesROTK;
-          normalRules = GameRules.normalRulesROTK;
+          normalRules = GameRules.sipRulesROTK;
         }
     }
     return Card(
@@ -151,9 +152,11 @@ class FellowshipCard extends StatelessWidget {
     super.key,
     required this.fellowshipName,
     required this.member,
+    required this.currentMovie,
   });
 
   final String fellowshipName;
+  final String currentMovie;
   final FellowshipMember member;
 
   @override
@@ -187,6 +190,7 @@ class FellowshipCard extends StatelessWidget {
           const SizedBox(height: 5),
           Avatar(
             character,
+            currentMovie,
             fit: BoxFit.contain,
             height: 200,
           ),

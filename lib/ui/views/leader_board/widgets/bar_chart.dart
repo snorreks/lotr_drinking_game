@@ -199,6 +199,7 @@ class _IconWidgetState extends AnimatedWidgetBaseState<_IconWidget> {
         onTap: widget.onTap,
         child: Avatar(
           widget.character,
+          "Fellowship of the Ring",
           circle: true,
         ),
       ),

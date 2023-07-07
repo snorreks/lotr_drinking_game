@@ -53,6 +53,7 @@ class Fellowship {
     required this.name,
     required this.currentMovie,
     required this.members,
+    this.lastSummaryShown,
   });
 
   factory Fellowship.fromJson(Map<String, dynamic> json) =>
@@ -72,6 +73,8 @@ class Fellowship {
 
   @JsonKey(fromJson: membersFromJson)
   final Map<Character, FellowshipMember> members;
+
+  final String? lastSummaryShown;
 
   Map<String, dynamic> toJson() => _$FellowshipToJson(this);
 

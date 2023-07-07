@@ -162,7 +162,7 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
               }
             });
           },
-          leading: Avatar(character, circle: true),
+          leading: Avatar(character, 'Fellowship of the Ring', circle: true),
           title: Text(
             member.name,
             style: TextStyle(

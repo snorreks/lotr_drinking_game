@@ -16,6 +16,7 @@ Fellowship _$FellowshipFromJson(Map<String, dynamic> json) {
     pin: json['pin'] as String,
     name: json['name'] as String,
     currentMovie: json['currentMovie'] as String,
+    lastSummaryShown: json['lastSummaryShown'] as String,
     members: membersFromJson(json['members']),
   );
 }
@@ -25,5 +26,6 @@ Map<String, dynamic> _$FellowshipToJson(Fellowship instance) =>
       'id': instance.id,
       'name': instance.name,
       'pin': instance.pin,
-      'currentMovie': instance.currentMovie
+      'currentMovie': instance.currentMovie,
+      'lastSummaryShown': instance.lastSummaryShown
     };

@@ -4,10 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/characters.dart';
 import '../../services/app/audio_player_service.dart';
 
-class Avatar extends ConsumerWidget {
-  const Avatar(this.character,
+class Avatar extends StatelessWidget {
+  const Avatar(this.character, this.currentMovie,
       {this.fit, this.height, this.circle = false, super.key});
   final Character character;
+  final String currentMovie;
   final BoxFit? fit;
   final double? height;
   final bool circle;
@@ -20,7 +21,7 @@ class Avatar extends ConsumerWidget {
       child: Hero(
         tag: character,
         child: Image.asset(
-          'assets/images/characters/${character.value}.png',
+          'assets/images/characters/${character.value}${currentMovie == "Return of the King" ? "2" : ""}.png',,
           fit: fit,
           height: height,
         ),
