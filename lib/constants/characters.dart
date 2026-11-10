@@ -169,12 +169,12 @@ extension CharacterExtension on Character {
             RuleDifficulty.easy,
           ),
           const GameRule(
-            'He refers to someone as "Mr.", like "Mr. Underhill".',
+            'He refers to someone with a prefix, like "Mister" or "Lord".',
             RuleDifficulty.easy,
           ),
           const GameRule(
             'He unsheathes his sword.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             'He appreciates something elvish.',
