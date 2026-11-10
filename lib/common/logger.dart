@@ -12,28 +12,33 @@ class SimpleLogPrinter extends LogPrinter {
     prefix0.log(
       event.message.toString(),
       time: DateTime.now(),
-      level: () {
-        switch (event.level) {
-          case Level.verbose:
-            return 0;
-          case Level.debug:
-            return 500;
-          case Level.info:
-            return 0;
-          case Level.warning:
-            return 1500;
-          case Level.error:
-            return 2000;
-          case Level.wtf:
-          case Level.nothing:
-            return 2000;
-        }
-      }(),
+      level: _dartLogLevel(event.level),
       name: className,
       error: event.error,
       sequenceNumber: counter += 1,
     );
     return <String>[];
+  }
+
+  /// Map a logger [Level] to a `dart:developer` log level.
+  ///
+  /// Works off [Level.value] instead of matching enum cases so that the
+  /// deprecated aliases (`verbose`, `wtf`, `nothing`) keep working.
+  int _dartLogLevel(Level level) {
+    final int value = level.value;
+    if (value <= 1000) {
+      return 0; // all / verbose / trace
+    }
+    if (value == 2000) {
+      return 500; // debug
+    }
+    if (value == 3000) {
+      return 0; // info
+    }
+    if (value == 4000) {
+      return 1500; // warning
+    }
+    return 2000; // error / wtf / fatal / nothing / off
   }
 }
 

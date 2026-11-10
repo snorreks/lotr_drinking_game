@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
@@ -61,9 +62,8 @@ class RulesViewModel extends BaseNotifierViewModel {
   }
 }
 
-final AutoDisposeChangeNotifierProvider<RulesViewModel> rulesViewModel =
-    ChangeNotifierProvider.autoDispose(
-        (AutoDisposeChangeNotifierProviderRef<RulesViewModel> ref) {
+final ChangeNotifierProvider<RulesViewModel> rulesViewModel =
+    ChangeNotifierProvider.autoDispose((Ref ref) {
   final RulesViewModel viewModel = RulesViewModel();
   return viewModel;
 });

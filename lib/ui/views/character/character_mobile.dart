@@ -84,7 +84,7 @@ class _CharacterMobile extends StatelessWidget {
                                           .saturation, // this is what applies the gray scale effect
                                   child: Avatar(
                                     character,
-                                    "Fellowship of the Ring",
+                                    'Fellowship of the Ring',
                                     fit: BoxFit.fitHeight,
                                   ),
                                 ),
@@ -92,7 +92,8 @@ class _CharacterMobile extends StatelessWidget {
                                   Positioned.fill(
                                     child: Icon(
                                       Icons.lock,
-                                      color: Colors.white.withOpacity(0.9),
+                                      color: Colors.white.withValues(
+                                          alpha: 0.9),
                                       size:
                                           115.0, // adjust size of the lock icon here
                                     ),

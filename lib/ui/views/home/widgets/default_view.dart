@@ -241,7 +241,7 @@ class RulesList extends StatelessWidget {
         const SizedBox(height: 10),
         Column(
           children: <Padding>[
-            for (String rule in rules)
+            for (final String rule in rules)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(

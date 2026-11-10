@@ -9,7 +9,7 @@ abstract class AnalyticsServiceModel {
   FirebaseAnalyticsObserver get analyticsObserver;
 
   /// Log
-  Future<void> logEvent(String name, {Map<String, dynamic>? parameters});
+  Future<void> logEvent(String name, {Map<String, Object>? parameters});
 }
 
 class AnalyticsService extends BaseService implements AnalyticsServiceModel {
@@ -22,12 +22,12 @@ class AnalyticsService extends BaseService implements AnalyticsServiceModel {
       FirebaseAnalyticsObserver(analytics: _analytics);
 
   @override
-  Future<void> logEvent(String name, {Map<String, dynamic>? parameters}) =>
+  Future<void> logEvent(String name, {Map<String, Object>? parameters}) =>
       _analytics.logEvent(name: name, parameters: parameters);
 }
 
 final Provider<AnalyticsServiceModel> analyticsService =
     Provider<AnalyticsServiceModel>(
-  (ProviderRef<AnalyticsServiceModel> ref) =>
+  (Ref ref) =>
       AnalyticsService(FirebaseAnalytics.instance),
 );

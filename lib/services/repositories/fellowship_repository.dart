@@ -348,7 +348,7 @@ class FellowshipRepository extends BaseService
 
 final Provider<FellowshipRepositoryModel> fellowshipRepository =
     Provider<FellowshipRepositoryModel>(
-  (ProviderRef<FellowshipRepositoryModel> ref) => FellowshipRepository(
+  (Ref ref) => FellowshipRepository(
     FirebaseFirestore.instance,
   ),
 );

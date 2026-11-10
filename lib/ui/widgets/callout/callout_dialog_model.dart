@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
@@ -91,11 +92,9 @@ class CalloutViewModel extends BaseNotifierViewModel {
   }
 }
 
-final AutoDisposeChangeNotifierProviderFamily<CalloutViewModel,
-        FellowshipMember?> calloutViewModel =
-    ChangeNotifierProvider.family.autoDispose(
-        (AutoDisposeChangeNotifierProviderRef<Object?> ref,
-            FellowshipMember? selectedPlayer) {
+final ChangeNotifierProviderFamily<CalloutViewModel, FellowshipMember?>
+    calloutViewModel = ChangeNotifierProvider.family.autoDispose(
+        (Ref ref, FellowshipMember? selectedPlayer) {
   final CalloutViewModel viewModel = CalloutViewModel(ref, selectedPlayer);
   return viewModel;
 });

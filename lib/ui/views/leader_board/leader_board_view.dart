@@ -1,5 +1,3 @@
-library leader_board;
-
 import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';

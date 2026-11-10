@@ -379,7 +379,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
 
 final Provider<FellowshipServiceModel> fellowshipService =
     Provider<FellowshipServiceModel>(
-  (ProviderRef<FellowshipServiceModel> ref) => FellowshipService(
+  (Ref ref) => FellowshipService(
     ref,
   ),
 );

@@ -18,7 +18,7 @@ class FellowshipBarChartState extends State<FellowshipBarChart> {
 
   int touchedGroupIndex = -1;
   final Color shadowColor = const Color(0xFFCCCCCC);
-  final Color borderColor = Colors.white54.withOpacity(0.2);
+  final Color borderColor = Colors.white54.withValues(alpha: 0.2);
 
   BarChartGroupData generateBarGroup(
     int x,
@@ -82,7 +82,7 @@ class FellowshipBarChartState extends State<FellowshipBarChart> {
                   final FellowshipMember member = members[index];
                   final Character character = member.character;
                   return SideTitleWidget(
-                    axisSide: meta.axisSide,
+                    meta: meta,
                     child: _IconWidget(
                       character: character,
                       isSelected: touchedGroupIndex == index,
@@ -121,7 +121,8 @@ class FellowshipBarChartState extends State<FellowshipBarChart> {
             enabled: true,
             handleBuiltInTouches: false,
             touchTooltipData: BarTouchTooltipData(
-              tooltipBgColor: Colors.transparent,
+              getTooltipColor: (BarChartGroupData group) =>
+                  Colors.transparent,
               tooltipMargin: 0,
               getTooltipItem: (
                 BarChartGroupData group,
@@ -192,14 +193,15 @@ class _IconWidgetState extends AnimatedWidgetBaseState<_IconWidget> {
     final double rotation = math.pi * 4 * _rotationTween!.evaluate(animation);
     final double scale = 1 + _rotationTween!.evaluate(animation) * 0.55;
     return Transform(
-      transform: Matrix4.rotationZ(rotation).scaled(scale, scale),
+      transform: Matrix4.rotationZ(rotation)
+          .scaledByDouble(scale, scale, 1, 1),
       origin: const Offset(14, 14),
       child: // detect if tap
           GestureDetector(
         onTap: widget.onTap,
         child: Avatar(
           widget.character,
-          "Fellowship of the Ring",
+          'Fellowship of the Ring',
           circle: true,
         ),
       ),

@@ -60,8 +60,8 @@ class LoginViewModel extends BaseViewModel {
   }
 }
 
-final AutoDisposeProvider<LoginViewModel> loginViewModel = Provider.autoDispose(
-  (AutoDisposeProviderRef<LoginViewModel> ref) {
+final Provider<LoginViewModel> loginViewModel = Provider.autoDispose(
+  (Ref ref) {
     final LoginViewModel viewModel = LoginViewModel(ref);
     ref.onDispose(viewModel.dispose);
     return viewModel;

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
@@ -53,11 +53,11 @@ class HomeViewModel extends BaseViewModel {
   }
 
   void wakeyBaky() {
-    Wakelock.enable();
+    WakelockPlus.enable();
   }
 
   void sleepyDeepy() {
-    Wakelock.disable();
+    WakelockPlus.disable();
   }
 
   @override
@@ -67,8 +67,8 @@ class HomeViewModel extends BaseViewModel {
   }
 }
 
-final AutoDisposeProvider<HomeViewModel> homeViewModel =
-    Provider.autoDispose((AutoDisposeProviderRef<HomeViewModel> ref) {
+final Provider<HomeViewModel> homeViewModel =
+    Provider.autoDispose((Ref ref) {
   final HomeViewModel viewModel = HomeViewModel(ref);
   ref.onDispose(viewModel.dispose);
   return viewModel;
