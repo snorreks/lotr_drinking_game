@@ -14,6 +14,13 @@ analyzer:
     - "lib/firebase_options.dart"
     - "dev/conductor/lib/proto/*"
     - "analysis_options.yaml"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 linter:
   rules:

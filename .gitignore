@@ -45,3 +45,5 @@ app.*.map.json
 
 hosting
 .firebase
+# Widget Preview related
+.widget_preview/
