@@ -58,6 +58,7 @@ class Fellowship {
     required this.currentMovie,
     required this.members,
     this.lastSummaryShown,
+    this.currentMovieStart,
   });
 
   factory Fellowship.fromJson(Map<String, dynamic> json) =>
@@ -79,6 +80,13 @@ class Fellowship {
   final Map<Character, FellowshipMember> members;
 
   final String? lastSummaryShown;
+
+  /// The moment the current movie was started, i.e. when the previous movie
+  /// summary was shown. Drinks and saves after this moment belong to the
+  /// current movie. May be null for fellowships created before this field
+  /// existed.
+  @JsonKey(fromJson: timestampToDateTime)
+  final DateTime? currentMovieStart;
 
   Map<String, dynamic> toJson() => _$FellowshipToJson(this);
 

@@ -12,6 +12,13 @@ List<DateTime> timestampArrayFromJson(dynamic value) {
       .toList();
 }
 
+DateTime? timestampToDateTime(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+  return (value as Timestamp).toDate();
+}
+
 class Callout {
   Callout({
     required this.rule,
