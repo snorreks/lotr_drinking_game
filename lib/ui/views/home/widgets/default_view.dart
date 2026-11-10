@@ -42,7 +42,7 @@ class _DefaultView extends StatelessWidget {
                 currentMovie: fellowship.currentMovie,
               ),
               const SizedBox(height: 15),
-              _rules(character, fellowship.currentMovie),
+              _rules(character, fellowship.currentMovie, member.difficulty),
             ],
           ),
         );
@@ -50,9 +50,13 @@ class _DefaultView extends StatelessWidget {
     );
   }
 
-  Widget _rules(Character character, String currentMovie) {
-    List<String> charRules = <String>[];
-    List<String> normalRules = <String>[];
+  Widget _rules(
+    Character character,
+    String currentMovie,
+    RuleDifficulty difficulty,
+  ) {
+    List<GameRule> charRules = <GameRule>[];
+    List<GameRule> normalRules = <GameRule>[];
     switch (currentMovie) {
       case ('Fellowship of the Ring'):
         {
@@ -75,14 +79,20 @@ class _DefaultView extends StatelessWidget {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 15),
-            RulesList(rules: charRules, title: 'Your rules:'),
+            RulesList(
+              rules: activeRuleTexts(charRules, difficulty),
+              title: 'Your rules:',
+            ),
             const SizedBox(height: 15),
             RulesList(
-              rules: normalRules,
+              rules: activeRuleTexts(normalRules, difficulty),
               title: 'Everyone takes a drink when:',
             ),
             const SizedBox(height: 15),
-            RulesList(rules: GameRules.dthRules, title: 'Down the hatch when:'),
+            RulesList(
+              rules: activeRuleTexts(GameRules.dthRules, difficulty),
+              title: 'Down the hatch when:',
+            ),
           ],
         ),
       ),
@@ -186,7 +196,14 @@ class FellowshipCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          // TEXT REGARDING UNITS GOES HERE
+          Chip(
+            avatar: Icon(
+              member.difficulty.icon,
+              color: member.difficulty.color,
+              size: 18,
+            ),
+            label: Text('${member.difficulty.displayName} difficulty'),
+          ),
           const SizedBox(height: 5),
           Avatar(
             character,

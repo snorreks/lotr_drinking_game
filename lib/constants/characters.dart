@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'game_rule.dart';
+
 enum Character {
   frodo,
   sam,
@@ -70,173 +72,467 @@ extension CharacterExtension on Character {
     }
   }
 
-  List<String> get rulesFellowship {
+  List<GameRule> get rulesFellowship {
     switch (this) {
       case Character.frodo:
-        return <String>[
-          'The ring affects his behavior.',
-          'He mentions Bilbo.',
-          'He offers the Ring to someone else.',
-          'He trips over his own feet.'
+        return <GameRule>[
+          const GameRule(
+            'The ring affects his behavior.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He mentions Bilbo.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He offers the Ring to someone else.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He trips over his own feet.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.sam:
-        return <String>[
-          'He says, “Mr Frodo”.',
-          'He shows clumsiness or lack of familiarity with adventuring.',
-          "He's startled or scared.",
-          'His dirty chewed-up nails or feet are in the shot'
+        return <GameRule>[
+          const GameRule(
+            'He says, “Mr Frodo”.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He shows clumsiness or lack of familiarity with adventuring.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            "He's startled or scared.",
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'His dirty chewed-up nails or feet are in the shot.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.merrypippin:
-        return <String>[
-          'They cause trouble or create mischief.',
-          'They talk about food.',
-          'They are drinking or eating',
-          'They manage to make a seemingly hopeless situation light-hearted.',
-          'They dump exposition to the audience'
+        return <GameRule>[
+          const GameRule(
+            'They cause trouble or create mischief.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'They talk about food.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'They are drinking or eating.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'They manage to make a seemingly hopeless situation '
+            'light-hearted.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'They dump exposition to the audience.',
+            RuleDifficulty.medium,
+          ),
         ];
       case Character.gandalf:
-        return <String>[
-          'He lights up his pipe (Give one to another person if he is smoking with someone)',
-          'Drink when he refers to someone by their full name.',
-          'Drink when he actually uses magic',
-          'Drink whenever he mysteriously disappears or appears without clear explanation',
-          'Drink whenever he calls on the name of a higher power like "Elbereth", "Mithrandir", or "Udun"'
+        return <GameRule>[
+          const GameRule(
+            'He lights up his pipe (Give one to another person if he is '
+            'smoking with someone).',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink when he refers to someone by their full name.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink when he actually uses magic.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'Drink whenever he mysteriously disappears or appears without '
+            'clear explanation.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink whenever he calls on the name of a higher power like '
+            '"Elbereth", "Mithrandir", or "Udun".',
+            RuleDifficulty.hard,
+          ),
         ];
       case Character.aragorn:
-        return <String>[
-          'He lights up his pipe.',
-          'He refers to Frodo and Sam as "Mr. Frodo" and "Mr. Sam".',
-          'He unsheathes his sword.',
-          'He appreciates something elvish'
+        return <GameRule>[
+          const GameRule(
+            'He lights up his pipe.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He refers to Frodo and Sam as "Mr. Frodo" and "Mr. Sam".',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He unsheathes his sword.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He appreciates something elvish.',
+            RuleDifficulty.medium,
+          ),
         ];
       case Character.legolas:
-        return <String>[
-          "He uses his bow (extra sip if it's a major action scene).",
-          'His hair blows dramatically in the wind.',
-          'He is staring in the distance, double if he identifies or warns of an approaching danger before anyone else',
+        return <GameRule>[
+          const GameRule(
+            "He uses his bow (extra sip if it's a major action scene).",
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'His hair blows dramatically in the wind.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He is staring in the distance, double if he identifies or warns '
+            'of an approaching danger before anyone else.',
+            RuleDifficulty.medium,
+          ),
         ];
       case Character.gimli:
-        return <String>[
-          'He says “dwarf” or “elf”.',
-          "He's used as a comic relief (Beware of the Director's Cut).",
-          'He grumbles or complains.',
-          'He mentions his father, ancestors or the skill of dwarves.',
-          'He spills food or drink on himself or his beard'
+        return <GameRule>[
+          const GameRule(
+            'He says “dwarf” or “elf”.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            "He's used as a comic relief (Beware of the Director's Cut).",
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He grumbles or complains.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He mentions his father, ancestors or the skill of dwarves.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He spills food or drink on himself or his beard.',
+            RuleDifficulty.medium,
+          ),
         ];
     }
   }
 
-  List<String> get rulesTwoTowers {
+  List<GameRule> get rulesTwoTowers {
     switch (this) {
       case Character.frodo:
-        return <String>[
-          'He clutches his chest (where the Ring is).',
-          'He talks about the heaviness or burden of the Ring.',
-          'He trips over his own feet.'
+        return <GameRule>[
+          const GameRule(
+            'He clutches his chest (where the Ring is).',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He talks about the heaviness or burden of the Ring.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He trips over his own feet.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.sam:
-        return <String>[
-          'He says, “Mr Frodo”.',
-          "He's mean to Gollum.",
-          'He talks about food (taters, rabbit stew, lembas bread, etc.).',
-          'He pulls out his small sword.'
+        return <GameRule>[
+          const GameRule(
+            'He says, “Mr Frodo”.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            "He's mean to Gollum.",
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He talks about food (taters, rabbit stew, lembas bread, etc.).',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He pulls out his small sword.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.merrypippin:
-        return <String>[
-          'They cause trouble or create mischief.',
-          'They talk about food.',
-          "They discuss hobbit and other species' culture, or the Shire",
-          'They actually do something intelligent'
+        return <GameRule>[
+          const GameRule(
+            'They cause trouble or create mischief.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'They talk about food.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            "They discuss hobbit and other species' culture, or the Shire.",
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'They actually do something intelligent.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.gandalf:
-        return <String>[
-          'He gives sage advice or shares a piece of ancient wisdom.',
-          'Drink when he actually uses magic',
-          'Drink whenever he mysteriously disappears or appears without clear explanation',
-          'Drink whenever he calls on the name of a higher power like "Elbereth", "Mithrandir", or "Udun"',
-          'He uses magic to either enlighten or intimidate others.',
-          'Drink when he refers to someone by their full name.',
+        return <GameRule>[
+          const GameRule(
+            'He gives sage advice or shares a piece of ancient wisdom.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink when he actually uses magic.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'Drink whenever he mysteriously disappears or appears without '
+            'clear explanation.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink whenever he calls on the name of a higher power like '
+            '"Elbereth", "Mithrandir", or "Udun".',
+            RuleDifficulty.hard,
+          ),
+          const GameRule(
+            'He uses magic to either enlighten or intimidate others.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink when he refers to someone by their full name.',
+            RuleDifficulty.medium,
+          ),
         ];
       case Character.aragorn:
-        return <String>[
-          'He kills something.',
-          'He scouts ahead or examines the landscape.',
-          'He smiles like an idiot',
-          'He shows qualities of being a King',
-          "He's doubtful of his ability to be the rightful king of Gondor"
+        return <GameRule>[
+          const GameRule(
+            'He kills something.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He scouts ahead or examines the landscape.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He smiles like an idiot.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He shows qualities of being a King.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            "He's doubtful of his ability to be the rightful king of Gondor.",
+            RuleDifficulty.medium,
+          ),
         ];
       case Character.legolas:
-        return <String>[
-          "He uses his bow (extra sip if it's a major action scene, drink 3 per shot during the Shield Surf).",
-          'He interacts with Gimli, displaying their unique friendship.',
-          'He says something vague or obvious',
-          'He is staring in the distance, double if he identifies or warns of an approaching danger before anyone else',
+        return <GameRule>[
+          const GameRule(
+            "He uses his bow (extra sip if it's a major action scene, drink 3 "
+            'per shot during the Shield Surf).',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He interacts with Gimli, displaying their unique friendship.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He says something vague or obvious.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He is staring in the distance, double if he identifies or warns '
+            'of an approaching danger before anyone else.',
+            RuleDifficulty.medium,
+          ),
         ];
       case Character.gimli:
-        return <String>[
-          'He says “dwarf” or “elf”.',
-          "He's used as a comic relief (Beware of the Director's Cut).",
-          'He laughs heartily.',
-          'He is seen panting or struggling to keep up.',
-          'He grumbles or complains.',
-          'He kills something'
+        return <GameRule>[
+          const GameRule(
+            'He says “dwarf” or “elf”.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            "He's used as a comic relief (Beware of the Director's Cut).",
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He laughs heartily.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He is seen panting or struggling to keep up.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He grumbles or complains.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He kills something.',
+            RuleDifficulty.easy,
+          ),
         ];
     }
   }
 
-  List<String> get rulesROTK {
+  List<GameRule> get rulesROTK {
     switch (this) {
       case Character.frodo:
-        return <String>[
-          'The ring affects his behavior.',
-          'He says, “Oh Sam”.',
-          'He trips over his own feet.',
-          'Down the hatch when carried.'
+        return <GameRule>[
+          const GameRule(
+            'The ring affects his behavior.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He says, “Oh Sam”.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He trips over his own feet.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'Down the hatch when carried.',
+            RuleDifficulty.hard,
+          ),
         ];
       case Character.sam:
-        return <String>[
-          'He says, “Mr Frodo”.',
-          "He's mean to Gollum.",
-          'He supports a Frodo who has once again fucked up or is having a Heroic BSoD.',
-          'Down the hatch when he carries Frodo.'
+        return <GameRule>[
+          const GameRule(
+            'He says, “Mr Frodo”.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            "He's mean to Gollum.",
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He supports a Frodo who has once again fucked up or is having a '
+            'Heroic BSoD.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Down the hatch when he carries Frodo.',
+            RuleDifficulty.hard,
+          ),
         ];
       case Character.merrypippin:
-        return <String>[
-          'They cause trouble or create mischief.',
-          'They show bravery despite their fear.',
-          'They manage to make a seemingly hopeless situation light-hearted.',
-          'They actually do something intelligent.'
+        return <GameRule>[
+          const GameRule(
+            'They cause trouble or create mischief.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'They show bravery despite their fear.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'They manage to make a seemingly hopeless situation '
+            'light-hearted.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'They actually do something intelligent.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.gandalf:
-        return <String>[
-          'He gives sage advice or shares a piece of ancient wisdom.',
-          'Drink when he actually uses magic',
-          'Drink whenever he mysteriously disappears or appears without clear explanation',
-          'Drink whenever he calls on the name of a higher power like "Elbereth", "Mithrandir", or "Udun."',
-          'He is seen dual-wielding a sword and his staff'
+        return <GameRule>[
+          const GameRule(
+            'He gives sage advice or shares a piece of ancient wisdom.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink when he actually uses magic.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink whenever he mysteriously disappears or appears without '
+            'clear explanation.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Drink whenever he calls on the name of a higher power like '
+            '"Elbereth", "Mithrandir", or "Udun".',
+            RuleDifficulty.hard,
+          ),
+          const GameRule(
+            'He is seen dual-wielding a sword and his staff.',
+            RuleDifficulty.easy,
+          ),
         ];
       case Character.aragorn:
-        return <String>[
-          'He kills something.',
-          "He's doubtful of his ability to be the rightful king of Gondor.",
-          'He comforts or reassures another character.',
-          'Down the hatch when he says "For Frodo" and charges towards the Gates of Mordor.'
+        return <GameRule>[
+          const GameRule(
+            'He kills something.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            "He's doubtful of his ability to be the rightful king of Gondor.",
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He comforts or reassures another character.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'Down the hatch when he says "For Frodo" and charges towards the '
+            'Gates of Mordor.',
+            RuleDifficulty.hard,
+          ),
         ];
       case Character.legolas:
-        return <String>[
-          'He uses his bow',
-          'Drink double if he kills something without his bow.',
-          'He is staring in the distance, double if he identifies or warns of an approaching danger before anyone else',
-          'He interacts with Gimli, displaying their unique friendship.',
-          'Down the hatch when he kills the oliphant'
+        return <GameRule>[
+          const GameRule(
+            'He uses his bow.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'Drink double if he kills something without his bow.',
+            RuleDifficulty.hard,
+          ),
+          const GameRule(
+            'He is staring in the distance, double if he identifies or warns '
+            'of an approaching danger before anyone else.',
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He interacts with Gimli, displaying their unique friendship.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'Down the hatch when he kills the oliphant.',
+            RuleDifficulty.hard,
+          ),
         ];
       case Character.gimli:
-        return <String>[
-          'He says “dwarf” or “elf”.',
-          "He's used as a comic relief (Beware of the Director's Cut).",
-          'He mentions the skill or strength of dwarves.',
-          'He spills something on himself or is clumsy.',
-          'He kills something.'
+        return <GameRule>[
+          const GameRule(
+            'He says “dwarf” or “elf”.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            "He's used as a comic relief (Beware of the Director's Cut).",
+            RuleDifficulty.medium,
+          ),
+          const GameRule(
+            'He mentions the skill or strength of dwarves.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He spills something on himself or is clumsy.',
+            RuleDifficulty.easy,
+          ),
+          const GameRule(
+            'He kills something.',
+            RuleDifficulty.easy,
+          ),
         ];
     }
   }
