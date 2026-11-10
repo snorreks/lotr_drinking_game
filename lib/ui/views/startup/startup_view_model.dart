@@ -50,7 +50,7 @@ class StartupViewModel extends BaseViewModel {
   }
 }
 
-final AutoDisposeProvider<StartupViewModel> startupViewModel =
+final Provider<StartupViewModel> startupViewModel =
     Provider.autoDispose(
-  (AutoDisposeProviderRef<StartupViewModel> ref) => StartupViewModel(ref),
+  (Ref ref) => StartupViewModel(ref),
 );

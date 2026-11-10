@@ -2,7 +2,7 @@ part of '../leader_board_view.dart';
 
 enum LineChartView { drinks, saves }
 
-final Color borderColor = Colors.white54.withOpacity(0.2);
+final Color borderColor = Colors.white54.withValues(alpha: 0.2);
 
 /// The number of drinks/saves to show each x minute interval
 const int intervalSeparator = 20;
@@ -170,7 +170,8 @@ class FellowshipLineChartState extends State<FellowshipLineChart> {
               color: isHidden ? Colors.grey : Colors.black,
             ),
           ),
-          tileColor: isHidden ? Colors.grey.withOpacity(0.2) : character.color,
+          tileColor:
+              isHidden ? Colors.grey.withValues(alpha: 0.2) : character.color,
           trailing: Text(
             '${drinksOrSavesPrMin.toStringAsFixed(2)} ${lineChartView.name}/min',
             style: TextStyle(
@@ -257,7 +258,8 @@ class _LineChart extends StatelessWidget {
 
   LineTouchData get lineTouchData => LineTouchData(
         touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
+          getTooltipColor: (LineBarSpot spot) =>
+              Colors.blueGrey.withValues(alpha: 0.8),
           getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
             return touchedBarSpots.map((LineBarSpot barSpot) {
               final LineBarSpot flSpot = barSpot;
@@ -311,7 +313,7 @@ class _LineChart extends StatelessWidget {
     final int minutes = value.toInt();
 
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       space: 10,
       child: Text(
         '$minutes',

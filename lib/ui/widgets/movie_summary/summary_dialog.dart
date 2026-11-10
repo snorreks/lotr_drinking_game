@@ -8,9 +8,6 @@ class SummaryDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final SummaryDialogViewModel viewModel =
-        ref.watch(summaryDialogViewModelProvider);
-
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       height: MediaQuery.of(context).size.height * 0.8,
@@ -19,7 +16,7 @@ class SummaryDialog extends ConsumerWidget {
         onPageChanged: (int page) {
           ref.read(summaryDialogViewModelProvider).changePage(page);
         },
-        children: [
+        children: <Widget>[
           _buildPage(
             context,
             title: 'Movie Finished',

@@ -26,19 +26,19 @@ abstract class BaseService {
     if (kReleaseMode) {
       return;
     }
-    _log?.w(message, error, stackTrace);
+    _log?.w(message, error: error, stackTrace: stackTrace);
   }
 
   /// Log an error, if is in release mode then send it to crashlytics
   void logError(String message, dynamic error, [StackTrace? stackTrace]) {
-    _log?.e(message, error, stackTrace);
+    _log?.e(message, error: error, stackTrace: stackTrace);
   }
 
   void logWTF(String message, [dynamic error, StackTrace? stackTrace]) {
     if (kReleaseMode) {
       return;
     }
-    _log?.wtf(message, error, stackTrace);
+    _log?.f(message, error: error, stackTrace: stackTrace);
   }
 
   void dispose() {

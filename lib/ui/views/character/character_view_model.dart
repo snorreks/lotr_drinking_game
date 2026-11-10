@@ -54,8 +54,8 @@ class CharacterViewModel extends BaseViewModel {
   }
 }
 
-final AutoDisposeProvider<CharacterViewModel> homeViewModel =
-    Provider.autoDispose((AutoDisposeProviderRef<CharacterViewModel> ref) {
+final Provider<CharacterViewModel> homeViewModel =
+    Provider.autoDispose((Ref ref) {
   final CharacterViewModel viewModel = CharacterViewModel(ref);
   ref.onDispose(viewModel.dispose);
   return viewModel;

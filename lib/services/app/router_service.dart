@@ -148,7 +148,7 @@ class RouterService extends BaseService implements RouterServiceModel {
           return StartupView.routeLocation;
         }
 
-        if (state.location == StartupView.routeLocation) {
+        if (state.matchedLocation == StartupView.routeLocation) {
           return null;
         }
 
@@ -159,7 +159,7 @@ class RouterService extends BaseService implements RouterServiceModel {
           return Location.login.value;
         }
 
-        if (state.location == Location.login.value) {
+        if (state.matchedLocation == Location.login.value) {
           return Location.home.value;
         }
 
@@ -208,5 +208,5 @@ class RouterService extends BaseService implements RouterServiceModel {
 }
 
 final Provider<RouterServiceModel> routerService = Provider<RouterServiceModel>(
-  (ProviderRef<RouterServiceModel> ref) => RouterService(ref),
+  (Ref ref) => RouterService(ref),
 );

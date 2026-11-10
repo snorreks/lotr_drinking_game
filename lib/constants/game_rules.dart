@@ -76,11 +76,11 @@ class GameRules {
   };
 
   static final List<String> sipRulesFellowship =
-      List.from(normalRulesFellowship)..addAll(normalRulesAllMovies);
-  static final List<String> sipRulesTwoTowers = List.from(normalRulesTwoTowers)
-    ..addAll(normalRulesAllMovies);
-  static final List<String> sipRulesROTK = List.from(normalRulesROTK)
-    ..addAll(normalRulesAllMovies);
+      List<String>.from(normalRulesFellowship)..addAll(normalRulesAllMovies);
+  static final List<String> sipRulesTwoTowers =
+      List<String>.from(normalRulesTwoTowers)..addAll(normalRulesAllMovies);
+  static final List<String> sipRulesROTK =
+      List<String>.from(normalRulesROTK)..addAll(normalRulesAllMovies);
 
   static Map<String, List<String>> applicableRules(String currentMovie) {
     switch (currentMovie) {

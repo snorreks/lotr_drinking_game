@@ -43,7 +43,7 @@ class RemoteConfigService extends BaseService
 
 final Provider<RemoteConfigServiceModel> remoteConfigService =
     Provider<RemoteConfigServiceModel>((
-  ProviderRef<RemoteConfigServiceModel> ref,
+  Ref ref,
 ) {
   final RemoteConfigService service =
       RemoteConfigService(FirebaseRemoteConfig.instance);

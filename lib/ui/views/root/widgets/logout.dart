@@ -10,7 +10,7 @@ class LogoutTile extends ConsumerStatefulWidget {
   const LogoutTile({super.key});
 
   @override
-  _LogoutTileState createState() => _LogoutTileState();
+  ConsumerState<LogoutTile> createState() => _LogoutTileState();
 }
 
 class _LogoutTileState extends ConsumerState<LogoutTile> {

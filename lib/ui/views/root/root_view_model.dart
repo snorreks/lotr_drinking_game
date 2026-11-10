@@ -92,8 +92,8 @@ class RootViewModel extends BaseViewModel {
   }
 }
 
-final AutoDisposeProvider<RootViewModel> rootViewModel =
-    Provider.autoDispose((AutoDisposeProviderRef<RootViewModel> ref) {
+final Provider<RootViewModel> rootViewModel =
+    Provider.autoDispose((Ref ref) {
   final RootViewModel viewModel = RootViewModel(ref);
   ref.onDispose(viewModel.dispose);
   return viewModel;

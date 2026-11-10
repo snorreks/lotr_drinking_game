@@ -41,7 +41,7 @@ class _RulesMobile extends StatelessWidget {
       },
       canTapOnHeader: true,
       body: Column(children: <ListTile>[
-        for (String rule in rules) ListTile(title: Text(rule)),
+        for (final String rule in rules) ListTile(title: Text(rule)),
       ]),
       isExpanded: ruleItem.isExpanded,
     );

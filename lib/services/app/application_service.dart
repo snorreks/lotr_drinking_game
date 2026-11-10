@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart'
     show ChangeNotifier, HeroController, ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../common/base_service.dart';
@@ -95,6 +96,6 @@ class ApplicationService extends BaseService
 
 final ChangeNotifierProvider<ApplicationServiceModel> applicationService =
     ChangeNotifierProvider<ApplicationServiceModel>(
-  (ChangeNotifierProviderRef<ApplicationServiceModel> ref) =>
+  (Ref ref) =>
       ApplicationService(ref),
 );

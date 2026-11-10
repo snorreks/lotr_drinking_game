@@ -21,8 +21,8 @@ class LeaderBoardViewModel extends BaseViewModel {
   }
 }
 
-final AutoDisposeProvider<LeaderBoardViewModel> leaderBoardViewModel =
-    Provider.autoDispose((AutoDisposeProviderRef<LeaderBoardViewModel> ref) {
+final Provider<LeaderBoardViewModel> leaderBoardViewModel =
+    Provider.autoDispose((Ref ref) {
   final LeaderBoardViewModel viewModel = LeaderBoardViewModel(ref);
   ref.onDispose(viewModel.dispose);
   return viewModel;

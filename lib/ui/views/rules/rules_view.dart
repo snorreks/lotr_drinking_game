@@ -1,5 +1,3 @@
-library rules_view;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'rules_view_model.dart';

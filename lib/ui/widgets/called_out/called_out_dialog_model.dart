@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../services/api/fellowship_service.dart';
@@ -42,10 +43,8 @@ class CalledOutViewModel extends BaseNotifierViewModel {
   }
 }
 
-final AutoDisposeChangeNotifierProvider<CalledOutViewModel> calledOutViewModel =
-    ChangeNotifierProvider.autoDispose((
-  AutoDisposeChangeNotifierProviderRef<Object?> ref,
-) {
+final ChangeNotifierProvider<CalledOutViewModel> calledOutViewModel =
+    ChangeNotifierProvider.autoDispose((Ref ref) {
   final CalledOutViewModel viewModel = CalledOutViewModel(ref);
   return viewModel;
 });
