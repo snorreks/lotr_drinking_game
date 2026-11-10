@@ -36,7 +36,7 @@ abstract class DialogServiceModel {
 
   void registerCalledOutListener(Function(Callout) listener);
 
-  void registerSummaryDialogListener(Function() listener);
+  void registerSummaryDialogListener(Function(String endedMovie) listener);
 
   /// Displays a notification dialog
   void showNotification(NotificationRequest notificationRequest);
@@ -45,7 +45,7 @@ abstract class DialogServiceModel {
 
   void showCalledOutDialog(Callout callout);
 
-  void showSummaryDialog();
+  void showSummaryDialog(String endedMovie);
 }
 
 class DialogService extends BaseService implements DialogServiceModel {
@@ -56,7 +56,7 @@ class DialogService extends BaseService implements DialogServiceModel {
   late Function(NotificationRequest) _showNotificationListener;
   late Function(FellowshipMember?) _showCalloutListener;
   late Function(Callout) _showCalledOutListener;
-  late Function() _showSummaryDialogListener;
+  late Function(String endedMovie) _showSummaryDialogListener;
 
   @override
   GlobalKey<NavigatorState> get dialogNavigationKey => _dialogNavigationKey;
@@ -77,7 +77,7 @@ class DialogService extends BaseService implements DialogServiceModel {
   }
 
   @override
-  void registerSummaryDialogListener(Function() listener) {
+  void registerSummaryDialogListener(Function(String endedMovie) listener) {
     _showSummaryDialogListener = listener;
   }
 
@@ -97,8 +97,8 @@ class DialogService extends BaseService implements DialogServiceModel {
   }
 
   @override
-  void showSummaryDialog() {
-    _showSummaryDialogListener();
+  void showSummaryDialog(String endedMovie) {
+    _showSummaryDialogListener(endedMovie);
   }
 }
 
