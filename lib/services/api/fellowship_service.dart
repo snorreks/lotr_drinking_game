@@ -51,7 +51,7 @@ abstract class FellowshipServiceModel {
 
   Future<bool> nextMovie();
 
-  Future<bool> showSummaryIfNeeded();
+  Future<bool> showSummaryIfNeeded([Fellowship? snapshot]);
 
   Future<bool> incrementDrink({int? amount});
 
@@ -125,6 +125,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       BehaviorSubject<FellowshipMember?>();
   StreamSubscription<Fellowship?>? _fellowshipStreamListener;
 
+  /// The movie the summary dialog was last shown for, so a movie transition
+  /// only ever triggers the dialog once per client.
+  String? _summaryShownForMovie;
+
   @override
   Stream<Fellowship?> get fellowshipStream {
     if (_fellowshipStream != null) {
@@ -142,6 +146,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         leaveFellowship();
       }
       _fellowshipSubject.add(fellowship);
+      if (fellowship != null) {
+        showSummaryIfNeeded(fellowship);
+      }
     });
 
     return _fellowshipSubject.stream;
@@ -345,17 +352,26 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   }
 
   @override
-  Future<bool> showSummaryIfNeeded() async {
-    if (fellowship != null &&
-        fellowship!.currentMovie != fellowship!.lastSummaryShown) {
-      // Show the summary dialog
-      _ref.read(dialogService).showSummaryDialog();
-      // Update lastSummaryShown
-      await _fellowshipRepository.updateLastSummaryShown(
-          fellowship!.id, fellowship!.currentMovie);
-      return true;
+  Future<bool> showSummaryIfNeeded([Fellowship? snapshot]) async {
+    final Fellowship? current = snapshot ?? fellowship;
+    if (current == null ||
+        current.currentMovie == current.lastSummaryShown ||
+        _summaryShownForMovie == current.currentMovie) {
+      return false;
     }
-    return false;
+    _summaryShownForMovie = current.currentMovie;
+
+    // The movie that just ended is the one the summary was last shown for.
+    final String endedMovie = current.lastSummaryShown ?? current.currentMovie;
+
+    // Show the summary dialog
+    _ref.read(dialogService).showSummaryDialog(endedMovie);
+    // Update lastSummaryShown and start the new movie's drink window
+    await _fellowshipRepository.updateLastSummaryShown(
+      current.id,
+      current.currentMovie,
+    );
+    return true;
   }
 
   @override

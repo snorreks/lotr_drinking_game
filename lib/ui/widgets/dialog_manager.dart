@@ -113,11 +113,11 @@ class _DialogManagerState extends ConsumerState<DialogManager> {
     );
   }
 
-  Future<void> _showSummaryDialog() {
+  Future<void> _showSummaryDialog(String endedMovie) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const SummaryDialog();
+          return SummaryDialog(endedMovie: endedMovie);
         });
   }
 }
