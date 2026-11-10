@@ -6,6 +6,25 @@ Based upon [this article](https://psycatgames.com/magazine/party-games/the-lord-
 
 You can already access the application [here](https://lotr-drinking-game.web.app/). Create a session and invite your friends to join.
 
+## Shareable rulebook
+
+Generate a PDF containing every rule from the current app data:
+
+```sh
+dart run tool/rulebook/generate_rulebook.dart
+```
+
+To write it somewhere else:
+
+```sh
+dart run tool/rulebook/generate_rulebook.dart path/to/rulebook.pdf
+```
+
+The script uses the installed Edge, Chrome or Chromium to render the PDF. Set
+`RULEBOOK_BROWSER` to use a specific browser executable. By default the PDF is
+written to `build/rulebook/Fellowship-of-the-Drink-Rulebook.pdf`, which is
+already ignored by git.
+
 ## Features
 
 *   Unique character for each player

@@ -169,12 +169,12 @@ extension CharacterExtension on Character {
             RuleDifficulty.easy,
           ),
           const GameRule(
-            'He refers to someone as "Mr.", like "Mr. Underhill".',
+            'He refers to someone with a prefix, like "Mister" or "Lord".',
             RuleDifficulty.easy,
           ),
           const GameRule(
             'He unsheathes his sword.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             'He appreciates something elvish.',
@@ -282,7 +282,7 @@ extension CharacterExtension on Character {
         return <GameRule>[
           const GameRule(
             'He gives sage advice or shares a piece of ancient wisdom.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'Drink when he actually uses magic.',
@@ -297,10 +297,6 @@ extension CharacterExtension on Character {
             'Drink whenever he calls on the name of a higher power like '
             '"Elbereth", "Mithrandir", or "Udun".',
             RuleDifficulty.hard,
-          ),
-          const GameRule(
-            'He uses magic to either enlighten or intimidate others.',
-            RuleDifficulty.medium,
           ),
           const GameRule(
             'Drink when he refers to someone by their full name.',
@@ -338,7 +334,7 @@ extension CharacterExtension on Character {
             RuleDifficulty.easy,
           ),
           const GameRule(
-            'He interacts with Gimli, displaying their unique friendship.',
+            'He interacts with Gimli.',
             RuleDifficulty.easy,
           ),
           const GameRule(
@@ -355,11 +351,11 @@ extension CharacterExtension on Character {
         return <GameRule>[
           const GameRule(
             'He says “dwarf” or “elf”.',
-            RuleDifficulty.easy,
+            RuleDifficulty.medium,
           ),
           const GameRule(
             "He's used as a comic relief (Beware of the Director's Cut).",
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'He laughs heartily.',
@@ -375,7 +371,7 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'He kills something.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
         ];
     }
@@ -399,27 +395,26 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'Down the hatch when carried.',
-            RuleDifficulty.hard,
+            RuleDifficulty.easy,
           ),
         ];
       case Character.sam:
         return <GameRule>[
           const GameRule(
             'He says, “Mr Frodo”.',
-            RuleDifficulty.medium,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             "He's mean to Gollum.",
             RuleDifficulty.easy,
           ),
           const GameRule(
-            'He supports a Frodo who has once again fucked up or is having a '
-            'Heroic BSoD.',
+            'He supports a Frodo who has once again fucked up or has brainlag.',
             RuleDifficulty.medium,
           ),
           const GameRule(
             'Down the hatch when he carries Frodo.',
-            RuleDifficulty.hard,
+            RuleDifficulty.easy,
           ),
         ];
       case Character.merrypippin:
@@ -446,11 +441,11 @@ extension CharacterExtension on Character {
         return <GameRule>[
           const GameRule(
             'He gives sage advice or shares a piece of ancient wisdom.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'Drink when he actually uses magic.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'Drink whenever he mysteriously disappears or appears without '
@@ -460,7 +455,7 @@ extension CharacterExtension on Character {
           const GameRule(
             'Drink whenever he calls on the name of a higher power like '
             '"Elbereth", "Mithrandir", or "Udun".',
-            RuleDifficulty.hard,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'He is seen dual-wielding a sword and his staff.',
@@ -471,36 +466,36 @@ extension CharacterExtension on Character {
         return <GameRule>[
           const GameRule(
             'He kills something.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             "He's doubtful of his ability to be the rightful king of Gondor.",
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'He comforts or reassures another character.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'Down the hatch when he says "For Frodo" and charges towards the '
             'Gates of Mordor.',
-            RuleDifficulty.hard,
+            RuleDifficulty.easy,
           ),
         ];
       case Character.legolas:
         return <GameRule>[
           const GameRule(
             'He uses his bow.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             'Drink double if he kills something without his bow.',
-            RuleDifficulty.hard,
+            RuleDifficulty.medium,
           ),
           const GameRule(
             'He is staring in the distance, double if he identifies or warns '
             'of an approaching danger before anyone else.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'He interacts with Gimli, displaying their unique friendship.',
@@ -508,7 +503,7 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'Down the hatch when he kills the oliphant.',
-            RuleDifficulty.hard,
+            RuleDifficulty.medium,
           ),
         ];
       case Character.gimli:
@@ -531,7 +526,7 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'He kills something.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
         ];
     }
