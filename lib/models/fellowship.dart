@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../constants/characters.dart';
+import '../constants/game_rule.dart';
 import 'fellowship_member.dart';
 
 part 'fellowship.g.dart';
@@ -40,6 +41,9 @@ Map<Character, FellowshipMember> membersFromJson(dynamic value) {
               caller: json['callout']['caller'] as String,
             ),
       isAdmin: json['isAdmin'] as bool,
+      difficulty: RuleDifficultyExtension.fromValue(
+        json['difficulty'] as String?,
+      ),
     );
   }
   return members;

@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../common/base_service.dart';
 import '../../constants/characters.dart';
+import '../../constants/game_rule.dart';
 
 /// Reads and Writes the application preferences by using [Hive]
 ///
@@ -28,6 +29,9 @@ abstract class PreferencesServiceModel {
   Character? get character;
   set character(Character? value);
 
+  RuleDifficulty get difficulty;
+  set difficulty(RuleDifficulty value);
+
   void setBox(Box<dynamic> box);
 }
 
@@ -44,6 +48,7 @@ class PreferencesService extends BaseService
   static const String _zenModeEnabledKey = 'zen_mode_enabled';
 
   static const String _characterKey = 'character';
+  static const String _difficultyKey = 'difficulty';
   static const String _fellowshipPin = 'fellowship_pin';
 
   @override
@@ -77,6 +82,16 @@ class PreferencesService extends BaseService
 
   @override
   set character(Character? value) => _box?.put(_characterKey, value?.value);
+
+  @override
+  RuleDifficulty get difficulty {
+    final String? stringValue = _box?.get(_difficultyKey) as String?;
+    return RuleDifficultyExtension.fromValue(stringValue);
+  }
+
+  @override
+  set difficulty(RuleDifficulty value) =>
+      _box?.put(_difficultyKey, value.value);
 
   @override
   Future<void> setBox(Box<dynamic> box) async {

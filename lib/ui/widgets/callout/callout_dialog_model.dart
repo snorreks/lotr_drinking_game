@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
+import '../../../constants/game_rule.dart';
 import '../../../constants/game_rules.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
@@ -31,38 +32,45 @@ class CalloutViewModel extends BaseNotifierViewModel {
       GameRules.applicableRules(currentMovie).keys.toList();
 
   List<String>? get rules {
-    if (selectedCategory == null) {
+    final FellowshipMember? player = selectedPlayer;
+    if (selectedCategory == null || player == null) {
       return null;
     }
 
-    List<String>? rules;
-    List<String>? characterRules;
+    List<GameRule>? rules;
+    List<GameRule>? characterRules;
     switch (currentMovie) {
       case ('Fellowship of the Ring'):
         {
           rules = GameRules.rulesFellowship[selectedCategory];
-          characterRules = selectedPlayer!.character.rulesFellowship;
+          characterRules = player.character.rulesFellowship;
           break;
         }
       case ('The Two Towers'):
         {
           rules = GameRules.rulesTwoTowers[selectedCategory];
-          characterRules = selectedPlayer!.character.rulesTwoTowers;
+          characterRules = player.character.rulesTwoTowers;
           break;
         }
       case ('Return of the King'):
         {
           rules = GameRules.rulesROTK[selectedCategory];
-          characterRules = selectedPlayer!.character.rulesROTK;
+          characterRules = player.character.rulesROTK;
           break;
         }
     }
 
-    if (rules == null || selectedPlayer == null || characterRules == null) {
-      return rules?.toSet().toList();
+    if (rules == null) {
+      return null;
     }
 
-    return <String>{...rules, ...characterRules}.toSet().toList();
+    return <String>{
+      ...activeRuleTexts(rules, player.difficulty),
+      ...activeRuleTexts(
+        characterRules ?? <GameRule>[],
+        player.difficulty,
+      ),
+    }.toList();
   }
 
   bool get canSubmit => selectedRule != null && selectedPlayer != null;
@@ -93,8 +101,8 @@ class CalloutViewModel extends BaseNotifierViewModel {
 }
 
 final ChangeNotifierProviderFamily<CalloutViewModel, FellowshipMember?>
-    calloutViewModel = ChangeNotifierProvider.family.autoDispose(
-        (Ref ref, FellowshipMember? selectedPlayer) {
+    calloutViewModel = ChangeNotifierProvider.family
+        .autoDispose((Ref ref, FellowshipMember? selectedPlayer) {
   final CalloutViewModel viewModel = CalloutViewModel(ref, selectedPlayer);
   return viewModel;
 });

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../constants/game_rule.dart';
+import '../../widgets/difficulty_badge.dart';
 import 'rules_view_model.dart';
 
 part 'rules_mobile.dart';

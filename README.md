@@ -9,6 +9,8 @@ You can already access the application [here](https://lotr-drinking-game.web.app
 ## Features
 
 *   Unique character for each player
+*   Three-step join flow: pick a name, a character and a rule difficulty
+*   Easy, Medium and Hard rule sets that add more rules as difficulty rises
 *   Navigation of rules
 *   Compare how much you have had to drink with the rest of the group
 *   Call-out players for ignoring rules!

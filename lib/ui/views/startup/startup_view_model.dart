@@ -44,13 +44,17 @@ class StartupViewModel extends BaseViewModel {
   }
 
   Future<void> _redirect() {
-    return _ref.read(fellowshipService).hasJoinedFellowship
-        ? _ref.read(routerService).go<void>(Location.home)
-        : _ref.read(routerService).go<void>(Location.login);
+    final FellowshipServiceModel fellowship = _ref.read(fellowshipService);
+    if (!fellowship.hasJoinedFellowship) {
+      return _ref.read(routerService).go<void>(Location.login);
+    }
+    if (fellowship.character == null) {
+      return _ref.read(routerService).go<void>(Location.onboardingName);
+    }
+    return _ref.read(routerService).go<void>(Location.home);
   }
 }
 
-final Provider<StartupViewModel> startupViewModel =
-    Provider.autoDispose(
+final Provider<StartupViewModel> startupViewModel = Provider.autoDispose(
   (Ref ref) => StartupViewModel(ref),
 );

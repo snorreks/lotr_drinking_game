@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../constants/characters.dart';
+import '../constants/game_rule.dart';
 
 List<DateTime> timestampArrayFromJson(dynamic value) {
   if (value == null) {
@@ -28,6 +29,7 @@ class FellowshipMember {
   FellowshipMember({
     required this.name,
     required this.character,
+    this.difficulty = RuleDifficulty.easy,
     this.isAdmin = false,
     this.drinks = const <DateTime>[],
     this.saves = const <DateTime>[],
@@ -40,6 +42,7 @@ class FellowshipMember {
   final Callout? callout;
   final bool isAdmin;
   final Character character;
+  final RuleDifficulty difficulty;
 
   int get drinksAmount => drinks.length;
 

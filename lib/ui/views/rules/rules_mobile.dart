@@ -7,7 +7,47 @@ class _RulesMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: _expansionList(context, viewModel.rules),
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Rule difficulty',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    const Text(
+                      'Easy rules are always active. Medium adds the medium '
+                      'rules on top, and Hard includes every rule. Choose your '
+                      'own difficulty when you join a fellowship.',
+                    ),
+                    const SizedBox(height: 12.0),
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: RuleDifficulty.values
+                          .map(
+                            (RuleDifficulty difficulty) =>
+                                DifficultyBadge(difficulty),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          _expansionList(context, viewModel.rules),
+        ],
+      ),
     );
   }
 
@@ -27,7 +67,7 @@ class _RulesMobile extends StatelessWidget {
         isExpanded: ruleItem.isExpanded,
       );
     }
-    final List<String>? rules = ruleItem.rules;
+    final List<GameRule>? rules = ruleItem.rules;
 
     if (rules == null) {
       throw const FormatException(
@@ -40,9 +80,15 @@ class _RulesMobile extends StatelessWidget {
         return ListTile(title: Text(ruleItem.title));
       },
       canTapOnHeader: true,
-      body: Column(children: <ListTile>[
-        for (final String rule in rules) ListTile(title: Text(rule)),
-      ]),
+      body: Column(
+        children: <ListTile>[
+          for (final GameRule rule in rules)
+            ListTile(
+              title: Text(rule.text),
+              trailing: DifficultyBadge(rule.difficulty),
+            ),
+        ],
+      ),
       isExpanded: ruleItem.isExpanded,
     );
   }
@@ -56,7 +102,11 @@ class _RulesMobile extends StatelessWidget {
       children: <Widget>[
         ExpansionPanelList(
           expansionCallback: (int index, bool isExpanded) {
-            viewModel.togglePanel(index, isExpanded, parent: parent);
+            viewModel.setPanelExpanded(
+              index,
+              isExpanded,
+              parent: parent,
+            );
           },
           expandedHeaderPadding: const EdgeInsets.all(8),
           children: <ExpansionPanel>[
