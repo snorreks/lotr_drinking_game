@@ -92,11 +92,11 @@ class RulesViewModel extends BaseNotifierViewModel {
     ),
   ];
 
-  void togglePanel(int index, bool isExpanded, {RuleItem? parent}) {
+  void setPanelExpanded(int index, bool isExpanded, {RuleItem? parent}) {
     if (parent != null && parent.subRuleItems != null) {
-      parent.subRuleItems![index].isExpanded = !isExpanded;
+      parent.subRuleItems![index].isExpanded = isExpanded;
     } else {
-      rules[index].isExpanded = !isExpanded;
+      rules[index].isExpanded = isExpanded;
     }
 
     notifyListeners();

@@ -102,7 +102,11 @@ class _RulesMobile extends StatelessWidget {
       children: <Widget>[
         ExpansionPanelList(
           expansionCallback: (int index, bool isExpanded) {
-            viewModel.togglePanel(index, isExpanded, parent: parent);
+            viewModel.setPanelExpanded(
+              index,
+              isExpanded,
+              parent: parent,
+            );
           },
           expandedHeaderPadding: const EdgeInsets.all(8),
           children: <ExpansionPanel>[
