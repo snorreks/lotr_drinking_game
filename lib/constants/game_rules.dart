@@ -7,7 +7,7 @@ class GameRules {
   static const List<GameRule> normalRulesAllMovies = <GameRule>[
     GameRule(
       'There is a close up of the Eye of Sauron.',
-      RuleDifficulty.easy,
+      RuleDifficulty.medium,
     ),
     GameRule(
       'A main bad guy dies.',
@@ -20,7 +20,7 @@ class GameRules {
     ),
     GameRule(
       'A character gives an epic speech or monologue.',
-      RuleDifficulty.medium,
+      RuleDifficulty.easy,
     ),
     GameRule(
       'Memes like "One does not simply walk into Mordor", "You Shall Not '
@@ -32,7 +32,7 @@ class GameRules {
   static const List<GameRule> normalRulesFellowship = <GameRule>[
     GameRule(
       "A character says 'precious'.",
-      RuleDifficulty.medium,
+      RuleDifficulty.easy,
     ),
     GameRule(
       'A character uses a non-English (non-common) language.',
@@ -40,7 +40,7 @@ class GameRules {
     ),
     GameRule(
       'A scenic shot of New Zealand (Middle Earth) appears.',
-      RuleDifficulty.easy,
+      RuleDifficulty.hard,
     ),
   ];
 
@@ -50,26 +50,26 @@ class GameRules {
       RuleDifficulty.easy,
     ),
     GameRule(
-      'Someone talks about Gondor.',
-      RuleDifficulty.easy,
+      'Someone talks about Gondor or Rohan.',
+      RuleDifficulty.hard,
     ),
     GameRule(
       'Gollum and Smeagol have a conversation.',
-      RuleDifficulty.medium,
+      RuleDifficulty.easy,
     ),
     GameRule(
       "There's a shot of the Uruk-hai marching or preparing for battle.",
-      RuleDifficulty.easy,
+      RuleDifficulty.medium,
     ),
   ];
 
   static const List<GameRule> normalRulesROTK = <GameRule>[
     GameRule(
       "Someone says 'Mordor'.",
-      RuleDifficulty.easy,
+      RuleDifficulty.medium,
     ),
     GameRule(
-      "The phrase 'Return of the King' is spoken.",
+      "Someone says 'King'.",
       RuleDifficulty.easy,
     ),
     GameRule(

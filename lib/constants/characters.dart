@@ -86,11 +86,11 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'He offers the Ring to someone else.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'He trips over his own feet.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
         ];
       case Character.sam:
@@ -100,7 +100,7 @@ extension CharacterExtension on Character {
             RuleDifficulty.medium,
           ),
           const GameRule(
-            'He shows clumsiness or lack of familiarity with adventuring.',
+            'He is clumsy or displays his lack of familiarity with adventuring.',
             RuleDifficulty.easy,
           ),
           const GameRule(
@@ -145,7 +145,7 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'Drink when he refers to someone by their full name.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'Drink when he actually uses magic.',
@@ -159,17 +159,17 @@ extension CharacterExtension on Character {
           const GameRule(
             'Drink whenever he calls on the name of a higher power like '
             '"Elbereth", "Mithrandir", or "Udun".',
-            RuleDifficulty.hard,
+            RuleDifficulty.easy,
           ),
         ];
       case Character.aragorn:
         return <GameRule>[
           const GameRule(
             'He lights up his pipe.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
-            'He refers to Frodo and Sam as "Mr. Frodo" and "Mr. Sam".',
+            'He refers to someone as "Mr.", like "Mr. Underhill".',
             RuleDifficulty.easy,
           ),
           const GameRule(
@@ -178,14 +178,14 @@ extension CharacterExtension on Character {
           ),
           const GameRule(
             'He appreciates something elvish.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
         ];
       case Character.legolas:
         return <GameRule>[
           const GameRule(
             "He uses his bow (extra sip if it's a major action scene).",
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             'His hair blows dramatically in the wind.',
@@ -201,11 +201,11 @@ extension CharacterExtension on Character {
         return <GameRule>[
           const GameRule(
             'He says “dwarf” or “elf”.',
-            RuleDifficulty.easy,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             "He's used as a comic relief (Beware of the Director's Cut).",
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
           const GameRule(
             'He grumbles or complains.',
@@ -229,7 +229,7 @@ extension CharacterExtension on Character {
         return <GameRule>[
           const GameRule(
             'He clutches his chest (where the Ring is).',
-            RuleDifficulty.medium,
+            RuleDifficulty.hard,
           ),
           const GameRule(
             'He talks about the heaviness or burden of the Ring.',
