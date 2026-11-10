@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants/characters.dart';
+import '../../../constants/game_rule.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../widgets/avatar.dart';
 import '../../widgets/logo.dart';
-import '../character/character_view.dart';
 import 'root_view_model.dart';
 import 'widgets/logout.dart';
 
@@ -27,87 +27,128 @@ class RootView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final RootViewModel viewModel = ref.watch(rootViewModel);
 
-    return StreamBuilder<bool>(
-      stream: viewModel.showCharacterSelectStream,
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData && snapshot.data!) {
-          return const CharacterView();
-        }
-        return Scaffold(
-          appBar: AppBar(
-            title: const Logo(type: LogoType.title),
-            centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Logo(type: LogoType.title),
+        centerTitle: true,
+      ),
+      body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-          body: child,
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.format_list_numbered),
-                label: 'Leader board',
-              ),
-              BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
-            ],
-            currentIndex: viewModel.currentIndex,
-            onTap: (int index) => viewModel.onItemTapped(index),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_numbered),
+            label: 'Leader board',
           ),
-          drawer: StreamBuilder<FellowshipMember?>(
-            stream: viewModel.memberStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<FellowshipMember?> snapshot) {
-              final FellowshipMember? member =
-                  snapshot.hasData ? snapshot.data : null;
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Rules'),
+        ],
+        currentIndex: viewModel.currentIndex,
+        onTap: (int index) => viewModel.onItemTapped(index),
+      ),
+      drawer: StreamBuilder<FellowshipMember?>(
+        stream: viewModel.memberStream,
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<FellowshipMember?> snapshot,
+        ) {
+          final FellowshipMember? member =
+              snapshot.hasData ? snapshot.data : null;
 
-              return Drawer(
-                child: Column(
-                  children: <Widget>[
-                    if (member != null)
-                      UserAccountsDrawerHeader(
-                        accountName: Text(member.name),
-                        accountEmail: Text(member.character.displayName),
-                        currentAccountPicture: Avatar(
-                          member.character,
-                          'Fellowship of the Ring',
-                          circle: true,
-                        ),
-                        // otherAccountsPictures: [
-                        //   Text(
-                        //     'Drinks: ${member.drinksAmount}',
-                        //     style: const TextStyle(
-                        //       color: Colors.white,
-                        //       fontSize: 12,
-                        //       fontWeight: FontWeight.bold,
-                        //     ),
-                        //   ),
-                        // ],
-                        decoration: BoxDecoration(
-                          color: member.character.color,
-                        ),
-                      ),
-                    _themeDropdown(viewModel),
-                    _zenModeSwitch(viewModel),
-                    const Spacer(),
-                    if (member != null && member.isAdmin)
-                      ListTile(
-                        leading: const Icon(Icons.movie),
-                        title: const Text('Next movie!'),
-                        onTap: viewModel.nextMovie,
-                      ),
-                    _pinCode(viewModel),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    const LogoutTile(),
-                  ],
+          return Drawer(
+            child: Column(
+              children: <Widget>[
+                if (member != null)
+                  UserAccountsDrawerHeader(
+                    accountName: Text(member.name),
+                    accountEmail: Text(
+                      '${member.character.displayName} · '
+                      '${member.difficulty.displayName}',
+                    ),
+                    currentAccountPicture: Avatar(
+                      member.character,
+                      'Fellowship of the Ring',
+                      circle: true,
+                    ),
+                    decoration: BoxDecoration(
+                      color: member.character.color,
+                    ),
+                  ),
+                _themeDropdown(viewModel),
+                _zenModeSwitch(viewModel),
+                if (member != null) _difficultyTile(context, viewModel, member),
+                const Spacer(),
+                if (member != null && member.isAdmin)
+                  ListTile(
+                    leading: const Icon(Icons.movie),
+                    title: const Text('Next movie!'),
+                    onTap: viewModel.nextMovie,
+                  ),
+                _pinCode(viewModel),
+                const SizedBox(height: 20),
+                const Divider(),
+                const LogoutTile(),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _difficultyTile(
+    BuildContext context,
+    RootViewModel viewModel,
+    FellowshipMember member,
+  ) {
+    return ListTile(
+      leading: Icon(
+        member.difficulty.icon,
+        color: member.difficulty.color,
+      ),
+      title: const Text('Difficulty'),
+      subtitle: Text(member.difficulty.displayName),
+      onTap: () => _showDifficultyDialog(context, viewModel, member.difficulty),
+    );
+  }
+
+  Future<void> _showDifficultyDialog(
+    BuildContext context,
+    RootViewModel viewModel,
+    RuleDifficulty current,
+  ) async {
+    final RuleDifficulty? difficulty = await showDialog<RuleDifficulty>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Change difficulty'),
+          children: RuleDifficulty.values
+              .map(
+                (RuleDifficulty difficulty) => SimpleDialogOption(
+                  onPressed: () => Navigator.of(context).pop(difficulty),
+                  child: ListTile(
+                    leading: Icon(
+                      difficulty.icon,
+                      color: difficulty.color,
+                    ),
+                    title: Text(difficulty.displayName),
+                    subtitle: Text(difficulty.description),
+                    trailing: difficulty == current
+                        ? Icon(Icons.check, color: difficulty.color)
+                        : null,
+                  ),
                 ),
-              );
-            },
-          ),
+              )
+              .toList(),
         );
       },
     );
+
+    if (difficulty != null && difficulty != current) {
+      await viewModel.changeDifficulty(difficulty);
+    }
   }
 
   Widget _zenModeSwitch(RootViewModel viewModel) {

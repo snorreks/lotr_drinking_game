@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../common/base_service.dart';
 import '../../constants/characters.dart';
+import '../../constants/game_rule.dart';
 import '../../models/fellowship.dart';
 import '../../models/fellowship_member.dart';
 import '../app/dialog_service.dart';
@@ -29,13 +30,17 @@ abstract class FellowshipServiceModel {
   Fellowship? get fellowship;
   FellowshipMember? get member;
   Character? get character;
+  RuleDifficulty get difficulty;
 
   Future<bool> joinFellowship(String fellowshipPIN);
 
-  Future<bool> selectCharacter(
-      {required String username,
-      required Character character,
-      required bool isFirst});
+  Future<bool> selectCharacter({
+    required String username,
+    required Character character,
+    required RuleDifficulty difficulty,
+  });
+
+  Future<bool> changeDifficulty(RuleDifficulty difficulty);
 
   Future<bool> createFellowship(String fellowshipId);
 
@@ -102,6 +107,8 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   FellowshipMember? get member => _memberSubject.valueOrNull;
   @override
   Character? get character => _characterSubject.valueOrNull;
+  @override
+  RuleDifficulty get difficulty => _preferencesService.difficulty;
 
   Fellowship? _fellowship;
 
@@ -202,24 +209,58 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   Future<bool> selectCharacter({
     required String username,
     required Character character,
-    required bool isFirst,
+    required RuleDifficulty difficulty,
   }) async {
     try {
       if (_fellowshipId == null) {
         return false;
       }
 
+      final Fellowship? fellowship = _fellowship ??
+          await _fellowshipRepository.get(
+            _fellowshipId!,
+          );
+      final bool isFirst = fellowship != null && fellowship.members.isEmpty;
+
       await _fellowshipRepository.addMember(
-          _fellowshipId!,
-          FellowshipMember(
-              name: username, character: character, isAdmin: isFirst));
+        _fellowshipId!,
+        FellowshipMember(
+          name: username,
+          character: character,
+          difficulty: difficulty,
+          isAdmin: isFirst,
+        ),
+      );
 
       _preferencesService.character = character;
+      _preferencesService.difficulty = difficulty;
       _characterSubject.add(character);
 
       return true;
     } catch (e) {
       logError('selectCharacter', e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> changeDifficulty(RuleDifficulty difficulty) async {
+    try {
+      final Character? character = _preferencesService.character;
+      if (_fellowshipId == null || character == null) {
+        return false;
+      }
+
+      await _fellowshipRepository.updateDifficulty(
+        fellowshipId: _fellowshipId!,
+        character: character,
+        difficulty: difficulty,
+      );
+      _preferencesService.difficulty = difficulty;
+
+      return true;
+    } catch (e) {
+      logError('changeDifficulty', e);
       return false;
     }
   }

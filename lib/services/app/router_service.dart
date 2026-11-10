@@ -7,6 +7,9 @@ import '../../common/base_service.dart';
 import '../../ui/views/home/home_view.dart';
 import '../../ui/views/leader_board/leader_board_view.dart';
 import '../../ui/views/login/login_view.dart';
+import '../../ui/views/onboarding/character_view.dart';
+import '../../ui/views/onboarding/difficulty_view.dart';
+import '../../ui/views/onboarding/name_view.dart';
 import '../../ui/views/root/root_view.dart';
 import '../../ui/views/rules/rules_view.dart';
 import '../../ui/views/startup/startup_view.dart';
@@ -15,13 +18,27 @@ import '../api/analytics_service.dart';
 import '../api/fellowship_service.dart';
 import 'application_service.dart';
 
-enum Location { login, home, leaderBoard, rules }
+enum Location {
+  login,
+  onboardingName,
+  onboardingCharacter,
+  onboardingDifficulty,
+  home,
+  leaderBoard,
+  rules,
+}
 
 extension LocationExtension on Location {
   String get value {
     switch (this) {
       case Location.login:
         return '/login';
+      case Location.onboardingName:
+        return '/onboarding/name';
+      case Location.onboardingCharacter:
+        return '/onboarding/character';
+      case Location.onboardingDifficulty:
+        return '/onboarding/difficulty';
       case Location.home:
         return '/';
       case Location.leaderBoard:
@@ -35,6 +52,12 @@ extension LocationExtension on Location {
     switch (this) {
       case Location.login:
         return 'login';
+      case Location.onboardingName:
+        return 'onboarding-name';
+      case Location.onboardingCharacter:
+        return 'onboarding-character';
+      case Location.onboardingDifficulty:
+        return 'onboarding-difficulty';
       case Location.home:
         return 'home';
       case Location.leaderBoard:
@@ -105,6 +128,28 @@ class RouterService extends BaseService implements RouterServiceModel {
               },
             ),
 
+            GoRoute(
+              path: Location.onboardingName.value,
+              name: Location.onboardingName.name,
+              builder: (BuildContext context, GoRouterState state) {
+                return const NameView();
+              },
+            ),
+            GoRoute(
+              path: Location.onboardingCharacter.value,
+              name: Location.onboardingCharacter.name,
+              builder: (BuildContext context, GoRouterState state) {
+                return const CharacterSelectionView();
+              },
+            ),
+            GoRoute(
+              path: Location.onboardingDifficulty.value,
+              name: Location.onboardingDifficulty.name,
+              builder: (BuildContext context, GoRouterState state) {
+                return const DifficultyView();
+              },
+            ),
+
             /// Application shell
             ShellRoute(
               navigatorKey: _rootNavigatorKey,
@@ -152,11 +197,25 @@ class RouterService extends BaseService implements RouterServiceModel {
           return null;
         }
 
-        final bool hasJoinedFellowship =
-            ref.read(fellowshipService).hasJoinedFellowship;
+        final FellowshipServiceModel fellowship = ref.read(fellowshipService);
+        final bool hasJoinedFellowship = fellowship.hasJoinedFellowship;
 
         if (!hasJoinedFellowship) {
-          return Location.login.value;
+          return state.matchedLocation == Location.login.value
+              ? null
+              : Location.login.value;
+        }
+
+        final bool hasCharacter = fellowship.character != null;
+        final bool isOnboarding =
+            state.matchedLocation.startsWith('/onboarding');
+
+        if (!hasCharacter) {
+          return isOnboarding ? null : Location.onboardingName.value;
+        }
+
+        if (isOnboarding) {
+          return Location.home.value;
         }
 
         if (state.matchedLocation == Location.login.value) {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/base_service.dart';
 import '../../constants/characters.dart';
+import '../../constants/game_rule.dart';
 import '../../models/fellowship.dart';
 import '../../models/fellowship_member.dart';
 
@@ -34,6 +35,11 @@ abstract class FellowshipRepositoryModel {
 
   Future<String> create(String fellowshipName);
   Future<void> addMember(String fellowshipId, FellowshipMember member);
+  Future<void> updateDifficulty({
+    required String fellowshipId,
+    required Character character,
+    required RuleDifficulty difficulty,
+  });
   Future<void> changeAdmin(String fellowshipId, FellowshipMember newAdmin,
       FellowshipMember oldAdmin);
   Future<void> nextMovie(String fellowshipId, String currentMovie);
@@ -144,10 +150,27 @@ class FellowshipRepository extends BaseService
         'members.${member.character.value}': <String, dynamic>{
           'name': member.name,
           'isAdmin': member.isAdmin,
+          'difficulty': member.difficulty.value,
         }
       });
     } catch (e) {
       logError('updateFellowship', e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateDifficulty({
+    required String fellowshipId,
+    required Character character,
+    required RuleDifficulty difficulty,
+  }) async {
+    try {
+      await _updateDocument(fellowshipId, <String, dynamic>{
+        'members.${character.value}.difficulty': difficulty.value,
+      });
+    } catch (e) {
+      logError('updateDifficulty', e);
       rethrow;
     }
   }
