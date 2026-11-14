@@ -98,14 +98,14 @@ class Fellowship {
 
   /// The member belonging to this client, if any.
   ///
-  /// Prefers the unique [FellowshipMember.id]; falls back to matching by
-  /// [character] for sessions joined before member ids existed.
+  /// When [memberId] is set it is authoritative: it must match a member key
+  /// exactly, so a client whose member entry was overwritten never adopts a
+  /// different player's member. Only when no member id is known (sessions
+  /// joined before member ids existed) does it fall back to matching by
+  /// [character].
   FellowshipMember? findMember(String? memberId, Character? character) {
     if (memberId != null) {
-      final FellowshipMember? byId = members[memberId];
-      if (byId != null) {
-        return byId;
-      }
+      return members[memberId];
     }
     if (character != null) {
       for (final FellowshipMember member in members.values) {

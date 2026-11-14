@@ -80,8 +80,13 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         );
       },
     ).listen((FellowshipMember? member) {
-      if (member?.callout != null) {
-        _ref.read(dialogService).showCalledOutDialog(member!.callout!);
+      if (member != null) {
+        _lastKnownSelf = member;
+        if (member.callout != null) {
+          _ref.read(dialogService).showCalledOutDialog(member.callout!);
+        }
+      } else {
+        _recoverIfClobbered();
       }
 
       _memberSubject.add(member);
@@ -129,6 +134,14 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   /// The movie the summary dialog was last shown for, so a movie transition
   /// only ever triggers the dialog once per client.
   String? _summaryShownForMovie;
+
+  /// The last known state of this client's own member, so the membership can
+  /// be restored if it gets overwritten in Firestore.
+  FellowshipMember? _lastKnownSelf;
+
+  /// Whether a clobbered membership is currently being restored, so recovery
+  /// is not triggered twice while it is in flight.
+  bool _recovering = false;
 
   /// The member currently carrying the Ring: the one who has drunk the most.
   FellowshipMember? _ringbearer;
@@ -189,6 +202,63 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   /// The current fellowship, from the live stream when available.
   Future<Fellowship?> _currentFellowship() async {
     return fellowship ?? await _fellowshipRepository.get(_fellowshipId!);
+  }
+
+  /// Restores this client's membership when its Firestore entry has been
+  /// overwritten by someone else.
+  ///
+  /// Clients on older app versions write members under the plain character
+  /// key, so they can clobber an existing member that shares the character
+  /// (the original Merry & Pippin bug). When our member id disappears from
+  /// the fellowship while we are still joined, re-add ourselves under a
+  /// fresh, unique key with our last known data.
+  Future<void> _recoverIfClobbered() async {
+    final PreferencesServiceModel preferences = _preferencesService;
+    if (_recovering ||
+        preferences.memberId == null ||
+        preferences.character == null ||
+        preferences.fellowshipId == null) {
+      return;
+    }
+
+    final Fellowship? fellowship = this.fellowship;
+    if (fellowship == null ||
+        fellowship.members.containsKey(preferences.memberId)) {
+      return;
+    }
+
+    _recovering = true;
+    try {
+      final FellowshipMember lastKnown = _lastKnownSelf ??
+          FellowshipMember(
+            id: preferences.memberId!,
+            name: 'Player',
+            character: preferences.character!,
+            difficulty: preferences.difficulty,
+          );
+
+      final String memberId = await _fellowshipRepository.addMember(
+        preferences.fellowshipId!,
+        FellowshipMember(
+          id: FellowshipMember.generateId(),
+          name: lastKnown.name,
+          character: lastKnown.character,
+          difficulty: lastKnown.difficulty,
+          isAdmin: lastKnown.isAdmin,
+          drinks: lastKnown.drinks,
+          saves: lastKnown.saves,
+          callout: lastKnown.callout,
+        ),
+      );
+
+      preferences.memberId = memberId;
+      _characterSubject.add(preferences.character);
+      logInfo('Recovered clobbered membership as $memberId');
+    } catch (e) {
+      logError('_recoverIfClobbered', e);
+    } finally {
+      _recovering = false;
+    }
   }
 
   @override
@@ -252,14 +322,16 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       final bool isFirst = fellowship != null && fellowship.members.isEmpty;
 
       // Every membership gets its own unique id, so players can share a
-      // character without overwriting each other.
-      final String memberId =
+      // character without overwriting each other. The repository picks the
+      // final storage key (plain character value while the character is
+      // still free, a unique key once it is taken) and returns it.
+      final String candidateId =
           _preferencesService.memberId ?? FellowshipMember.generateId();
 
-      await _fellowshipRepository.addMember(
+      final String memberId = await _fellowshipRepository.addMember(
         _fellowshipId!,
         FellowshipMember(
-          id: memberId,
+          id: candidateId,
           name: username,
           character: character,
           difficulty: difficulty,
