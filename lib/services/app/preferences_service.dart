@@ -17,6 +17,12 @@ abstract class PreferencesServiceModel {
   set fellowshipId(String? value);
   set fellowshipPin(String? value);
 
+  /// The unique id of this device's membership in the joined fellowship.
+  /// Unlike [character], it stays unique even when multiple players pick the
+  /// same character.
+  String? get memberId;
+  set memberId(String? value);
+
   /// If darkModeEnabled is true, the theme is dark
   /// If darkModeEnabled is false, the theme is light
   /// If darkModeEnabled is null, the theme is system
@@ -50,6 +56,7 @@ class PreferencesService extends BaseService
   static const String _characterKey = 'character';
   static const String _difficultyKey = 'difficulty';
   static const String _fellowshipPin = 'fellowship_pin';
+  static const String _memberIdKey = 'member_id';
 
   @override
   String? get fellowshipId => _box?.get(_fellowshipIdKey) as String?;
@@ -60,6 +67,11 @@ class PreferencesService extends BaseService
   String? get fellowshipPin => _box?.get(_fellowshipPin) as String?;
   @override
   set fellowshipPin(String? value) => _box?.put(_fellowshipPin, value);
+
+  @override
+  String? get memberId => _box?.get(_memberIdKey) as String?;
+  @override
+  set memberId(String? value) => _box?.put(_memberIdKey, value);
 
   @override
   bool? get darkModeEnabled => _box?.get(_darkModeEnabledKey) as bool?;

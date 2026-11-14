@@ -12,6 +12,7 @@ FellowshipMember _member(
   List<DateTime> saves = const <DateTime>[],
 }) {
   return FellowshipMember(
+    id: character.value,
     name: name,
     character: character,
     drinks: drinks,
@@ -30,8 +31,8 @@ Fellowship _fellowship(
     pin: '123456',
     name: 'Test fellowship',
     currentMovie: currentMovie,
-    members: <Character, FellowshipMember>{
-      for (final FellowshipMember member in members) member.character: member,
+    members: <String, FellowshipMember>{
+      for (final FellowshipMember member in members) member.id: member,
     },
     lastSummaryShown: lastSummaryShown,
     currentMovieStart: currentMovieStart,

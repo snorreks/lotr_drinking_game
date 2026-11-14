@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../constants/characters.dart';
@@ -34,6 +36,7 @@ class Callout {
 
 class FellowshipMember {
   FellowshipMember({
+    required this.id,
     required this.name,
     required this.character,
     this.difficulty = RuleDifficulty.easy,
@@ -42,6 +45,16 @@ class FellowshipMember {
     this.saves = const <DateTime>[],
     this.callout,
   });
+
+  /// Firestore map keys are written using dot notation, so only these
+  /// characters are safe to use inside a member id.
+  static const String _idAlphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+  /// Unique identifier of this membership.
+  ///
+  /// Unlike [character], it is unique per player, so multiple players can
+  /// pick the same character without overwriting each other.
+  final String id;
 
   final String name;
   final List<DateTime> drinks;
@@ -54,4 +67,16 @@ class FellowshipMember {
   int get drinksAmount => drinks.length;
 
   int get savesAmount => saves.length;
+
+  /// Generates a unique, Firestore-safe member id.
+  static String generateId() {
+    final Random random = Random();
+    final String timestamp =
+        DateTime.now().microsecondsSinceEpoch.toRadixString(36);
+    final String suffix = List<String>.generate(
+      8,
+      (int index) => _idAlphabet[random.nextInt(_idAlphabet.length)],
+    ).join();
+    return '$timestamp$suffix';
+  }
 }

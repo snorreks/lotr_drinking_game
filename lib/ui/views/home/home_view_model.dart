@@ -16,6 +16,7 @@ class HomeViewModel extends BaseViewModel {
 
   final Ref _ref;
   Character? get character => _ref.read(preferencesService).character;
+  String? get memberId => _ref.read(preferencesService).memberId;
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;

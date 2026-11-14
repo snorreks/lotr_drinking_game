@@ -5,6 +5,7 @@ import '../../../common/base_view_model.dart';
 import '../../../constants/characters.dart';
 import '../../../constants/game_rule.dart';
 import '../../../constants/game_rules.dart';
+import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
 import '../../../services/app/preferences_service.dart';
@@ -21,12 +22,21 @@ class CalloutViewModel extends BaseNotifierViewModel {
   String get currentMovie =>
       _ref.read(fellowshipService).fellowship!.currentMovie;
 
-  List<FellowshipMember> get players =>
-      (_ref.read(fellowshipService).fellowship?.membersList ??
-              <FellowshipMember>[])
-          .where((FellowshipMember element) =>
-              element.character != _ref.read(preferencesService).character)
-          .toList();
+  List<FellowshipMember> get players {
+    final Fellowship? fellowship = _ref.read(fellowshipService).fellowship;
+    final FellowshipMember? ownMember = fellowship?.findMember(
+      _ref.read(preferencesService).memberId,
+      character,
+    );
+    if (ownMember == null) {
+      return <FellowshipMember>[];
+    }
+    // Every player can be called out, but never yourself. Players are
+    // compared by id, since multiple players can share a character.
+    return fellowship!.membersList
+        .where((FellowshipMember element) => element.id != ownMember.id)
+        .toList();
+  }
 
   List<String> get categories =>
       GameRules.applicableRules(currentMovie).keys.toList();

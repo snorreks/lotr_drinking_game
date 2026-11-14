@@ -1,12 +1,5 @@
 part of 'character_view.dart';
 
-const ColorFilter _grayscaleFilter = ColorFilter.matrix(<double>[
-  0.2126, 0.7152, 0.0722, 0, 0, //
-  0.2126, 0.7152, 0.0722, 0, 0, //
-  0.2126, 0.7152, 0.0722, 0, 0, //
-  0, 0, 0, 1, 0, //
-]);
-
 class _CharacterMobile extends StatelessWidget {
   const _CharacterMobile(this.viewModel);
 
@@ -29,8 +22,6 @@ class _CharacterMobile extends StatelessWidget {
             return const Center(child: Loading());
           }
 
-          final Fellowship fellowship = snapshot.data!;
-
           return Column(
             children: <Widget>[
               GridView.count(
@@ -41,7 +32,6 @@ class _CharacterMobile extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: Character.values.map((Character character) {
-                  final bool isTaken = viewModel.isTaken(fellowship, character);
                   final bool isSelected =
                       viewModel.selectedCharacter == character;
                   final Widget avatar = Avatar(
@@ -52,9 +42,7 @@ class _CharacterMobile extends StatelessWidget {
 
                   return GestureDetector(
                     key: ValueKey<Character>(character),
-                    onTap: isTaken
-                        ? null
-                        : () => viewModel.selectCharacter(character),
+                    onTap: () => viewModel.selectCharacter(character),
                     child: Card(
                       clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
@@ -69,22 +57,8 @@ class _CharacterMobile extends StatelessWidget {
                       child: Stack(
                         fit: StackFit.expand,
                         children: <Widget>[
-                          if (isTaken)
-                            ColorFiltered(
-                              colorFilter: _grayscaleFilter,
-                              child: avatar,
-                            )
-                          else
-                            avatar,
-                          if (isTaken)
-                            Center(
-                              child: Icon(
-                                Icons.lock,
-                                color: Colors.white.withValues(alpha: 0.9),
-                                size: 64.0,
-                              ),
-                            ),
-                          if (isSelected && !isTaken)
+                          avatar,
+                          if (isSelected)
                             Positioned(
                               top: 8,
                               right: 8,

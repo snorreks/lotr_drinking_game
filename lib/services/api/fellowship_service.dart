@@ -74,7 +74,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         if (fellowship == null || character == null) {
           return null;
         }
-        return fellowship.members[character];
+        return fellowship.findMember(
+          _preferencesService.memberId,
+          character,
+        );
       },
     ).listen((FellowshipMember? member) {
       if (member?.callout != null) {
@@ -109,8 +112,6 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   Character? get character => _characterSubject.valueOrNull;
   @override
   RuleDifficulty get difficulty => _preferencesService.difficulty;
-
-  Fellowship? _fellowship;
 
   final BehaviorSubject<Character?> _characterSubject;
 
@@ -169,6 +170,27 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   @override
   Stream<FellowshipMember?> get memberStream => _memberSubject.stream;
 
+  /// The id of this client's membership in [fellowship].
+  ///
+  /// Prefers the persisted member id and falls back to matching the stored
+  /// character, so sessions joined before member ids existed keep working.
+  /// Throws if this client is not a member of the fellowship.
+  String _resolveOwnMemberId(Fellowship fellowship) {
+    final FellowshipMember? member = fellowship.findMember(
+      _preferencesService.memberId,
+      _preferencesService.character,
+    );
+    if (member == null) {
+      throw Exception('Member not found in fellowship');
+    }
+    return member.id;
+  }
+
+  /// The current fellowship, from the live stream when available.
+  Future<Fellowship?> _currentFellowship() async {
+    return fellowship ?? await _fellowshipRepository.get(_fellowshipId!);
+  }
+
   @override
   Future<bool> createFellowship(String fellowshipName) async {
     try {
@@ -195,24 +217,15 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         throw Exception('FellowshipId is null');
       }
 
-      final Fellowship? fellowship = _fellowship ??
-          await _fellowshipRepository.get(
-            _fellowshipId!,
-          );
+      final Fellowship? fellowship = await _currentFellowship();
 
       if (fellowship == null) {
         throw Exception('Fellowship is null');
       }
 
-      final Character? character = _preferencesService.character;
-
-      if (character == null) {
-        throw Exception('Character is null');
-      }
-
       await _fellowshipRepository.increment(
         fellowshipId: _fellowshipId!,
-        character: character,
+        memberId: _resolveOwnMemberId(fellowship),
         type: type,
         amount: amount,
       );
@@ -235,15 +248,18 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         return false;
       }
 
-      final Fellowship? fellowship = _fellowship ??
-          await _fellowshipRepository.get(
-            _fellowshipId!,
-          );
+      final Fellowship? fellowship = await _currentFellowship();
       final bool isFirst = fellowship != null && fellowship.members.isEmpty;
+
+      // Every membership gets its own unique id, so players can share a
+      // character without overwriting each other.
+      final String memberId =
+          _preferencesService.memberId ?? FellowshipMember.generateId();
 
       await _fellowshipRepository.addMember(
         _fellowshipId!,
         FellowshipMember(
+          id: memberId,
           name: username,
           character: character,
           difficulty: difficulty,
@@ -251,6 +267,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         ),
       );
 
+      _preferencesService.memberId = memberId;
       _preferencesService.character = character;
       _preferencesService.difficulty = difficulty;
       _characterSubject.add(character);
@@ -265,14 +282,18 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   @override
   Future<bool> changeDifficulty(RuleDifficulty difficulty) async {
     try {
-      final Character? character = _preferencesService.character;
-      if (_fellowshipId == null || character == null) {
+      if (_fellowshipId == null) {
+        return false;
+      }
+
+      final Fellowship? fellowship = await _currentFellowship();
+      if (fellowship == null) {
         return false;
       }
 
       await _fellowshipRepository.updateDifficulty(
         fellowshipId: _fellowshipId!,
-        character: character,
+        memberId: _resolveOwnMemberId(fellowship),
         difficulty: difficulty,
       );
       _preferencesService.difficulty = difficulty;
@@ -310,10 +331,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   @override
   Future<bool> leaveFellowship() async {
     try {
-      _fellowship = null;
       _preferencesService.fellowshipId = null;
       _preferencesService.character = null;
       _preferencesService.fellowshipPin = null;
+      _preferencesService.memberId = null;
       _characterSubject.add(null);
       _fellowshipSubject.add(null);
       _fellowshipStreamListener?.cancel();
@@ -366,9 +387,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       newRingbearer = leaders.single;
     } else {
       // Tied at the top: the incumbent keeps the Ring until someone
-      // strictly overtakes.
+      // strictly overtakes. Members are compared by id, since multiple
+      // players can share the same character.
       for (final FellowshipMember m in leaders) {
-        if (m.character == _ringbearer?.character) {
+        if (m.id == _ringbearer?.id) {
           newRingbearer = m;
           break;
         }
@@ -380,7 +402,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
 
     if (newRingbearer != null &&
         wasInitialized &&
-        newRingbearer.character != _ringbearer?.character) {
+        newRingbearer.id != _ringbearer?.id) {
       _ref.read(dialogService).showNotification(NotificationRequest(
             title: 'The Ring has changed hands',
             message: '${newRingbearer.name} has become the ringbearer',
@@ -455,7 +477,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
     try {
       await _fellowshipRepository.createCallout(
         fellowshipId: _fellowshipId!,
-        character: player.character,
+        memberId: player.id,
         rule: rule,
         caller: member!.name,
       );
@@ -472,16 +494,18 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       if (_fellowshipId == null) {
         return false;
       }
-      final Character? character = _preferencesService.character;
 
-      if (character == null) {
+      final Fellowship? fellowship = await _currentFellowship();
+      if (fellowship == null) {
         return false;
       }
+
+      final String memberId = _resolveOwnMemberId(fellowship);
 
       if (hasAccepted) {
         await _fellowshipRepository.resolveCallout(
           fellowshipId: _fellowshipId!,
-          character: character,
+          memberId: memberId,
           drinks: 2,
         );
 
@@ -490,7 +514,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
         //They reject the request
         await _fellowshipRepository.resolveCallout(
           fellowshipId: _fellowshipId!,
-          character: character,
+          memberId: memberId,
           drinks: 0,
         );
         return true;

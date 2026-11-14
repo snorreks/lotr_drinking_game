@@ -14,8 +14,8 @@ class _DefaultView extends StatelessWidget {
           return const Center(child: Loading());
         }
         final Fellowship fellowship = snapshot.data!;
-        final Character character = viewModel.character!;
-        final FellowshipMember? member = fellowship.members[character];
+        final FellowshipMember? member =
+            fellowship.findMember(viewModel.memberId, viewModel.character);
         if (member == null) {
           return const Center(child: Loading());
         }
@@ -42,7 +42,8 @@ class _DefaultView extends StatelessWidget {
                 currentMovie: fellowship.currentMovie,
               ),
               const SizedBox(height: 15),
-              _rules(character, fellowship.currentMovie, member.difficulty),
+              _rules(
+                  member.character, fellowship.currentMovie, member.difficulty),
             ],
           ),
         );
