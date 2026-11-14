@@ -164,15 +164,24 @@ class FellowshipRepository extends BaseService
           final Map<String, dynamic> data =
               snapshot.data() ?? <String, dynamic>{};
           final Map<String, dynamic> members =
-              (data['members'] as Map<String, dynamic>?) ??
-                  <String, dynamic>{};
+              (data['members'] as Map<String, dynamic>?) ?? <String, dynamic>{};
 
-          // Free characters keep their plain value as key, which keeps the
-          // document compatible with older app versions. Only duplicates
-          // get a unique, character-prefixed key.
-          final String key = members.containsKey(member.character.value)
-              ? '${member.character.value}_${member.id}'
-              : member.character.value;
+          // Reuse the key this membership is already stored under. Without
+          // this, retrying a write (or recovering twice) appends a new key
+          // each time and quietly grows the members map forever.
+          final String characterKey = member.character.value;
+          final String compositeKey = '${characterKey}_${member.id}';
+          final String key;
+          if (members.containsKey(member.id)) {
+            key = member.id;
+          } else if (!members.containsKey(characterKey)) {
+            // Free characters keep their plain value as key, which keeps the
+            // document compatible with older app versions. Only duplicates
+            // get a unique, character-prefixed key.
+            key = characterKey;
+          } else {
+            key = compositeKey;
+          }
 
           transaction.update(docRef, <String, dynamic>{
             'members.$key': <String, dynamic>{
