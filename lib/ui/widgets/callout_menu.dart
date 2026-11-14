@@ -102,7 +102,11 @@ void showCalloutModal({
                             (FellowshipMember player) {
                           return DropdownMenuItem<FellowshipMember>(
                             value: player,
-                            child: Text(player.character.displayName),
+                            child: Text(
+                              // Multiple players can share a character, so
+                              // always show the player's name too.
+                              '${player.name} · ${player.character.displayName}',
+                            ),
                           );
                         }).toList(),
                         onChanged: (FellowshipMember? value) {

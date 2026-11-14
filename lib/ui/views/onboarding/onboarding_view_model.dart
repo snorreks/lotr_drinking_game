@@ -61,14 +61,6 @@ class OnboardingViewModel extends BaseNotifierViewModel {
     notifyListeners();
   }
 
-  bool isTaken(Fellowship fellowship, Character character) {
-    if (character == Character.merrypippin) {
-      return false;
-    }
-
-    return fellowship.members.containsKey(character);
-  }
-
   Future<bool> complete() async {
     if (!validateName()) {
       return false;
@@ -77,18 +69,6 @@ class OnboardingViewModel extends BaseNotifierViewModel {
     final Character? character = selectedCharacter;
     if (character == null) {
       submitError = 'Please select a character.';
-      notifyListeners();
-      return false;
-    }
-
-    final Fellowship? latestFellowship =
-        await _ref.read(fellowshipService).fellowshipStream.first;
-    if (latestFellowship != null &&
-        character != Character.merrypippin &&
-        latestFellowship.members.containsKey(character)) {
-      selectedCharacter = null;
-      submitError = 'That character was just taken. Go back and choose '
-          'another one.';
       notifyListeners();
       return false;
     }

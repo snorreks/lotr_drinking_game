@@ -6,26 +6,26 @@ import 'fellowship_member.dart';
 
 part 'fellowship.g.dart';
 
-Map<Character, FellowshipMember> membersFromJson(dynamic value) {
-  final Map<Character, FellowshipMember> members =
-      <Character, FellowshipMember>{};
+/// Decodes the `members` map of a fellowship document.
+///
+/// Members are keyed by their unique [FellowshipMember.id], so multiple
+/// players can pick the same character without overwriting each other.
+/// Documents created before member ids existed keyed members directly by
+/// their character value; for those the character is derived from the key.
+Map<String, FellowshipMember> membersFromJson(dynamic value) {
+  final Map<String, FellowshipMember> members = <String, FellowshipMember>{};
   for (final MapEntry<String, dynamic> entry
       in (value as Map<String, dynamic>).entries) {
     final Map<String, dynamic> json = entry.value as Map<String, dynamic>;
-    // ignore: always_specify_types
-    const Map<Character, String> $CharacterEnumMap = {
-      Character.frodo: 'frodo',
-      Character.sam: 'sam',
-      Character.merrypippin: 'merrypippin',
-      Character.gandalf: 'gandalf',
-      Character.aragorn: 'aragorn',
-      Character.legolas: 'legolas',
-      Character.gimli: 'gimli',
-    };
-
-    members[CharacterExtension.fromValue(entry.key)] = FellowshipMember(
+    final Character? character = _characterFromJson(json, entry.key);
+    if (character == null) {
+      // Skip malformed members instead of failing the whole fellowship.
+      continue;
+    }
+    members[entry.key] = FellowshipMember(
+      id: entry.key,
       name: json['name'] as String,
-      character: $enumDecode($CharacterEnumMap, entry.key),
+      character: character,
       drinks: json['drinks'] == null
           ? const <DateTime>[]
           : timestampArrayFromJson(json['drinks']),
@@ -40,13 +40,30 @@ Map<Character, FellowshipMember> membersFromJson(dynamic value) {
               // ignore: avoid_dynamic_calls
               caller: json['callout']['caller'] as String,
             ),
-      isAdmin: json['isAdmin'] as bool,
+      isAdmin: json['isAdmin'] as bool? ?? false,
       difficulty: RuleDifficultyExtension.fromValue(
         json['difficulty'] as String?,
       ),
     );
   }
   return members;
+}
+
+Character? _characterFromJson(Map<String, dynamic> json, String key) {
+  final String? value = json['character'] as String?;
+  if (value != null) {
+    try {
+      return CharacterExtension.fromValue(value);
+    } catch (_) {
+      return null;
+    }
+  }
+  // Legacy documents key members by their character value.
+  try {
+    return CharacterExtension.fromValue(key);
+  } catch (_) {
+    return null;
+  }
 }
 
 @JsonSerializable()
@@ -77,7 +94,28 @@ class Fellowship {
   final String currentMovie;
 
   @JsonKey(fromJson: membersFromJson)
-  final Map<Character, FellowshipMember> members;
+  final Map<String, FellowshipMember> members;
+
+  /// The member belonging to this client, if any.
+  ///
+  /// Prefers the unique [FellowshipMember.id]; falls back to matching by
+  /// [character] for sessions joined before member ids existed.
+  FellowshipMember? findMember(String? memberId, Character? character) {
+    if (memberId != null) {
+      final FellowshipMember? byId = members[memberId];
+      if (byId != null) {
+        return byId;
+      }
+    }
+    if (character != null) {
+      for (final FellowshipMember member in members.values) {
+        if (member.character == character) {
+          return member;
+        }
+      }
+    }
+    return null;
+  }
 
   final String? lastSummaryShown;
 
@@ -90,5 +128,9 @@ class Fellowship {
 
   Map<String, dynamic> toJson() => _$FellowshipToJson(this);
 
-  List<FellowshipMember> get membersList => members.values.toList();
+  List<FellowshipMember> get membersList {
+    final List<FellowshipMember> list = members.values.toList();
+    list.sort((FellowshipMember a, FellowshipMember b) => a.id.compareTo(b.id));
+    return list;
+  }
 }

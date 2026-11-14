@@ -20,7 +20,8 @@ class _FakeFellowshipService implements FellowshipServiceModel {
   Character? get character => Character.frodo;
 
   @override
-  FellowshipMember? get member => fellowship?.members[Character.frodo];
+  FellowshipMember? get member =>
+      fellowship?.findMember('frodo', Character.frodo);
 
   @override
   Stream<Character?> get characterStream => const Stream<Character?>.empty();
@@ -48,8 +49,9 @@ void main() {
         currentMovie: 'The Two Towers',
         lastSummaryShown: 'Fellowship of the Ring',
         currentMovieStart: movieStart,
-        members: <Character, FellowshipMember>{
-          Character.frodo: FellowshipMember(
+        members: <String, FellowshipMember>{
+          'frodo': FellowshipMember(
+            id: 'frodo',
             name: 'Frodo',
             character: Character.frodo,
             drinks: <DateTime>[
@@ -60,7 +62,8 @@ void main() {
             ],
             saves: <DateTime>[DateTime(2026, 1, 1, 21, 5)],
           ),
-          Character.sam: FellowshipMember(
+          'sam': FellowshipMember(
+            id: 'sam',
             name: 'Sam',
             character: Character.sam,
             drinks: <DateTime>[

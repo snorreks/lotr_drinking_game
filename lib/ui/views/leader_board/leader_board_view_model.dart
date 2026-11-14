@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/base_view_model.dart';
-import '../../../constants/characters.dart';
 import '../../../models/fellowship.dart';
 import '../../../models/fellowship_member.dart';
 import '../../../services/api/fellowship_service.dart';
@@ -11,7 +10,9 @@ class LeaderBoardViewModel extends BaseViewModel {
   LeaderBoardViewModel(this._ref);
   final Ref _ref;
 
-  Character? get currentCharacter => _ref.read(fellowshipService).character;
+  /// The member of this device's player. Unique per player, even when
+  /// multiple players share a character.
+  FellowshipMember? get currentMember => _ref.read(fellowshipService).member;
 
   Stream<Fellowship?> get fellowshipStream =>
       _ref.read(fellowshipService).fellowshipStream;

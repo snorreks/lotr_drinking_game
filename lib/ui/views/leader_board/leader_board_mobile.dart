@@ -68,7 +68,7 @@ class _LeaderBoardMobile extends StatelessWidget {
             ),
             trailing: Text(
                 'Drinks: ${member.drinksAmount}\nUnits: ${showUnits(member.drinksAmount)}'),
-            onTap: viewModel.currentCharacter == character
+            onTap: viewModel.currentMember?.id == member.id
                 ? null
                 : () => viewModel.showCalloutDialog(member),
           ),

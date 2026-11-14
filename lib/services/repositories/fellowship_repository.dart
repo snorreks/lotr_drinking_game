@@ -37,7 +37,7 @@ abstract class FellowshipRepositoryModel {
   Future<void> addMember(String fellowshipId, FellowshipMember member);
   Future<void> updateDifficulty({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required RuleDifficulty difficulty,
   });
   Future<void> changeAdmin(String fellowshipId, FellowshipMember newAdmin,
@@ -47,20 +47,20 @@ abstract class FellowshipRepositoryModel {
 
   Future<void> increment({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required IncrementType type,
     int? amount,
   });
 
   Future<void> createCallout({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required String rule,
     required String caller,
   });
   Future<void> resolveCallout({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required int drinks,
   });
 }
@@ -147,8 +147,9 @@ class FellowshipRepository extends BaseService
           _getFellowshipDocumentReference(fellowshipId);
 
       await docRef.update(<String, dynamic>{
-        'members.${member.character.value}': <String, dynamic>{
+        'members.${member.id}': <String, dynamic>{
           'name': member.name,
+          'character': member.character.value,
           'isAdmin': member.isAdmin,
           'difficulty': member.difficulty.value,
         }
@@ -162,12 +163,12 @@ class FellowshipRepository extends BaseService
   @override
   Future<void> updateDifficulty({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required RuleDifficulty difficulty,
   }) async {
     try {
       await _updateDocument(fellowshipId, <String, dynamic>{
-        'members.${character.value}.difficulty': difficulty.value,
+        'members.$memberId.difficulty': difficulty.value,
       });
     } catch (e) {
       logError('updateDifficulty', e);
@@ -184,8 +185,8 @@ class FellowshipRepository extends BaseService
 
       await _db.runTransaction((Transaction transaction) async {
         transaction.update(docRef, <String, dynamic>{
-          'members.${newAdmin.character.value}.isAdmin': true,
-          'members.${oldAdmin.character.value}.isAdmin': false
+          'members.${newAdmin.id}.isAdmin': true,
+          'members.${oldAdmin.id}.isAdmin': false
         });
       });
     } catch (e) {
@@ -250,13 +251,13 @@ class FellowshipRepository extends BaseService
   @override
   Future<void> increment({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required IncrementType type,
     int? amount,
   }) async {
     try {
       await _updateDocument(fellowshipId, <String, dynamic>{
-        'members.${character.value}.${type.value}': FieldValue.arrayUnion(
+        'members.$memberId.${type.value}': FieldValue.arrayUnion(
           List<Timestamp>.generate(
             amount ?? 1,
             (int index) => Timestamp.now(),
@@ -272,13 +273,13 @@ class FellowshipRepository extends BaseService
   @override
   Future<void> createCallout({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required String rule,
     required String caller,
   }) async {
     try {
       await _updateDocument(fellowshipId, <String, dynamic>{
-        'members.${character.value}.callout': <String, dynamic>{
+        'members.$memberId.callout': <String, dynamic>{
           'rule': rule,
           'caller': caller,
         },
@@ -292,14 +293,14 @@ class FellowshipRepository extends BaseService
   @override
   Future<void> resolveCallout({
     required String fellowshipId,
-    required Character character,
+    required String memberId,
     required int drinks,
   }) async {
     try {
       if (drinks > 0) {
         await _updateDocument(fellowshipId, <String, dynamic>{
-          'members.${character.value}.callout': FieldValue.delete(),
-          'members.${character.value}.drinks': FieldValue.arrayUnion(
+          'members.$memberId.callout': FieldValue.delete(),
+          'members.$memberId.drinks': FieldValue.arrayUnion(
             List<Timestamp>.generate(
               drinks,
               (int index) => Timestamp.now(),
@@ -308,7 +309,7 @@ class FellowshipRepository extends BaseService
         });
       } else {
         await _updateDocument(fellowshipId, <String, dynamic>{
-          'members.${character.value}.callout': FieldValue.delete(),
+          'members.$memberId.callout': FieldValue.delete(),
         });
       }
     } catch (e) {
