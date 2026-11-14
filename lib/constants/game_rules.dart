@@ -23,24 +23,23 @@ class GameRules {
       RuleDifficulty.easy,
     ),
     GameRule(
-      'Memes like "One does not simply walk into Mordor", "You Shall Not '
-      'Pass" or "...and my axe!"',
-      RuleDifficulty.easy,
-    ),
-  ];
-
-  static const List<GameRule> normalRulesFellowship = <GameRule>[
-    GameRule(
       "A character says 'precious'.",
-      RuleDifficulty.easy,
+      RuleDifficulty.medium,
     ),
     GameRule(
-      'A character uses a non-English (non-common) language.',
+      'When someone shares a fun fact or a meme about the movies, they force everyone else to drink one, but have to drink two themselves.',
       RuleDifficulty.easy,
     ),
     GameRule(
       'A scenic shot of New Zealand (Middle Earth) appears.',
       RuleDifficulty.hard,
+    ),
+  ];
+
+  static const List<GameRule> normalRulesFellowship = <GameRule>[
+    GameRule(
+      'A character uses a non-English (non-common) language.',
+      RuleDifficulty.easy,
     ),
   ];
 
@@ -51,7 +50,7 @@ class GameRules {
     ),
     GameRule(
       'Someone talks about Gondor or Rohan.',
-      RuleDifficulty.hard,
+      RuleDifficulty.medium,
     ),
     GameRule(
       'Gollum and Smeagol have a conversation.',
@@ -59,7 +58,7 @@ class GameRules {
     ),
     GameRule(
       "There's a shot of the Uruk-hai marching or preparing for battle.",
-      RuleDifficulty.medium,
+      RuleDifficulty.hard,
     ),
   ];
 
@@ -90,7 +89,7 @@ class GameRules {
       RuleDifficulty.easy,
     ),
     GameRule(
-      'Gandalf the White debuts.',
+      'Someone returns... but whiter!',
       RuleDifficulty.easy,
     ),
     GameRule(
@@ -113,39 +112,12 @@ class GameRules {
       RuleDifficulty.easy,
     ),
     RuleWithName(
-      "Sam's Sacrifice",
-      'If a viewer is starting to struggle handling their mead, they may '
-          'request the aid of the rest of the group. Only one viewer may '
-          'accept the burden of the additional drinks, known as “the '
-          'Saviour”. The Saviour will temporarily take over the drinks of the '
-          'viewer who struggled, now known as the Milkdrinker, for an agreed '
-          'upon amount. \nThe Saviour should maintain count over the amount of '
-          'drinks they have saved. Per 5 swigs of the bottle the Saviour has '
-          'decided to take upon, they are rewarded with 1 (one) rescue dice. '
-          '\nIf the Saviour has saved someone three or more times, they may '
-          'invoke “the Aid of Gondor” from the particular Milkdrinker.',
-      RuleDifficulty.hard,
-    ),
-    RuleWithName(
-      'The Aid of Gondor',
-      'If a Saviour has granted their aid to someone twice, '
-          'they may invoke the Aid of Gondor. The Aid of Gondor is a '
-          'non-conditional save, granted due to the particular heroics '
-          'performed by this Saviour. The Saviour may conditionally ask the '
-          'specific Milkdrinker that has called upon their aid before to save '
-          'maximally half the amount of drinks they have taken for the '
-          'Milkdrinker. ',
-      RuleDifficulty.hard,
-    ),
-    RuleWithName(
-      "Boromir's Betrayal",
-      'If a player fails to uphold their duties in the game, breaks a rule, '
-          'or simply cannot keep up with the drinking pace, they have '
-          "committed a 'Boromir's Betrayal'. This rule serves to encourage "
-          'good-natured competition and camaraderie, much like the Fellowship '
-          'itself.',
-      RuleDifficulty.medium,
-    ),
+      'The Ringbearer',
+      'The person with the most drinks is known as the Ringbearer. '
+          'The Ringbearer may at will stop drinking or make others "carry them". '
+          'Carrying them means that they will have to drink all the drinks they had to drink themselves',
+      RuleDifficulty.easy,
+    )
   ];
 
   static const Map<String, List<GameRule>> rulesFellowship =

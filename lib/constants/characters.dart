@@ -177,7 +177,7 @@ extension CharacterExtension on Character {
             RuleDifficulty.hard,
           ),
           const GameRule(
-            'He appreciates something elvish.',
+            'He acts smart.',
             RuleDifficulty.easy,
           ),
         ];
@@ -194,7 +194,7 @@ extension CharacterExtension on Character {
           const GameRule(
             'He is staring in the distance, double if he identifies or warns '
             'of an approaching danger before anyone else.',
-            RuleDifficulty.medium,
+            RuleDifficulty.easy,
           ),
         ];
       case Character.gimli:
