@@ -108,7 +108,7 @@ class GameRules {
       'The Eye of Sauron',
       'If a viewer (known as the sneaky hobbit) does not drink when clearly '
           'prompted to by the rules, another viewer (Sauron) may call the '
-          "sneaky hobbit out. If the other viewers agree with Sauron's "
+          "sneaky hobbit out. If another viewer agrees with Sauron's "
           'call-out, the sneaky hobbit has to drink two.',
       RuleDifficulty.easy,
     ),
@@ -128,7 +128,7 @@ class GameRules {
     ),
     RuleWithName(
       'The Aid of Gondor',
-      'If a Saviour has granted their aid to someone more than three times, '
+      'If a Saviour has granted their aid to someone twice, '
           'they may invoke the Aid of Gondor. The Aid of Gondor is a '
           'non-conditional save, granted due to the particular heroics '
           'performed by this Saviour. The Saviour may conditionally ask the '
