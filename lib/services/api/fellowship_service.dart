@@ -82,6 +82,9 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
     ).listen((FellowshipMember? member) {
       if (member != null) {
         _lastKnownSelf = member;
+        // Our own membership is now visible in a snapshot, so a future
+        // disappearance is a genuine clobber and may be recovered again.
+        _pendingMemberId = null;
         if (member.callout != null) {
           _ref.read(dialogService).showCalledOutDialog(member.callout!);
         }
@@ -142,6 +145,16 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   /// Whether a clobbered membership is currently being restored, so recovery
   /// is not triggered twice while it is in flight.
   bool _recovering = false;
+
+  /// The member id this client last wrote and that has not been confirmed by
+  /// a fellowship snapshot yet.
+  ///
+  /// Firestore streams (and the BehaviorSubjects feeding the member stream)
+  /// deliver events asynchronously, so a freshly written membership is briefly
+  /// missing from the in-memory fellowship even though the write succeeded.
+  /// While this is set, recovery is suppressed so those stale snapshots cannot
+  /// trigger it again. It is cleared as soon as the membership is observed.
+  String? _pendingMemberId;
 
   /// The member currently carrying the Ring: the one who has drunk the most.
   FellowshipMember? _ringbearer;
@@ -217,7 +230,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
     if (_recovering ||
         preferences.memberId == null ||
         preferences.character == null ||
-        preferences.fellowshipId == null) {
+        preferences.fellowshipId == null ||
+        // We already wrote this member; wait for the snapshot instead of
+        // treating our own pending write as a clobbered membership.
+        preferences.memberId == _pendingMemberId) {
       return;
     }
 
@@ -237,10 +253,14 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
             difficulty: preferences.difficulty,
           );
 
+      // Give the recovered membership a stable candidate id before writing,
+      // so any snapshot that still lags behind reuses this id instead of
+      // spawning yet another member.
+      final String candidateId = FellowshipMember.generateId();
       final String memberId = await _fellowshipRepository.addMember(
         preferences.fellowshipId!,
         FellowshipMember(
-          id: FellowshipMember.generateId(),
+          id: candidateId,
           name: lastKnown.name,
           character: lastKnown.character,
           difficulty: lastKnown.difficulty,
@@ -252,6 +272,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       );
 
       preferences.memberId = memberId;
+      _pendingMemberId = memberId;
       _characterSubject.add(preferences.character);
       logInfo('Recovered clobbered membership as $memberId');
     } catch (e) {
@@ -342,6 +363,10 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       _preferencesService.memberId = memberId;
       _preferencesService.character = character;
       _preferencesService.difficulty = difficulty;
+      // The write is done, but the fellowship snapshot may not include it
+      // yet. Suppress recovery until the membership is actually observed,
+      // otherwise onboarding triggers a second "recovered" member every time.
+      _pendingMemberId = memberId;
       _characterSubject.add(character);
 
       return true;
@@ -412,6 +437,8 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       _fellowshipStreamListener?.cancel();
       _fellowshipStream = null;
       _fellowshipStreamListener = null;
+      _lastKnownSelf = null;
+      _pendingMemberId = null;
       _ringbearer = null;
       _ringbearerFellowshipId = null;
       _ringbearerInitialized = false;
