@@ -34,7 +34,16 @@ abstract class FellowshipRepositoryModel {
   Stream<Fellowship?> stream(String fellowshipId);
 
   Future<String> create(String fellowshipName);
-  Future<void> addMember(String fellowshipId, FellowshipMember member);
+
+  /// Adds a member to the fellowship and returns the key it was stored
+  /// under (the member's id).
+  ///
+  /// The plain character value is used as the key while the character is
+  /// still free, which keeps documents readable by older app versions. Once
+  /// a character is taken, new members get a unique key prefixed with the
+  /// character value, so multiple players can share a character without
+  /// overwriting each other.
+  Future<String> addMember(String fellowshipId, FellowshipMember member);
   Future<void> updateDifficulty({
     required String fellowshipId,
     required String memberId,
@@ -141,21 +150,51 @@ class FellowshipRepository extends BaseService
   }
 
   @override
-  Future<void> addMember(String fellowshipId, FellowshipMember member) async {
+  Future<String> addMember(String fellowshipId, FellowshipMember member) async {
     try {
       final DocumentReference<Map<String, dynamic>> docRef =
           _getFellowshipDocumentReference(fellowshipId);
 
-      await docRef.update(<String, dynamic>{
-        'members.${member.id}': <String, dynamic>{
-          'name': member.name,
-          'character': member.character.value,
-          'isAdmin': member.isAdmin,
-          'difficulty': member.difficulty.value,
-        }
-      });
+      // Pick the member key inside a transaction, so two players picking a
+      // character at the same time can never overwrite each other.
+      final String memberId = await _db.runTransaction<String>(
+        (Transaction transaction) async {
+          final DocumentSnapshot<Map<String, dynamic>> snapshot =
+              await transaction.get(docRef);
+          final Map<String, dynamic> data =
+              snapshot.data() ?? <String, dynamic>{};
+          final Map<String, dynamic> members =
+              (data['members'] as Map<String, dynamic>?) ??
+                  <String, dynamic>{};
+
+          // Free characters keep their plain value as key, which keeps the
+          // document compatible with older app versions. Only duplicates
+          // get a unique, character-prefixed key.
+          final String key = members.containsKey(member.character.value)
+              ? '${member.character.value}_${member.id}'
+              : member.character.value;
+
+          transaction.update(docRef, <String, dynamic>{
+            'members.$key': <String, dynamic>{
+              'name': member.name,
+              'character': member.character.value,
+              'isAdmin': member.isAdmin,
+              'difficulty': member.difficulty.value,
+              'drinks': member.drinks
+                  .map((DateTime dateTime) => Timestamp.fromDate(dateTime))
+                  .toList(),
+              'saves': member.saves
+                  .map((DateTime dateTime) => Timestamp.fromDate(dateTime))
+                  .toList(),
+            }
+          });
+          return key;
+        },
+      );
+
+      return memberId;
     } catch (e) {
-      logError('updateFellowship', e);
+      logError('addMember', e);
       rethrow;
     }
   }

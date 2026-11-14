@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../common/base_view_model.dart';
 import '../../../services/api/fellowship_service.dart';
+import '../../../services/app/dialog_service.dart';
 import '../../../services/app/router_service.dart';
 import '../../../utils/validators.dart';
 
@@ -37,12 +38,31 @@ class LoginViewModel extends BaseViewModel {
 
   Future<void> submitJoin() async {
     _loadingSubject.add(true);
-    final bool responseOk = await _ref
-        .read(fellowshipService)
-        .joinFellowship(pinCodeController.text);
+    try {
+      final bool responseOk = await _ref
+          .read(fellowshipService)
+          .joinFellowship(pinCodeController.text);
 
-    if (responseOk) {
+      // Always stop loading and tell the player what went wrong, so a
+      // failed join can never leave the screen stuck on the spinner.
+      if (!responseOk) {
+        _ref.read(dialogService).showNotification(const NotificationRequest(
+              message:
+                  'Fellowship not found. Double-check the PIN and try again.',
+              type: NotificationType.error,
+            ));
+        _loadingSubject.add(false);
+        return;
+      }
+
       await _ref.read(routerService).go(Location.home);
+    } catch (e) {
+      logError('submitJoin', e);
+      _ref.read(dialogService).showNotification(const NotificationRequest(
+            message: 'Could not join the fellowship. Please try again.',
+            type: NotificationType.error,
+          ));
+      _loadingSubject.add(false);
     }
   }
 
@@ -54,8 +74,12 @@ class LoginViewModel extends BaseViewModel {
           .createFellowship(sessionNameController.text);
       _ref.read(routerService).go(Location.home);
     } catch (e) {
+      logError('submitCreate', e);
+      _ref.read(dialogService).showNotification(const NotificationRequest(
+            message: 'Could not create the fellowship. Please try again.',
+            type: NotificationType.error,
+          ));
       _loadingSubject.add(false);
-      rethrow;
     }
   }
 }
