@@ -129,6 +129,17 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
   /// only ever triggers the dialog once per client.
   String? _summaryShownForMovie;
 
+  /// The member currently carrying the Ring: the one who has drunk the most.
+  FellowshipMember? _ringbearer;
+
+  /// The fellowship the ringbearer was last tracked for, so joining another
+  /// fellowship starts over without announcing anything.
+  String? _ringbearerFellowshipId;
+
+  /// Whether the ringbearer has been synced with the fellowship at least
+  /// once, so only live changes are announced, not the state on app start.
+  bool _ringbearerInitialized = false;
+
   @override
   Stream<Fellowship?> get fellowshipStream {
     if (_fellowshipStream != null) {
@@ -148,6 +159,7 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       _fellowshipSubject.add(fellowship);
       if (fellowship != null) {
         showSummaryIfNeeded(fellowship);
+        _updateRingbearer(fellowship);
       }
     });
 
@@ -307,12 +319,76 @@ class FellowshipService extends BaseService implements FellowshipServiceModel {
       _fellowshipStreamListener?.cancel();
       _fellowshipStream = null;
       _fellowshipStreamListener = null;
+      _ringbearer = null;
+      _ringbearerFellowshipId = null;
+      _ringbearerInitialized = false;
 
       return true;
     } catch (e) {
       logError('leaveFellowship', e);
       return false;
     }
+  }
+
+  /// Detects when someone new becomes the leader in drinks ("the Ringbearer")
+  /// and announces it. Every client receives the same fellowship updates from
+  /// Firestore, so each participant sees the notification.
+  void _updateRingbearer(Fellowship fellowship) {
+    if (_ringbearerFellowshipId != fellowship.id) {
+      // First look at this fellowship: sync state silently.
+      _ringbearerFellowshipId = fellowship.id;
+      _ringbearerInitialized = false;
+      _ringbearer = null;
+    }
+
+    final List<FellowshipMember> members = fellowship.membersList;
+    if (members.isEmpty) {
+      _ringbearer = null;
+      _ringbearerInitialized = true;
+      return;
+    }
+
+    final int topDrinks = members.fold<int>(
+      0,
+      (int max, FellowshipMember m) =>
+          m.drinksAmount > max ? m.drinksAmount : max,
+    );
+
+    final List<FellowshipMember> leaders = topDrinks == 0
+        ? const <FellowshipMember>[]
+        : members
+            .where((FellowshipMember m) => m.drinksAmount == topDrinks)
+            .toList();
+
+    FellowshipMember? newRingbearer;
+    if (leaders.length == 1) {
+      // A strict leader: the Ring is theirs.
+      newRingbearer = leaders.single;
+    } else {
+      // Tied at the top: the incumbent keeps the Ring until someone
+      // strictly overtakes.
+      for (final FellowshipMember m in leaders) {
+        if (m.character == _ringbearer?.character) {
+          newRingbearer = m;
+          break;
+        }
+      }
+    }
+
+    final bool wasInitialized = _ringbearerInitialized;
+    _ringbearerInitialized = true;
+
+    if (newRingbearer != null &&
+        wasInitialized &&
+        newRingbearer.character != _ringbearer?.character) {
+      _ref.read(dialogService).showNotification(NotificationRequest(
+            title: 'The Ring has changed hands',
+            message: '${newRingbearer.name} has become the ringbearer',
+            type: NotificationType.info,
+          ));
+    }
+
+    _ringbearer = newRingbearer;
   }
 
   @override

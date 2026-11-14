@@ -108,7 +108,7 @@ class GameRules {
       'The Eye of Sauron',
       'If a viewer (known as the sneaky hobbit) does not drink when clearly '
           'prompted to by the rules, another viewer (Sauron) may call the '
-          "sneaky hobbit out. If the other viewers agree with Sauron's "
+          "sneaky hobbit out. If another viewer agrees with Sauron's "
           'call-out, the sneaky hobbit has to drink two.',
       RuleDifficulty.easy,
     ),
@@ -128,7 +128,7 @@ class GameRules {
     ),
     RuleWithName(
       'The Aid of Gondor',
-      'If a Saviour has granted their aid to someone more than three times, '
+      'If a Saviour has granted their aid to someone twice, '
           'they may invoke the Aid of Gondor. The Aid of Gondor is a '
           'non-conditional save, granted due to the particular heroics '
           'performed by this Saviour. The Saviour may conditionally ask the '
@@ -145,31 +145,6 @@ class GameRules {
           'good-natured competition and camaraderie, much like the Fellowship '
           'itself.',
       RuleDifficulty.medium,
-    ),
-    RuleWithName(
-      'Rescue Dice',
-      'Rescue dice are for when you are close to your limit. Each movie, you '
-          'are granted two or three (depending on movie length) six-sided die '
-          "(hitherto referred to as a 'd6'). These d6's can be rolled upon "
-          'desire to skip the following amount of drinks that the dice show.\n'
-          "The dice also have the 'rollover' property, meaning that any dice "
-          'which were unused during a movie, may be brought over to the next.',
-      RuleDifficulty.medium,
-    ),
-    RuleWithName(
-      'Rescue Dice poker',
-      'Upon the start of each movie, a viewer may call for a round of merry '
-          'Rescue Dice Poker (RDP). RDP works as five card draw poker does, '
-          'except what you may bet is the rescue die which will be used for '
-          'the following film. This includes rollover dice. \nBefore the start '
-          'of the movie, you count up your total of rescue dice. This value '
-          'will be converted into a set of poker chips, where each rescue dice '
-          'is a red chip. These may be broken down into blue, green and white '
-          'chips. A regular game of poker will commence. The game has to last '
-          'a minimum of two rounds around the table before pulling out, unless '
-          'someone has lost all their rescue dice.\nParticipation is '
-          'voluntary.',
-      RuleDifficulty.hard,
     ),
   ];
 

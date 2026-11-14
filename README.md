@@ -33,6 +33,7 @@ already ignored by git.
 *   Navigation of rules
 *   Compare how much you have had to drink with the rest of the group
 *   Call-out players for ignoring rules!
+*   Ringbearer announcements: whenever someone new drinks their way to the top of the fellowship, everyone gets notified
 *   idk more soon
 
 ### Coming features
